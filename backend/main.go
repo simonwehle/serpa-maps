@@ -1,6 +1,6 @@
 package main
 
-import "serpa-maps-backend/cmd"
+import "serpa-maps/cmd"
 
 func main() {
 	cmd.Execute()
