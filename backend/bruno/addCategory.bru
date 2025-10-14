@@ -1,0 +1,23 @@
+meta {
+  name: addCategory
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/api/v1/category
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Sehenswürdigkeit",
+    "icon": "camera_alt",
+    "color": "#9c27b0"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

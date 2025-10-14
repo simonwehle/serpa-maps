@@ -34,3 +34,16 @@ func AddCategory(db *sqlx.DB) gin.HandlerFunc {
 		c.JSON(http.StatusCreated, category)
 	}
 }
+
+func GetCategories(db *sqlx.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var categories []types.Category
+
+		if err := db.Select(&categories, "SELECT * FROM categories ORDER BY category_id"); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, categories)
+	}
+}
