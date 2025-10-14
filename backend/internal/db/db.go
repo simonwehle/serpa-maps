@@ -1,9 +1,37 @@
 package db
 
 import (
+	"fmt"
+	"log"
+	"os"
+
 	"github.com/jmoiron/sqlx"
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
+
+func getEnv(key, fallback string) string {
+    if value := os.Getenv(key); value != "" {
+        return value
+    }
+    return fallback
+}
+
+func LoadEnv() string {
+    // TODO: remove godotenv for production
+    if err := godotenv.Load(); err != nil {
+        log.Println("No .env file found, using environment variables")
+    }
+
+    dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
+        getEnv("DB_USERNAME", "postgres"),
+        getEnv("DB_PASSWORD", "postgres"),
+        getEnv("DB_HOST", "database"),
+        getEnv("DB_PORT", "5432"),
+        getEnv("DB_DATABASE_NAME", "serpa-maps"),
+    )
+    return dsn
+}
 
 func InitDB(db *sqlx.DB) error {
     schema := `
