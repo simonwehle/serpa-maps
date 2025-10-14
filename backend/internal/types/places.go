@@ -12,10 +12,3 @@ type Places struct {
 	CategoryID  int     `db:"category_id" json:"category_id"`
 	CreatedAt   string  `db:"created_at" json:"created_at"`
 }
-
-type Category struct {
-	CategoryID  int    `db:"category_id" json:"category_id"`
-	Name        string `db:"name" json:"name"`
-	Icon        string `db:"icon" json:"icon"`
-	Color       string `db:"color" json:"color"`
-}
