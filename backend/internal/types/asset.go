@@ -2,6 +2,8 @@ package types
 
 import "time"
 
+// TODO: maybe remove place_id from json
+
 type Asset struct {
     AssetID   int       `db:"asset_id" json:"asset_id"`
     PlaceID   int       `db:"place_id" json:"place_id"`

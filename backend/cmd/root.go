@@ -26,13 +26,18 @@ func Execute() {
 	api := r.Group("/api/v1")
 
 	api.GET("/categories", handlers.GetCategories(postgres))
-	api.GET("/places", handlers.GetPlaces(postgres))
 	api.POST("/category", handlers.AddCategory(postgres))
+	api.PATCH("/category/:id", handlers.UpdateCategory(postgres))
+	api.DELETE("/category/:id", handlers.DeleteCategory(postgres))
+
+	api.GET("/places", handlers.GetPlaces(postgres))
 	api.POST("/place", handlers.AddPlace(postgres))
 	api.PATCH("/place/:id", handlers.UpdatePlace(postgres))
+	api.DELETE("/place/:id", handlers.DeletePlace(postgres))
+
 	api.POST("/place/:id/assets", handlers.UploadPlaceAssets(postgres))
-	api.DELETE("category/:id", handlers.DeleteCategory(postgres))
-	api.DELETE("place/:id", handlers.DeletePlace(postgres))
+	api.DELETE("/place/:id/asset", )
+
 	r.Static("/uploads", "./uploads")
 
 	r.Run(":3465")
