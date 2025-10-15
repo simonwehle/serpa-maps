@@ -22,6 +22,14 @@ func InitDB(db *sqlx.DB) error {
 		category_id INT REFERENCES categories(category_id),
 		created_at TIMESTAMPTZ DEFAULT now()
 	);
+
+	CREATE TABLE IF NOT EXISTS place_assets (
+		asset_id SERIAL PRIMARY KEY,
+		place_id INT NOT NULL REFERENCES places(place_id) ON DELETE CASCADE,
+		asset_url TEXT NOT NULL,
+		asset_type TEXT NOT NULL CHECK (asset_type IN ('image', 'video')),
+		created_at TIMESTAMP DEFAULT NOW()
+	);
 	`
 	_, err := db.Exec(schema)
 	return err

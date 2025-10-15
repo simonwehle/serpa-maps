@@ -38,17 +38,27 @@ func AddPlace(db *sqlx.DB) gin.HandlerFunc {
 }
 
 func GetPlaces(db *sqlx.DB) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		var places []types.Place
+    return func(c *gin.Context) {
+        var places []types.Place
 
-		if err := db.Select(&places, "SELECT * FROM places ORDER BY place_id"); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
+        if err := db.Select(&places, "SELECT * FROM places ORDER BY place_id"); err != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+            return
+        }
 
-		c.JSON(http.StatusOK, places)
-	}
+        for i, p := range places {
+            var assets []types.Asset
+            err := db.Select(&assets, "SELECT * FROM place_assets WHERE place_id = $1 ORDER BY created_at", p.PlaceID)
+            if err != nil {
+                assets = []types.Asset{}
+            }
+            places[i].Assets = assets
+        }
+
+        c.JSON(http.StatusOK, places)
+    }
 }
+
 
 func UpdatePlace(db *sqlx.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {

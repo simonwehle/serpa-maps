@@ -49,3 +49,4 @@ frontend/android/app/release
 
 # Backend builds
 /backend/serpa-maps
+/backend/uploads/

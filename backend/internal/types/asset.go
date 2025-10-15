@@ -1,0 +1,11 @@
+package types
+
+import "time"
+
+type Asset struct {
+    AssetID   int       `db:"asset_id" json:"asset_id"`
+    PlaceID   int       `db:"place_id" json:"place_id"`
+    AssetURL  string    `db:"asset_url" json:"asset_url"`
+    AssetType string    `db:"asset_type" json:"asset_type"`
+    CreatedAt time.Time `db:"created_at" json:"created_at"`
+}

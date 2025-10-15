@@ -13,4 +13,5 @@ type Place struct {
 	Longitude   float64   `db:"longitude" json:"longitude"`
 	CategoryID  int       `db:"category_id" json:"category_id"`
 	CreatedAt   time.Time `db:"created_at" json:"created_at"`
+	Assets      []Asset   `json:"assets,omitempty"`
 }
