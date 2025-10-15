@@ -31,7 +31,7 @@ func Execute() {
 	api.POST("/place", handlers.AddPlace(postgres))
 	api.PATCH("/place/:id", handlers.UpdatePlace(postgres))
 	api.POST("/place/:id/assets", handlers.UploadPlaceAssets(postgres))
-	api.Static("/uploads", "./uploads")
+	r.Static("/uploads", "./uploads")
 
 	r.Run(":3465")
 }
