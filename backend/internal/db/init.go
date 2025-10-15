@@ -28,6 +28,7 @@ func InitDB(db *sqlx.DB) error {
 		place_id INT NOT NULL REFERENCES places(place_id) ON DELETE CASCADE,
 		asset_url TEXT NOT NULL,
 		asset_type TEXT NOT NULL CHECK (asset_type IN ('image', 'video')),
+		position INT NOT NULL DEFAULT 0,
 		created_at TIMESTAMP DEFAULT NOW()
 	);
 	`

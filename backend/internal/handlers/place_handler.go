@@ -48,7 +48,7 @@ func GetPlaces(db *sqlx.DB) gin.HandlerFunc {
 
 		for i, p := range places {
 			var assets []types.Asset
-			err := db.Select(&assets, "SELECT * FROM place_assets WHERE place_id = $1 ORDER BY created_at", p.PlaceID)
+			err := db.Select(&assets, "SELECT * FROM place_assets WHERE place_id = $1 ORDER BY position", p.PlaceID)
 			if err != nil || assets == nil {
 				assets = []types.Asset{}
 			}
