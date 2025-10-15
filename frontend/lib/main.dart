@@ -37,7 +37,7 @@ class _MapScreenState extends State<MapScreen> {
   List<Place> places = [];
   List<Category> categories = [];
   late final ApiService api;
-  late String baseUrl;
+  late final String baseUrl;
   final placeService = PlaceService();
   bool _bottomSheetOpen = false;
 
@@ -47,17 +47,23 @@ class _MapScreenState extends State<MapScreen> {
   void initState() {
     super.initState();
     baseUrl = dotenv.env['BASE_URL'] ?? "http://localhost:3465";
-    api = ApiService(baseUrl);
+    api = ApiService(baseUrl, apiVersion: '/api/v1');
     _loadData();
   }
 
   Future<void> _loadData() async {
-    categories = await api.fetchCategories();
-    places = await api.fetchPlaces();
-    if (mapController != null) {
-      await _addPlaceMarkers();
+    try {
+      categories = await api.fetchCategories();
+      places = await api.fetchPlaces();
+
+      if (mapController != null) {
+        await _addPlaceMarkers();
+      }
+
+      setState(() {});
+    } catch (e) {
+      print("Fehler beim Laden der Daten: $e");
     }
-    setState(() {});
   }
 
   Future<void> _onMapCreated(MapLibreMapController controller) async {
@@ -104,7 +110,7 @@ class _MapScreenState extends State<MapScreen> {
     mapController!.onSymbolTapped.add((symbol) {
       final data = _symbolData[symbol.id];
       if (data != null) {
-        _showBottomSheet(data['place'], data['category']);
+        _showBottomSheet(data['place'] as Place, data['category'] as Category);
       }
     });
   }
@@ -117,7 +123,14 @@ class _MapScreenState extends State<MapScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => PlaceBottomSheet(place: place, category: category),
+      builder: (_) => SizedBox(
+        height: MediaQuery.of(context).size.height * 0.7,
+        child: PlaceBottomSheet(
+          place: place,
+          category: category,
+          baseUrl: baseUrl,
+        ),
+      ),
     ).whenComplete(() => _bottomSheetOpen = false);
   }
 
@@ -130,7 +143,7 @@ class _MapScreenState extends State<MapScreen> {
             "https://api.maptiler.com/maps/streets/style.json?key=$apiKey",
         initialCameraPosition: const CameraPosition(
           target: LatLng(49.0139, 8.4043),
-          zoom: 15,
+          zoom: 13,
         ),
         onMapCreated: _onMapCreated,
       ),

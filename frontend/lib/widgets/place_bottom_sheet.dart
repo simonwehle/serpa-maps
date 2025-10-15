@@ -5,11 +5,13 @@ import '../models/category.dart';
 class PlaceBottomSheet extends StatelessWidget {
   final Place place;
   final Category category;
+  final String baseUrl;
 
   const PlaceBottomSheet({
+    super.key,
     required this.place,
     required this.category,
-    super.key,
+    required this.baseUrl,
   });
 
   @override
@@ -26,6 +28,7 @@ class PlaceBottomSheet extends StatelessWidget {
           ),
           child: ListView(
             controller: scrollController,
+            padding: const EdgeInsets.symmetric(vertical: 8),
             children: [
               Center(
                 child: Container(
@@ -38,6 +41,7 @@ class PlaceBottomSheet extends StatelessWidget {
                   ),
                 ),
               ),
+
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
@@ -48,16 +52,93 @@ class PlaceBottomSheet extends StatelessWidget {
                   ),
                 ),
               ),
+
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
-                  place.description ?? "Keine Beschreibung verfügbar.",
+                  place.description?.isNotEmpty == true
+                      ? place.description!
+                      : "Keine Beschreibung verfügbar.",
                 ),
               ),
+
+              const SizedBox(height: 16),
+
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: _colorFromHex(category.color),
+                      child: Icon(
+                        _iconFromString(category.icon),
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      category.name,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              if (place.assets.isNotEmpty)
+                SizedBox(
+                  height: 150,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: place.assets.length,
+                    itemBuilder: (context, index) {
+                      final asset = place.assets[index];
+                      final url = asset.assetUrl;
+
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.network(
+                            '$baseUrl/$url',
+                            width: 200,
+                            height: 200,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Container(
+                              width: 200,
+                              height: 200,
+                              color: Colors.grey[300],
+                              child: const Icon(Icons.broken_image),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
             ],
           ),
         );
       },
     );
+  }
+
+  Color _colorFromHex(String hex) {
+    hex = hex.replaceAll('#', '');
+    if (hex.length == 6) hex = 'FF$hex';
+    return Color(int.parse(hex, radix: 16));
+  }
+
+  IconData _iconFromString(String iconName) {
+    switch (iconName) {
+      case 'camera_alt':
+        return Icons.camera_alt;
+      case 'fort':
+        return Icons.fort;
+      case 'location_on':
+      default:
+        return Icons.location_on;
+    }
   }
 }
