@@ -1,13 +1,19 @@
 meta {
-  name: deleteCategory
+  name: updateCategory
   type: http
-  seq: 9
+  seq: 4
 }
 
-delete {
+patch {
   url: {{base_url}}{{api_version}}/category/2
-  body: none
+  body: json
   auth: inherit
+}
+
+body:json {
+  {
+    "icon": "restaurant"
+  }
 }
 
 settings {
