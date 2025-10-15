@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: {{base_url}}/api/v1/place
+  url: {{base_url}}{{api_version}}/place
   body: json
   auth: inherit
 }
@@ -21,4 +21,5 @@ body:json {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

@@ -5,11 +5,12 @@ meta {
 }
 
 get {
-  url: {{base_url}}/api/v1/places
+  url: {{base_url}}{{api_version}}/places
   body: none
   auth: inherit
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }
