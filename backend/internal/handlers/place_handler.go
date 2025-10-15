@@ -46,14 +46,14 @@ func GetPlaces(db *sqlx.DB) gin.HandlerFunc {
             return
         }
 
-        for i, p := range places {
-            var assets []types.Asset
-            err := db.Select(&assets, "SELECT * FROM place_assets WHERE place_id = $1 ORDER BY created_at", p.PlaceID)
-            if err != nil {
-                assets = []types.Asset{}
-            }
-            places[i].Assets = assets
-        }
+		for i, p := range places {
+			var assets []types.Asset
+			err := db.Select(&assets, "SELECT * FROM place_assets WHERE place_id = $1 ORDER BY created_at", p.PlaceID)
+			if err != nil || assets == nil {
+				assets = []types.Asset{}
+			}
+			places[i].Assets = assets
+		}
 
         c.JSON(http.StatusOK, places)
     }
