@@ -1,0 +1,19 @@
+meta {
+  name: deletePlace
+  type: http
+  seq: 9
+}
+
+delete {
+  url: {{base_url}}{{api_version}}/place/:id
+  body: none
+  auth: inherit
+}
+
+params:path {
+  id: 
+}
+
+settings {
+  encodeUrl: true
+}

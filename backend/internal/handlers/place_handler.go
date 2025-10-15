@@ -102,3 +102,29 @@ func UpdatePlace(db *sqlx.DB) gin.HandlerFunc {
 	}
 }
 
+func DeletePlace(db *sqlx.DB) gin.HandlerFunc {
+    return func(c *gin.Context) {
+        placeID := c.Param("id")
+
+        query := `DELETE FROM places WHERE place_id = $1`
+
+        result, err := db.Exec(query, placeID)
+        if err != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete place", "details": err.Error()})
+            return
+        }
+
+        rowsAffected, err := result.RowsAffected()
+        if err != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to check deletion", "details": err.Error()})
+            return
+        }
+
+        if rowsAffected == 0 {
+            c.JSON(http.StatusNotFound, gin.H{"error": "Place not found"})
+            return
+        }
+
+        c.JSON(http.StatusOK, gin.H{"message": "Place deleted successfully"})
+    }
+}

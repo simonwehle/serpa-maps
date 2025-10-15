@@ -47,3 +47,37 @@ func GetCategories(db *sqlx.DB) gin.HandlerFunc {
 		c.JSON(http.StatusOK, categories)
 	}
 }
+
+func DeleteCategory(db *sqlx.DB) gin.HandlerFunc {
+    return func(c *gin.Context) {
+        categoryID := c.Param("id")
+
+        query := `DELETE FROM categories WHERE category_id = $1`
+
+        result, err := db.Exec(query, categoryID)
+        if err != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{
+                "error":   "Failed to delete category",
+                "details": err.Error(),
+            })
+            return
+        }
+
+        rowsAffected, err := result.RowsAffected()
+        if err != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{
+                "error":   "Failed to check deletion",
+                "details": err.Error(),
+            })
+            return
+        }
+
+        if rowsAffected == 0 {
+            c.JSON(http.StatusNotFound, gin.H{"error": "Category not found"})
+            return
+        }
+
+        c.JSON(http.StatusOK, gin.H{"message": "Category deleted successfully"})
+    }
+}
+

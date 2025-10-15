@@ -1,0 +1,15 @@
+meta {
+  name: deleteCategory
+  type: http
+  seq: 8
+}
+
+delete {
+  url: {{base_url}}{{api_version}}/category/2
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}
