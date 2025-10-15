@@ -1,0 +1,21 @@
+meta {
+  name: updatePlace
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{base_url}}/api/v1/place/1
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "description": "Das InformatiKOM ist Teil des Karlsruher Institut für Technologie und wurde 2023 eröffnet"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

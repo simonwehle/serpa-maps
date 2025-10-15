@@ -29,6 +29,7 @@ func Execute() {
 	api.GET("/places", handlers.GetPlaces(postgres))
 	api.POST("/category", handlers.AddCategory(postgres))
 	api.POST("/place", handlers.AddPlace(postgres))
+	api.PATCH("/place/:id", handlers.UpdatePlace(postgres))
 
 	r.Run(":3465")
 }

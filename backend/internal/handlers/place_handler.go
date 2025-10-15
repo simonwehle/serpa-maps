@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
+	"strings"
 
 	"serpa-maps/internal/types"
 
@@ -47,3 +49,46 @@ func GetPlaces(db *sqlx.DB) gin.HandlerFunc {
 		c.JSON(http.StatusOK, places)
 	}
 }
+
+func UpdatePlace(db *sqlx.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id := c.Param("id")
+		var payload map[string]interface{}
+
+		if err := c.ShouldBindJSON(&payload); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON payload"})
+			return
+		}
+
+		if len(payload) == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "No fields to update"})
+			return
+		}
+
+		setClauses := []string{}
+		args := []interface{}{}
+		i := 1
+		for k, v := range payload {
+			setClauses = append(setClauses, fmt.Sprintf("%s = $%d", k, i))
+			args = append(args, v)
+			i++
+		}
+		args = append(args, id)
+
+		query := fmt.Sprintf("UPDATE places SET %s WHERE place_id = $%d", strings.Join(setClauses, ", "), i)
+
+		if _, err := db.Exec(query, args...); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update place", "details": err.Error()})
+			return
+		}
+
+		var place types.Place
+		if err := db.Get(&place, "SELECT * FROM places WHERE place_id = $1", id); err != nil {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Place not found"})
+			return
+		}
+
+		c.JSON(http.StatusOK, place)
+	}
+}
+
