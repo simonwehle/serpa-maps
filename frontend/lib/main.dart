@@ -20,6 +20,21 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Serpa Maps',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.blue,
+          brightness: Brightness.light,
+        ),
+        useMaterial3: true,
+      ),
+      darkTheme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.blue,
+          brightness: Brightness.dark,
+        ),
+        useMaterial3: true,
+      ),
+      themeMode: ThemeMode.system,
       home: const MapScreen(),
     );
   }
@@ -146,6 +161,13 @@ class _MapScreenState extends State<MapScreen> {
           zoom: 13,
         ),
         onMapCreated: _onMapCreated,
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 45.0),
+        child: FloatingActionButton(
+          onPressed: () => print('FAB gedrückt'),
+          child: const Icon(Icons.add),
+        ),
       ),
     );
   }

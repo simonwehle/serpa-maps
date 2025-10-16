@@ -7,6 +7,7 @@ class Place {
   final double latitude;
   final double longitude;
   final int categoryId;
+  final DateTime createdAt;
   final List<Asset> assets;
 
   Place({
@@ -17,6 +18,7 @@ class Place {
     required this.longitude,
     required this.categoryId,
     required this.assets,
+    required this.createdAt,
   });
 
   factory Place.fromJson(Map<String, dynamic> json) => Place(
@@ -26,6 +28,7 @@ class Place {
     latitude: json['latitude'],
     longitude: json['longitude'],
     categoryId: json['category_id'],
+    createdAt: DateTime.parse(json['created_at']),
     assets: (json['assets'] as List).map((e) => Asset.fromJson(e)).toList(),
   );
 }
