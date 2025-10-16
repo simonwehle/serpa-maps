@@ -6,6 +6,7 @@ import 'models/category.dart';
 import 'services/api_service.dart';
 import 'services/place_service.dart';
 import 'widgets/place_bottom_sheet.dart';
+import 'widgets/upload_bottom_sheet.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
@@ -55,6 +56,7 @@ class _MapScreenState extends State<MapScreen> {
   late final String baseUrl;
   final placeService = PlaceService();
   bool _bottomSheetOpen = false;
+  bool _uploadSheetOpen = false;
 
   final Map<String, Map<String, dynamic>> _symbolData = {};
 
@@ -149,6 +151,21 @@ class _MapScreenState extends State<MapScreen> {
     ).whenComplete(() => _bottomSheetOpen = false);
   }
 
+  void _showUploadSheet() {
+    if (_uploadSheetOpen) return;
+
+    _uploadSheetOpen = true;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: false,
+      backgroundColor: Colors.transparent,
+      builder: (_) => SizedBox(
+        height: MediaQuery.of(context).size.height * 0.7,
+        child: UploadBottomSheet(),
+      ),
+    ).whenComplete(() => _uploadSheetOpen = false);
+  }
+
   @override
   Widget build(BuildContext context) {
     final apiKey = dotenv.env['API_KEY'];
@@ -165,7 +182,7 @@ class _MapScreenState extends State<MapScreen> {
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 45.0),
         child: FloatingActionButton(
-          onPressed: () => print('FAB gedrückt'),
+          onPressed: () => _showUploadSheet(),
           child: const Icon(Icons.add),
         ),
       ),

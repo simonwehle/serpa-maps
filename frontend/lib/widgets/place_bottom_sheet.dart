@@ -44,12 +44,50 @@ class PlaceBottomSheet extends StatelessWidget {
 
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  place.name,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      place.name,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Row(
+                      children: <Widget>[
+                        IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () {
+                            print('Share button pressed');
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.close),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                        // Material(
+                        //   color: Colors.white,
+                        //   child: Center(
+                        //     child: Ink(
+                        //       decoration: const ShapeDecoration(
+                        //         color: Colors.lightBlue,
+                        //         shape: CircleBorder(),
+                        //       ),
+                        //       child: IconButton(
+                        //         icon: Icon(Icons.close),
+                        //         onPressed: () {
+                        //           Navigator.pop(context);
+                        //         },
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
 
