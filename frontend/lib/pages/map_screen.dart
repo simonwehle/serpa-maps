@@ -5,7 +5,7 @@ import '../models/place.dart';
 import '../models/category.dart';
 import '../services/api_service.dart';
 import '../services/place_service.dart';
-import '../widgets/place_bottom_sheet.dart';
+import '../widgets/place/place_bottom_sheet.dart';
 import '../widgets/upload_bottom_sheet.dart';
 import 'package:geolocator/geolocator.dart';
 
