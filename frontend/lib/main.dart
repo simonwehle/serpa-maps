@@ -7,6 +7,7 @@ import 'services/api_service.dart';
 import 'services/place_service.dart';
 import 'widgets/place_bottom_sheet.dart';
 import 'widgets/upload_bottom_sheet.dart';
+import 'package:geolocator/geolocator.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
@@ -57,6 +58,7 @@ class _MapScreenState extends State<MapScreen> {
   final placeService = PlaceService();
   bool _bottomSheetOpen = false;
   bool _uploadSheetOpen = false;
+  Symbol? _myLocationMarker;
 
   final Map<String, Map<String, dynamic>> _symbolData = {};
 
@@ -66,6 +68,7 @@ class _MapScreenState extends State<MapScreen> {
     baseUrl = dotenv.env['BASE_URL'] ?? "http://localhost:3465";
     api = ApiService(baseUrl, apiVersion: '/api/v1');
     _loadData();
+    _getCurrentLocation();
   }
 
   Future<void> _loadData() async {
@@ -86,6 +89,36 @@ class _MapScreenState extends State<MapScreen> {
   Future<void> _onMapCreated(MapLibreMapController controller) async {
     mapController = controller;
     await _addPlaceMarkers();
+  }
+
+  Future<void> _updateMyLocationMarker(LatLng location) async {
+    if (mapController == null) return;
+
+    // Falls schon ein Marker da ist, zuerst entfernen
+    if (_myLocationMarker != null) {
+      await mapController!.removeSymbol(_myLocationMarker!);
+      _myLocationMarker = null;
+    }
+
+    // Material-Icon in Bild umwandeln (wie bei deinem placeService)
+    final bytes = await placeService.createMarkerImage(
+      Icons.my_location,
+      Colors.blueAccent,
+    );
+
+    // Einmalig Bild für den Standort registrieren
+    await mapController!.addImage('my_location_icon', bytes);
+
+    // Symbol hinzufügen
+    final symbol = await mapController!.addSymbol(
+      SymbolOptions(
+        geometry: location,
+        iconImage: 'my_location_icon',
+        iconSize: 1.0,
+      ),
+    );
+
+    _myLocationMarker = symbol;
   }
 
   Future<void> _addPlaceMarkers() async {
@@ -141,7 +174,7 @@ class _MapScreenState extends State<MapScreen> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => SizedBox(
-        height: MediaQuery.of(context).size.height * 0.7,
+        height: MediaQuery.of(context).size.height,
         child: PlaceBottomSheet(
           place: place,
           category: category,
@@ -149,6 +182,32 @@ class _MapScreenState extends State<MapScreen> {
         ),
       ),
     ).whenComplete(() => _bottomSheetOpen = false);
+  }
+
+  Future<void> _getCurrentLocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      await Geolocator.openLocationSettings();
+      return;
+    }
+
+    LocationPermission permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      return;
+    }
+
+    final pos = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+
+    final myLocation = LatLng(pos.latitude, pos.longitude);
+
+    await mapController?.animateCamera(
+      CameraUpdate.newLatLngZoom(myLocation, 15),
+    );
+
+    await _updateMyLocationMarker(myLocation);
   }
 
   void _showUploadSheet() {
@@ -160,7 +219,7 @@ class _MapScreenState extends State<MapScreen> {
       isScrollControlled: false,
       backgroundColor: Colors.transparent,
       builder: (_) => SizedBox(
-        height: MediaQuery.of(context).size.height * 0.7,
+        height: MediaQuery.of(context).size.height * 0.9,
         child: UploadBottomSheet(),
       ),
     ).whenComplete(() => _uploadSheetOpen = false);
@@ -174,7 +233,7 @@ class _MapScreenState extends State<MapScreen> {
         styleString:
             "https://api.maptiler.com/maps/streets/style.json?key=$apiKey",
         initialCameraPosition: const CameraPosition(
-          target: LatLng(49.0139, 8.4043),
+          target: LatLng(47.0139, 6.4043),
           zoom: 13,
         ),
         onMapCreated: _onMapCreated,
@@ -182,8 +241,10 @@ class _MapScreenState extends State<MapScreen> {
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 45.0),
         child: FloatingActionButton(
-          onPressed: () => _showUploadSheet(),
-          child: const Icon(Icons.add),
+          onPressed: _getCurrentLocation,
+          child: const Icon(Icons.my_location),
+          //onPressed: () => _showUploadSheet(),
+          //child: const Icon(Icons.add),
         ),
       ),
     );
