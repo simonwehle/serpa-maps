@@ -1,18 +1,47 @@
 import 'package:flutter/material.dart';
 import '../models/place.dart';
 import '../models/category.dart';
+import '../services/api_service.dart';
 
-class PlaceBottomSheet extends StatelessWidget {
+class PlaceBottomSheet extends StatefulWidget {
   final Place place;
   final Category category;
   final String baseUrl;
+  final ApiService api;
 
   const PlaceBottomSheet({
     super.key,
     required this.place,
     required this.category,
     required this.baseUrl,
+    required this.api,
   });
+
+  @override
+  _PlaceBottomSheetState createState() => _PlaceBottomSheetState();
+}
+
+class _PlaceBottomSheetState extends State<PlaceBottomSheet> {
+  late bool isEditing;
+  late TextEditingController nameController;
+  late TextEditingController descriptionController;
+
+  @override
+  void initState() {
+    super.initState();
+    isEditing = false;
+    nameController = TextEditingController(text: widget.place.name);
+    descriptionController = TextEditingController(
+      text: widget.place.description,
+    );
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    descriptionController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,97 +70,96 @@ class PlaceBottomSheet extends StatelessWidget {
                   ),
                 ),
               ),
-
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      place.name,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    isEditing
+                        ? Expanded(
+                            child: TextField(
+                              controller: nameController,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'Name',
+                              ),
+                            ),
+                          )
+                        : Text(
+                            widget.place.name,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                     Row(
-                      children: <Widget>[
+                      children: [
+                        if (!isEditing)
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () {
+                              setState(() {
+                                isEditing = true;
+                              });
+                            },
+                          ),
                         IconButton(
-                          icon: Icon(Icons.edit),
-                          onPressed: () {
-                            print('Share button pressed');
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.close),
+                          icon: const Icon(Icons.close),
                           onPressed: () {
                             Navigator.pop(context);
                           },
                         ),
-                        // Material(
-                        //   color: Colors.white,
-                        //   child: Center(
-                        //     child: Ink(
-                        //       decoration: const ShapeDecoration(
-                        //         color: Colors.lightBlue,
-                        //         shape: CircleBorder(),
-                        //       ),
-                        //       child: IconButton(
-                        //         icon: Icon(Icons.close),
-                        //         onPressed: () {
-                        //           Navigator.pop(context);
-                        //         },
-                        //       ),
-                        //     ),
-                        //   ),
-                        // ),
                       ],
                     ),
                   ],
                 ),
               ),
-
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Text(
-                  place.description?.isNotEmpty == true
-                      ? place.description!
-                      : "Keine Beschreibung verfügbar.",
-                ),
+                child: isEditing
+                    ? TextField(
+                        controller: descriptionController,
+                        maxLines: null,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Beschreibung',
+                        ),
+                      )
+                    : Text(
+                        widget.place.description?.isNotEmpty == true
+                            ? widget.place.description!
+                            : "Keine Beschreibung verfügbar.",
+                      ),
               ),
-
               const SizedBox(height: 16),
-
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
                   children: [
                     CircleAvatar(
-                      backgroundColor: _colorFromHex(category.color),
+                      backgroundColor: _colorFromHex(widget.category.color),
                       child: Icon(
-                        _iconFromString(category.icon),
+                        _iconFromString(widget.category.icon),
                         color: Colors.white,
                       ),
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      category.name,
+                      widget.category.name,
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
               ),
-
               const SizedBox(height: 16),
-
-              if (place.assets.isNotEmpty)
+              if (widget.place.assets.isNotEmpty)
                 SizedBox(
                   height: 150,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: place.assets.length,
+                    itemCount: widget.place.assets.length,
                     itemBuilder: (context, index) {
-                      final asset = place.assets[index];
+                      final asset = widget.place.assets[index];
                       final url = asset.assetUrl;
 
                       return Padding(
@@ -139,7 +167,7 @@ class PlaceBottomSheet extends StatelessWidget {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(8),
                           child: Image.network(
-                            '$baseUrl/$url',
+                            '${widget.baseUrl}/$url',
                             width: 200,
                             height: 200,
                             fit: BoxFit.cover,
@@ -153,6 +181,57 @@ class PlaceBottomSheet extends StatelessWidget {
                         ),
                       );
                     },
+                  ),
+                ),
+              if (isEditing)
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () {
+                            setState(() {
+                              isEditing = false;
+                              nameController.text = widget.place.name;
+                              descriptionController.text =
+                                  widget.place.description ?? '';
+                            });
+                          },
+                          child: const Text('Cancel'),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            setState(() => isEditing = false);
+                            try {
+                              final updatedPlace = await widget.api.updatePlace(
+                                widget.place.id,
+                                name: nameController.text,
+                                description: descriptionController.text,
+                              );
+
+                              setState(() {
+                                widget.place.name = updatedPlace.name;
+                                widget.place.description =
+                                    updatedPlace.description;
+                              });
+
+                              Navigator.of(context).pop(updatedPlace);
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Update fehlgeschlagen: $e'),
+                                ),
+                              );
+                            }
+                          },
+                          child: const Text('Save'),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
             ],

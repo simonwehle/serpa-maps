@@ -24,4 +24,38 @@ class ApiService {
     final List data = json.decode(res.body);
     return data.map((json) => Place.fromJson(json)).toList();
   }
+
+  Future<Place> updatePlace(
+    int id, {
+    String? name,
+    String? description,
+    double? latitude,
+    double? longitude,
+    int? categoryId,
+  }) async {
+    final Map<String, dynamic> updates = {};
+
+    if (name != null) updates['name'] = name;
+    if (description != null) updates['description'] = description;
+    if (latitude != null) updates['latitude'] = latitude;
+    if (longitude != null) updates['longitude'] = longitude;
+    if (categoryId != null) updates['category_id'] = categoryId;
+
+    if (updates.isEmpty) {
+      throw Exception('No fields to update');
+    }
+
+    final res = await http.patch(
+      Uri.parse(_endpoint('/place/$id')),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(updates),
+    );
+
+    if (res.statusCode != 200) {
+      throw Exception('Failed to update place: ${res.body}');
+    }
+
+    final data = json.decode(res.body);
+    return Place.fromJson(data);
+  }
 }

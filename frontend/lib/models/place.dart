@@ -2,13 +2,13 @@ import "asset.dart";
 
 class Place {
   final int id;
-  final String name;
-  final String? description;
-  final double latitude;
-  final double longitude;
-  final int categoryId;
+  String name;
+  String? description;
+  double latitude;
+  double longitude;
+  int categoryId;
   final DateTime createdAt;
-  final List<Asset> assets;
+  List<Asset> assets;
 
   Place({
     required this.id,
