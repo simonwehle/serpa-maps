@@ -99,7 +99,7 @@ func UpdatePlace(db *sqlx.DB) gin.HandlerFunc {
         }
 
         var assets []types.Asset
-        if err := db.Select(&assets, "SELECT * FROM place_assets WHERE place_id = $1", id); err != nil {
+        if err := db.Select(&assets, "SELECT * FROM place_assets WHERE place_id = $1 ORDER BY position", id); err != nil {
             assets = []types.Asset{}
         }
         place.Assets = assets
