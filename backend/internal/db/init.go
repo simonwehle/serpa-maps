@@ -4,6 +4,8 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+// TODO: rename place_assets to assets
+
 func InitDB(db *sqlx.DB) error {
 	schema := `
 	CREATE TABLE IF NOT EXISTS categories (
