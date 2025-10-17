@@ -198,12 +198,37 @@ class _MapScreenState extends State<MapScreen> {
         onMapCreated: _onMapCreated,
       ),
       floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 45.0),
-        child: FloatingActionButton(
-          onPressed: _getCurrentLocation,
-          child: const Icon(Icons.my_location),
-          //onPressed: () => _showUploadSheet(),
-          //child: const Icon(Icons.add),
+        padding: const EdgeInsets.only(bottom: 45.0, right: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Container(
+              width: 56,
+              height: 56,
+              decoration: const BoxDecoration(
+                color: Colors.blue,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 4,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: IconButton(
+                icon: const Icon(Icons.my_location, color: Colors.white),
+                onPressed: _getCurrentLocation,
+              ),
+            ),
+            const SizedBox(height: 16),
+            FloatingActionButton(
+              heroTag: 'locationFab',
+              onPressed: _showUploadSheet,
+              child: const Icon(Icons.add),
+            ),
+          ],
         ),
       ),
     );
