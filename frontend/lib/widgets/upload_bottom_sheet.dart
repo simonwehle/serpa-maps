@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:exif/exif.dart';
+import 'dart:io';
 
 class UploadBottomSheet extends StatelessWidget {
   const UploadBottomSheet({super.key});
@@ -44,8 +46,37 @@ class UploadBottomSheet extends StatelessWidget {
                       final XFile? image = await picker.pickImage(
                         source: ImageSource.gallery,
                       );
+
                       if (image != null) {
-                        print("Bild ausgewählt: ${image.path}");
+                        final bytes = await File(image.path).readAsBytes();
+                        final data = await readExifFromBytes(bytes);
+
+                        if (data.isEmpty) {
+                          print("No EXIF data found");
+                          return;
+                        }
+
+                        if (data.containsKey('GPS GPSLatitude') &&
+                            data.containsKey('GPS GPSLongitude') &&
+                            data.containsKey('GPS GPSLatitudeRef') &&
+                            data.containsKey('GPS GPSLongitudeRef')) {
+                          final lat =
+                              data['GPS GPSLatitude']!.values as IfdRatios;
+                          final lon =
+                              data['GPS GPSLongitude']!.values as IfdRatios;
+                          final latRef = data['GPS GPSLatitudeRef']!.printable;
+                          final lonRef = data['GPS GPSLongitudeRef']!.printable;
+
+                          double latitude = _convertToDegree(lat);
+                          double longitude = _convertToDegree(lon);
+
+                          if (latRef != 'N') latitude = -latitude;
+                          if (lonRef != 'E') longitude = -longitude;
+
+                          print('Latitude: $latitude, Longitude: $longitude');
+                        } else {
+                          print("No GPS data found");
+                        }
                       }
                     },
                     child: const Padding(
@@ -65,4 +96,12 @@ class UploadBottomSheet extends StatelessWidget {
       },
     );
   }
+}
+
+double _convertToDegree(IfdRatios values) {
+  final ratioList = values.ratios;
+  final deg = ratioList[0].toDouble();
+  final min = ratioList[1].toDouble();
+  final sec = ratioList[2].toDouble();
+  return deg + (min / 60) + (sec / 3600);
 }
