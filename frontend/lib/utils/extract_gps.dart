@@ -1,9 +1,21 @@
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:exif/exif.dart';
-import 'dart:io';
+
+Future<(double, double)?> extractGpsFromUrl(String url) async {
+  final response = await http.get(Uri.parse(url));
+  if (response.statusCode != 200) return null;
+  return extractGpsFromBytes(response.bodyBytes);
+}
 
 Future<(double, double)?> extractGpsFromImage(XFile image) async {
   final bytes = await File(image.path).readAsBytes();
+  return extractGpsFromBytes(bytes);
+}
+
+Future<(double, double)?> extractGpsFromBytes(Uint8List bytes) async {
   final data = await readExifFromBytes(bytes);
 
   if (data.isEmpty) {
