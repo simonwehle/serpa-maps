@@ -56,27 +56,29 @@ class UploadBottomSheet extends StatelessWidget {
                           return;
                         }
 
-                        if (data.containsKey('GPS GPSLatitude') &&
-                            data.containsKey('GPS GPSLongitude') &&
-                            data.containsKey('GPS GPSLatitudeRef') &&
-                            data.containsKey('GPS GPSLongitudeRef')) {
-                          final lat =
-                              data['GPS GPSLatitude']!.values as IfdRatios;
-                          final lon =
-                              data['GPS GPSLongitude']!.values as IfdRatios;
-                          final latRef = data['GPS GPSLatitudeRef']!.printable;
-                          final lonRef = data['GPS GPSLongitudeRef']!.printable;
+                        final latValues = data['GPS GPSLatitude']?.values;
+                        final lonValues = data['GPS GPSLongitude']?.values;
+                        final latRef = data['GPS GPSLatitudeRef']?.printable;
+                        final lonRef = data['GPS GPSLongitudeRef']?.printable;
 
-                          double latitude = _convertToDegree(lat);
-                          double longitude = _convertToDegree(lon);
-
-                          if (latRef != 'N') latitude = -latitude;
-                          if (lonRef != 'E') longitude = -longitude;
-
-                          print('Latitude: $latitude, Longitude: $longitude');
-                        } else {
+                        if (latValues == null ||
+                            lonValues == null ||
+                            latRef == null ||
+                            lonRef == null) {
                           print("No GPS data found");
+                          return;
                         }
+
+                        final latRatios = latValues.toList();
+                        final lonRatios = lonValues.toList();
+
+                        double latitude = _toDecimal(latRatios);
+                        double longitude = _toDecimal(lonRatios);
+
+                        if (latRef != 'N') latitude = -latitude;
+                        if (lonRef != 'E') longitude = -longitude;
+
+                        print('Latitude: $latitude, Longitude: $longitude');
                       }
                     },
                     child: const Padding(
@@ -98,10 +100,10 @@ class UploadBottomSheet extends StatelessWidget {
   }
 }
 
-double _convertToDegree(IfdRatios values) {
-  final ratioList = values.ratios;
-  final deg = ratioList[0].toDouble();
-  final min = ratioList[1].toDouble();
-  final sec = ratioList[2].toDouble();
+double _toDecimal(List<dynamic> ratios) {
+  if (ratios.length < 3) return 0;
+  final deg = ratios[0].toDouble();
+  final min = ratios[1].toDouble();
+  final sec = ratios[2].toDouble();
   return deg + (min / 60) + (sec / 3600);
 }
