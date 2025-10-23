@@ -5,7 +5,7 @@ import (
 )
 
 type Category struct {
-	CategoryID  uuid.UUID `json:"category_id"`
+	CategoryID  uuid.UUID `gorm:"primaryKey;type:uuid;default:gen_random_uuid()" json:"category_id"`
 	Name        string    `json:"name"`
 	Icon        string    `json:"icon"`
 	Color       string    `json:"color"`
