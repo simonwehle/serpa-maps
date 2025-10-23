@@ -34,7 +34,7 @@ frontend/build/
 frontend/coverage/
 
 # Bruno
-frontend/bruno/
+backend/bruno/
 
 # Symbolication related
 app.*.symbols
