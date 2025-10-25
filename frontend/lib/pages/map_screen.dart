@@ -10,6 +10,7 @@ import 'package:serpa_maps/services/place_service.dart';
 import 'package:serpa_maps/utils/icon_color_utils.dart';
 import 'package:serpa_maps/widgets/place/place_bottom_sheet.dart';
 import 'package:serpa_maps/widgets/upload_bottom_sheet.dart';
+import 'package:serpa_maps/services/location_service.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -172,29 +173,8 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<void> _getCurrentLocation() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      await Geolocator.openLocationSettings();
-      return;
-    }
-
-    LocationPermission permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
-      return;
-    }
-
-    final pos = await Geolocator.getCurrentPosition(
-      locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
-    );
-
-    final myLocation = LatLng(pos.latitude, pos.longitude);
-
-    await mapController?.animateCamera(
-      CameraUpdate.newLatLngZoom(myLocation, 13),
-    );
-
-    await _updateMyLocationMarker(myLocation);
+    final LatLng? myLocation = await getCurrentLocation(mapController!);
+    await _updateMyLocationMarker(myLocation!);
   }
 
   Future<void> _showUploadSheet() async {
