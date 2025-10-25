@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:serpa_maps/pages/map.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  try {
-    await dotenv.load(fileName: ".env");
-  } catch (e) {
-    throw Exception('Error loading .env file: $e');
-  }
-  runApp(const ProviderScope(child: SerpaMaps()));
+import 'pages/map_screen.dart';
+
+Future<void> main() async {
+  await dotenv.load(fileName: ".env");
+  runApp(const MyApp());
 }
 
-class SerpaMaps extends StatelessWidget {
-  const SerpaMaps({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +17,21 @@ class SerpaMaps extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Serpa Maps',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.blue,
+          brightness: Brightness.light,
+        ),
+        useMaterial3: true,
       ),
-      home: const MapPage(),
+      darkTheme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.blue,
+          brightness: Brightness.dark,
+        ),
+        useMaterial3: true,
+      ),
+      themeMode: ThemeMode.system,
+      home: const MapScreen(),
     );
   }
 }

@@ -52,7 +52,7 @@ func UploadPlaceAssets(db *sqlx.DB) gin.HandlerFunc {
             var nextPos int
             err = db.Get(&nextPos, `
                 SELECT COALESCE(MAX(position), 0) + 1 
-                FROM place_assets 
+                FROM assets 
                 WHERE place_id = $1
             `, placeID)
             if err != nil {
@@ -61,7 +61,7 @@ func UploadPlaceAssets(db *sqlx.DB) gin.HandlerFunc {
             }
 
             _, err = db.Exec(`
-                INSERT INTO place_assets (place_id, asset_url, asset_type, position)
+                INSERT INTO assets (place_id, asset_url, asset_type, position)
                 VALUES ($1, $2, $3, $4)
             `, placeID, filename, assetType, nextPos)
             if err != nil {

@@ -34,7 +34,7 @@ func AddPlace(db *sqlx.DB) gin.HandlerFunc {
         }
 
         var assets []models.Asset
-        if err := db.Select(&assets, "SELECT * FROM place_assets WHERE place_id = $1 ORDER BY position", place.PlaceID); err != nil {
+        if err := db.Select(&assets, "SELECT * FROM assets WHERE place_id = $1 ORDER BY position", place.PlaceID); err != nil {
             assets = []models.Asset{}
         }
 
@@ -59,7 +59,7 @@ func GetPlaces(db *sqlx.DB) gin.HandlerFunc {
 
 		for i, p := range places {
 			var assets []models.Asset
-			err := db.Select(&assets, "SELECT * FROM place_assets WHERE place_id = $1 ORDER BY position", p.PlaceID)
+			err := db.Select(&assets, "SELECT * FROM assets WHERE place_id = $1 ORDER BY position", p.PlaceID)
 			if err != nil || assets == nil {
 				assets = []models.Asset{}
 			}
@@ -110,7 +110,7 @@ func UpdatePlace(db *sqlx.DB) gin.HandlerFunc {
         }
 
         var assets []models.Asset
-        if err := db.Select(&assets, "SELECT * FROM place_assets WHERE place_id = $1 ORDER BY position", id); err != nil {
+        if err := db.Select(&assets, "SELECT * FROM assets WHERE place_id = $1 ORDER BY position", id); err != nil {
             assets = []models.Asset{}
         }
 
