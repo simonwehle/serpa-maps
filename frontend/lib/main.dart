@@ -24,7 +24,7 @@ class SerpaMaps extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
-      home: const SimpleMapPage(),
+      home: const MapPage(),
     );
   }
 }
