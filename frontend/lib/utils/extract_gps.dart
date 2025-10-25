@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:exif/exif.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:exif/exif.dart';
 
 Future<(double, double)?> extractGpsFromUrl(String url) async {
   final response = await http.get(Uri.parse(url));

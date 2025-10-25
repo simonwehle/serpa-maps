@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
+import 'dart:typed_data';
+import 'package:flutter/material.dart';
 
 class PlaceService {
   Future<Uint8List> createMarkerImage(

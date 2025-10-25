@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:maplibre_gl/maplibre_gl.dart';
-import '../models/place.dart';
-import '../models/category.dart';
-import '../services/api_service.dart';
-import '../services/place_service.dart';
-import '../widgets/place/place_bottom_sheet.dart';
-import '../widgets/upload_bottom_sheet.dart';
 import 'package:geolocator/geolocator.dart';
-import '../utils/icon_color_utils.dart';
+import 'package:maplibre_gl/maplibre_gl.dart';
+
+import 'package:serpa_maps/models/category.dart';
+import 'package:serpa_maps/models/place.dart';
+import 'package:serpa_maps/services/api_service.dart';
+import 'package:serpa_maps/services/place_service.dart';
+import 'package:serpa_maps/utils/icon_color_utils.dart';
+import 'package:serpa_maps/widgets/place/place_bottom_sheet.dart';
+import 'package:serpa_maps/widgets/upload_bottom_sheet.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -236,8 +237,8 @@ class _MapScreenState extends State<MapScreen> {
         styleString:
             "https://api.maptiler.com/maps/streets/style.json?key=$apiKey",
         initialCameraPosition: const CameraPosition(
-          target: LatLng(49.2827, -123.1207), // Vancouver
-          zoom: 12,
+          target: LatLng(0, 0),
+          zoom: 2,
         ),
         onMapCreated: _onMapCreated,
       ),

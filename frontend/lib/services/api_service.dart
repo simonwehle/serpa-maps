@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../models/place.dart';
-import '../models/category.dart';
+
+import 'package:serpa_maps/models/category.dart';
+import 'package:serpa_maps/models/place.dart';
 
 class ApiService {
   final String baseUrl;

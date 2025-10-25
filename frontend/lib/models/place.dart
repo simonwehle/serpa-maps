@@ -1,4 +1,4 @@
-import "asset.dart";
+import 'package:serpa_maps/models/asset.dart';
 
 class Place {
   final int id;
