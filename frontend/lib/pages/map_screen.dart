@@ -38,15 +38,12 @@ class _MapScreenState extends State<MapScreen> {
     baseUrl = dotenv.env['BASE_URL'] ?? "http://localhost:3465";
     api = ApiService(baseUrl, apiVersion: '/api/v1');
     _loadData();
-    _getCurrentLocation();
   }
 
   Future<void> _loadData() async {
     try {
       categories = await api.fetchCategories();
       places = await api.fetchPlaces();
-
-      await _addPlaceMarkers();
 
       setState(() {});
     } catch (e) {
@@ -56,6 +53,7 @@ class _MapScreenState extends State<MapScreen> {
 
   Future<void> _onMapCreated(MapLibreMapController controller) async {
     mapController = controller;
+    await _updateLocationMarker();
     await _addPlaceMarkers();
   }
 
@@ -147,7 +145,7 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
-  Future<void> _getCurrentLocation() async {
+  Future<void> _updateLocationMarker() async {
     try {
       final pos = await determinePosition();
       final myLocation = LatLng(pos.latitude, pos.longitude);
@@ -233,7 +231,7 @@ class _MapScreenState extends State<MapScreen> {
               ),
               child: IconButton(
                 icon: const Icon(Icons.my_location, color: Colors.white),
-                onPressed: _getCurrentLocation,
+                onPressed: _updateLocationMarker,
               ),
             ),
             const SizedBox(height: 16),
