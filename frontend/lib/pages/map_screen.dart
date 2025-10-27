@@ -5,7 +5,9 @@ import 'package:maplibre_gl/maplibre_gl.dart';
 
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
+import 'package:serpa_maps/providers/category_provider.dart';
 import 'package:serpa_maps/providers/map_controller_provider.dart';
+import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/services/api_service.dart';
 import 'package:serpa_maps/services/map_service.dart';
 import 'package:serpa_maps/services/location_service.dart';
@@ -54,11 +56,22 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   Future<void> _onMapCreated(MapLibreMapController controller) async {
     ref.read(mapControllerProvider.notifier).updateController(controller);
-    await _updateLocationMarker();
-    await _addPlaceMarkers();
+
+    try {
+      final places = await ref.read(placeProvider.future);
+      final categories = await ref.read(categoryProvider.future);
+
+      await _updateLocationMarker();
+      await _addPlaceMarkers(places, categories);
+    } catch (error) {
+      debugPrint('Failed to load places or categories: $error');
+    }
   }
 
-  Future<void> _addPlaceMarkers() async {
+  Future<void> _addPlaceMarkers(
+    List<Place> places,
+    List<Category> categories,
+  ) async {
     final mapController = ref.read(mapControllerProvider);
     if (mapController == null) return;
     for (final symbolId in _symbolData.keys) {
@@ -143,7 +156,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           orElse: () => category,
         );
 
-        _addPlaceMarkers();
+        //_addPlaceMarkers();
       });
     }
   }
@@ -196,7 +209,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         } else {
           places[existingIndex] = addPlace;
         }
-        _addPlaceMarkers();
+        //_addPlaceMarkers();
       });
     }
   }
