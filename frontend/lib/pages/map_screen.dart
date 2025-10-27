@@ -136,7 +136,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       builder: (_) => SizedBox(
         height: MediaQuery.of(context).size.height,
         child: PlaceBottomSheet(
-          api: api,
           place: place,
           category: category,
           categories: categories,
