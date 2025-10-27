@@ -5,6 +5,7 @@ import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/services/api_service.dart';
+import 'package:serpa_maps/services/map_service.dart';
 import 'package:serpa_maps/services/place_service.dart';
 import 'package:serpa_maps/utils/icon_color_utils.dart';
 import 'package:serpa_maps/widgets/place/place_bottom_sheet.dart';
@@ -56,25 +57,6 @@ class _MapScreenState extends State<MapScreen> {
   Future<void> _onMapCreated(MapLibreMapController controller) async {
     mapController = controller;
     await _addPlaceMarkers();
-  }
-
-  Future<void> _updateMyLocationMarker(LatLng location) async {
-    if (_myLocationMarker != null) {
-      await mapController.removeCircle(_myLocationMarker!);
-      _myLocationMarker = null;
-    }
-
-    final symbol = await mapController.addCircle(
-      CircleOptions(
-        geometry: location,
-        circleRadius: 8,
-        circleColor: "#0000FF",
-        circleStrokeColor: "#FFFFFF",
-        circleStrokeWidth: 4,
-      ),
-    );
-
-    _myLocationMarker = symbol;
   }
 
   Future<void> _addPlaceMarkers() async {
@@ -174,7 +156,11 @@ class _MapScreenState extends State<MapScreen> {
         CameraUpdate.newLatLngZoom(myLocation, 13),
       );
 
-      await _updateMyLocationMarker(myLocation);
+      await updateMyLocationMarker(
+        myLocation,
+        _myLocationMarker,
+        mapController,
+      );
     } catch (e) {
       debugPrint('Error getting location: $e');
     }
