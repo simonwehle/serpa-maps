@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
+import 'package:collection/collection.dart';
 
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
@@ -28,12 +29,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   List<Category> categories = [];
   late final ApiService api;
   late final String baseUrl;
-  final placeService = PlaceService();
   bool _bottomSheetOpen = false;
   bool _uploadSheetOpen = false;
   Circle? _myLocationMarker;
-
-  final Map<String, Map<String, dynamic>> _symbolData = {};
+  final Map<String, int> _symbolToPlaceId = {};
 
   @override
   void initState() {
@@ -74,26 +73,24 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   ) async {
     final mapController = ref.read(mapControllerProvider);
     if (mapController == null) return;
-    for (final symbolId in _symbolData.keys) {
+
+    for (final symbolId in _symbolToPlaceId.keys) {
       final symbol = Symbol(symbolId, SymbolOptions());
       await mapController.removeSymbol(symbol);
     }
 
-    _symbolData.clear();
+    _symbolToPlaceId.clear();
     mapController.onSymbolTapped.clear();
 
     for (final place in places) {
-      final category = categories.firstWhere(
+      final category = categories.firstWhereOrNull(
         (c) => c.id == place.categoryId,
-        orElse: () => Category(
-          id: 0,
-          name: "Unbekannt",
-          icon: "location_on",
-          color: "#999999",
-        ),
       );
+      if (category == null) {
+        continue;
+      }
 
-      final bytes = await placeService.createMarkerImage(
+      final bytes = await createMarkerImage(
         iconFromString(category.icon),
         colorFromHex(category.color),
       );
@@ -109,18 +106,25 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         ),
       );
 
-      _symbolData[symbol.id] = {'place': place, 'category': category};
+      _symbolToPlaceId[symbol.id] = place.id;
     }
 
     mapController.onSymbolTapped.add((symbol) {
-      final data = _symbolData[symbol.id];
-      if (data != null) {
-        _showBottomSheet(data['place'] as Place, data['category'] as Category);
-      }
+      final placeId = _symbolToPlaceId[symbol.id];
+      if (placeId == null) return;
+
+      final place = places.firstWhereOrNull((p) => p.id == placeId);
+      if (place == null) return;
+
+      final category = categories.firstWhere((c) => c.id == place.categoryId);
+
+      _showBottomSheet(place, category);
     });
   }
 
   Future<void> _showBottomSheet(Place place, Category category) async {
+    final places = await ref.read(placeProvider.future);
+    final categories = await ref.read(categoryProvider.future);
     if (_bottomSheetOpen) return;
 
     _bottomSheetOpen = true;
@@ -156,7 +160,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           orElse: () => category,
         );
 
-        //_addPlaceMarkers();
+        _addPlaceMarkers(places, categories);
       });
     }
   }
@@ -183,6 +187,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   Future<void> _showUploadSheet() async {
+    final places = await ref.read(placeProvider.future);
+    final categories = await ref.read(categoryProvider.future);
     if (_uploadSheetOpen) return;
 
     _uploadSheetOpen = true;
@@ -209,7 +215,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         } else {
           places[existingIndex] = addPlace;
         }
-        //_addPlaceMarkers();
+        _addPlaceMarkers(places, categories);
       });
     }
   }
