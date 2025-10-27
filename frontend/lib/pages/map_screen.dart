@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
+import 'package:serpa_maps/providers/map_controller_provider.dart';
 import 'package:serpa_maps/services/api_service.dart';
 import 'package:serpa_maps/services/map_service.dart';
+import 'package:serpa_maps/services/location_service.dart';
 import 'package:serpa_maps/services/place_service.dart';
 import 'package:serpa_maps/utils/icon_color_utils.dart';
 import 'package:serpa_maps/widgets/place/place_bottom_sheet.dart';
 import 'package:serpa_maps/widgets/upload_bottom_sheet.dart';
-import 'package:serpa_maps/services/location_service.dart';
 
-class MapScreen extends StatefulWidget {
+class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
 
   @override
-  State<MapScreen> createState() => _MapScreenState();
+  ConsumerState<MapScreen> createState() => _MapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> {
-  late MapLibreMapController mapController;
+class _MapScreenState extends ConsumerState<MapScreen> {
   List<Place> places = [];
   List<Category> categories = [];
   late final ApiService api;
@@ -52,12 +53,14 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<void> _onMapCreated(MapLibreMapController controller) async {
-    mapController = controller;
+    ref.read(mapControllerProvider.notifier).updateController(controller);
     await _updateLocationMarker();
     await _addPlaceMarkers();
   }
 
   Future<void> _addPlaceMarkers() async {
+    final mapController = ref.read(mapControllerProvider);
+    if (mapController == null) return;
     for (final symbolId in _symbolData.keys) {
       final symbol = Symbol(symbolId, SymbolOptions());
       await mapController.removeSymbol(symbol);
@@ -146,6 +149,8 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<void> _updateLocationMarker() async {
+    final mapController = ref.read(mapControllerProvider);
+    if (mapController == null) return;
     try {
       final pos = await determinePosition();
       final myLocation = LatLng(pos.latitude, pos.longitude);
