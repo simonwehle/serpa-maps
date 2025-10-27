@@ -19,7 +19,7 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  MapLibreMapController? mapController;
+  late MapLibreMapController mapController;
   List<Place> places = [];
   List<Category> categories = [];
   late final ApiService api;
@@ -45,9 +45,7 @@ class _MapScreenState extends State<MapScreen> {
       categories = await api.fetchCategories();
       places = await api.fetchPlaces();
 
-      if (mapController != null) {
-        await _addPlaceMarkers();
-      }
+      await _addPlaceMarkers();
 
       setState(() {});
     } catch (e) {
@@ -61,14 +59,12 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<void> _updateMyLocationMarker(LatLng location) async {
-    if (mapController == null) return;
-
     if (_myLocationMarker != null) {
-      await mapController!.removeCircle(_myLocationMarker!);
+      await mapController.removeCircle(_myLocationMarker!);
       _myLocationMarker = null;
     }
 
-    final symbol = await mapController!.addCircle(
+    final symbol = await mapController.addCircle(
       CircleOptions(
         geometry: location,
         circleRadius: 8,
@@ -82,15 +78,13 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<void> _addPlaceMarkers() async {
-    if (mapController == null) return;
-
     for (final symbolId in _symbolData.keys) {
       final symbol = Symbol(symbolId, SymbolOptions());
-      await mapController!.removeSymbol(symbol);
+      await mapController.removeSymbol(symbol);
     }
 
     _symbolData.clear();
-    mapController!.onSymbolTapped.clear();
+    mapController.onSymbolTapped.clear();
 
     for (final place in places) {
       final category = categories.firstWhere(
@@ -109,9 +103,9 @@ class _MapScreenState extends State<MapScreen> {
       );
 
       final markerId = 'place_${place.id}';
-      await mapController!.addImage(markerId, bytes);
+      await mapController.addImage(markerId, bytes);
 
-      final symbol = await mapController!.addSymbol(
+      final symbol = await mapController.addSymbol(
         SymbolOptions(
           geometry: LatLng(place.latitude, place.longitude),
           iconImage: markerId,
@@ -122,7 +116,7 @@ class _MapScreenState extends State<MapScreen> {
       _symbolData[symbol.id] = {'place': place, 'category': category};
     }
 
-    mapController!.onSymbolTapped.add((symbol) {
+    mapController.onSymbolTapped.add((symbol) {
       final data = _symbolData[symbol.id];
       if (data != null) {
         _showBottomSheet(data['place'] as Place, data['category'] as Category);
@@ -176,7 +170,7 @@ class _MapScreenState extends State<MapScreen> {
       final pos = await determinePosition();
       final myLocation = LatLng(pos.latitude, pos.longitude);
 
-      await mapController?.animateCamera(
+      await mapController.animateCamera(
         CameraUpdate.newLatLngZoom(myLocation, 13),
       );
 
