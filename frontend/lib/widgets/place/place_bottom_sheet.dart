@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../models/place.dart';
-import '../../../models/category.dart';
-import '../../../services/api_service.dart';
-import 'place_form.dart';
-import '../bottom_sheet.dart';
-import 'place_display.dart';
-import 'place_edit_form.dart';
+
+import 'package:serpa_maps/models/category.dart';
+import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
+import 'package:serpa_maps/widgets/bottom_sheet.dart';
+import 'package:serpa_maps/widgets/place/place_display.dart';
+import 'package:serpa_maps/widgets/place/place_edit_form.dart';
+import 'package:serpa_maps/widgets/place/place_form.dart';
 
 class PlaceBottomSheet extends ConsumerStatefulWidget {
   final Place place;
@@ -82,7 +82,7 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
       await ref
           .read(placeProvider.notifier)
           .updatePlace(
-            widget.place.id,
+            id: widget.place.id,
             name: nameController.text,
             description: descriptionController.text,
             latitude: double.parse(latitudeController.text),

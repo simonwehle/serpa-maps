@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/providers/api_provider.dart';
 
@@ -13,14 +14,26 @@ class PlaceNotifier extends AsyncNotifier<List<Place>> {
     return await api.fetchPlaces();
   }
 
-  Future<void> deletePlace({required int id}) async {
+  Future<Place?> addPlace({
+    required String name,
+    required int categoryId,
+    required double latitude,
+    required double longitude,
+    String? description,
+  }) async {
     final api = ref.read(apiServiceProvider);
-    await api.deletePlace(id: id);
+    final addedPlace = await api.addPlace(
+      name: name,
+      latitude: latitude,
+      longitude: longitude,
+      categoryId: categoryId,
+    );
     ref.invalidateSelf();
+    return addedPlace;
   }
 
-  Future<Place> updatePlace(
-    int id, {
+  Future<Place> updatePlace({
+    required int id,
     String? name,
     String? description,
     double? latitude,
@@ -29,7 +42,7 @@ class PlaceNotifier extends AsyncNotifier<List<Place>> {
   }) async {
     final api = ref.read(apiServiceProvider);
     final updatedPlace = await api.updatePlace(
-      id,
+      id: id,
       name: name,
       description: description,
       latitude: latitude,
@@ -38,5 +51,11 @@ class PlaceNotifier extends AsyncNotifier<List<Place>> {
     );
     ref.invalidateSelf();
     return updatedPlace;
+  }
+
+  Future<void> deletePlace({required int id}) async {
+    final api = ref.read(apiServiceProvider);
+    await api.deletePlace(id: id);
+    ref.invalidateSelf();
   }
 }

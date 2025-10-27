@@ -27,8 +27,8 @@ class ApiService {
     return data.map((json) => Place.fromJson(json)).toList();
   }
 
-  Future<Place> updatePlace(
-    int id, {
+  Future<Place> updatePlace({
+    required int id,
     String? name,
     String? description,
     double? latitude,

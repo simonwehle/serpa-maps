@@ -198,11 +198,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       barrierColor: Colors.transparent,
       builder: (_) => SizedBox(
         height: MediaQuery.of(context).size.height,
-        child: UploadBottomSheet(
-          categories: categories,
-          baseUrl: baseUrl,
-          api: api,
-        ),
+        child: UploadBottomSheet(categories: categories, baseUrl: baseUrl),
       ),
     ).whenComplete(() => _uploadSheetOpen = false);
 

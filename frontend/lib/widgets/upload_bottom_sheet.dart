@@ -1,28 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serpa_maps/providers/place_provider.dart';
 import 'bottom_sheet.dart';
 import '../models/category.dart';
 import '../models/place.dart';
-import '../services/api_service.dart';
 import './place/place_form.dart';
 import './place/place_edit_form.dart';
 
-class UploadBottomSheet extends StatefulWidget {
+class UploadBottomSheet extends ConsumerStatefulWidget {
   final List<Category> categories;
   final String baseUrl;
-  final ApiService api;
 
   const UploadBottomSheet({
     super.key,
     required this.categories,
     required this.baseUrl,
-    required this.api,
   });
 
   @override
-  State<UploadBottomSheet> createState() => _UploadBottomSheetState();
+  ConsumerState<UploadBottomSheet> createState() => _UploadBottomSheetState();
 }
 
-class _UploadBottomSheetState extends State<UploadBottomSheet> {
+class _UploadBottomSheetState extends ConsumerState<UploadBottomSheet> {
   late TextEditingController nameController;
   late TextEditingController descriptionController;
   late TextEditingController latitudeController;
@@ -63,13 +62,15 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
         throw 'Invalid latitude or longitude values';
       }
 
-      final addPlace = await widget.api.addPlace(
-        name: nameController.text,
-        description: descriptionController.text,
-        categoryId: selectedCategory.id,
-        latitude: latitude,
-        longitude: longitude,
-      );
+      final addPlace = await ref
+          .read(placeProvider.notifier)
+          .addPlace(
+            name: nameController.text,
+            description: descriptionController.text,
+            categoryId: selectedCategory.id,
+            latitude: latitude,
+            longitude: longitude,
+          );
 
       if (mounted && addPlace != null) {
         Navigator.of(context).pop(addPlace);
