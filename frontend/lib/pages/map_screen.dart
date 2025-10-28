@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,7 +10,7 @@ import 'package:serpa_maps/providers/category_provider.dart';
 import 'package:serpa_maps/providers/map_controller_provider.dart';
 import 'package:serpa_maps/providers/map_markers_provider.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
-import 'package:serpa_maps/services/api_service.dart';
+import 'package:serpa_maps/providers/tapped_place_provider.dart';
 import 'package:serpa_maps/services/location_marker_service.dart';
 import 'package:serpa_maps/widgets/place/place_bottom_sheet.dart';
 import 'package:serpa_maps/widgets/upload_bottom_sheet.dart';
@@ -22,7 +23,6 @@ class MapScreen extends ConsumerStatefulWidget {
 }
 
 class _MapScreenState extends ConsumerState<MapScreen> {
-  late final ApiService api;
   late final String baseUrl;
   bool _bottomSheetOpen = false;
   bool _uploadSheetOpen = false;
@@ -31,7 +31,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   void initState() {
     super.initState();
     baseUrl = dotenv.env['BASE_URL'] ?? "http://localhost:3465";
-    api = ApiService(baseUrl, apiVersion: '/api/v1');
   }
 
   Future<void> _onMapCreated(MapLibreMapController controller) async {
@@ -50,9 +49,16 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     }
   }
 
-  Future<void> _showBottomSheet(Place place, Category category) async {
+  Future<void> _showBottomSheet({
+    required BuildContext context,
+    required WidgetRef ref,
+    required Place place,
+    required Category category,
+    required String baseUrl,
+  }) async {
     final places = await ref.watch(placeProvider.future);
     final categories = await ref.watch(categoryProvider.future);
+
     if (_bottomSheetOpen) return;
 
     _bottomSheetOpen = true;
@@ -71,26 +77,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         ),
       ),
     );
-
     _bottomSheetOpen = false;
 
     if (updatedPlace != null) {
-      setState(() async {
-        // TODO: update this function when using UUID's
-        final index = places.indexWhere((p) => p.id == updatedPlace.id);
-        if (index != -1) {
-          places[index] = updatedPlace;
-        }
-
-        category = categories.firstWhere(
-          (c) => c.id == updatedPlace.categoryId,
-          orElse: () => category,
-        );
-
-        await ref
-            .read(mapMarkersProvider.notifier)
-            .addPlaceMarkers(places, categories);
-      });
+      ref.invalidate(placeProvider);
+      await ref
+          .read(mapMarkersProvider.notifier)
+          .addPlaceMarkers(places, categories);
     }
   }
 
@@ -128,6 +121,29 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<int?>(tappedPlaceIdProvider, (previous, placeId) async {
+      if (placeId != null && !_bottomSheetOpen) {
+        final places = await ref.watch(placeProvider.future);
+        final categories = await ref.watch(categoryProvider.future);
+
+        final place = places.firstWhereOrNull((p) => p.id == placeId);
+        final category = categories.firstWhereOrNull(
+          (c) => c.id == place?.categoryId,
+        );
+
+        if (place != null && category != null) {
+          await _showBottomSheet(
+            context: context,
+            ref: ref,
+            place: place,
+            category: category,
+            baseUrl: baseUrl,
+          );
+        }
+
+        ref.read(tappedPlaceIdProvider.notifier).setPlaceId(null);
+      }
+    });
     final apiKey = dotenv.env['API_KEY'];
     return Scaffold(
       body: MapLibreMap(

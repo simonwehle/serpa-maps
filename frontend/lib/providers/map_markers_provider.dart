@@ -4,6 +4,7 @@ import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/providers/map_controller_provider.dart';
+import 'package:serpa_maps/providers/tapped_place_provider.dart';
 import 'package:serpa_maps/services/place_service.dart';
 import 'package:serpa_maps/utils/icon_color_utils.dart';
 
@@ -32,7 +33,7 @@ class MapMarkersNotifier extends Notifier<Map<String, int>> {
       await controller.removeSymbol(Symbol(symbolId, SymbolOptions()));
     }
 
-    controller.onSymbolTapped.clear();
+    //controller.onSymbolTapped.clear();
 
     var updatedMap = <String, int>{};
 
@@ -62,5 +63,14 @@ class MapMarkersNotifier extends Notifier<Map<String, int>> {
     }
 
     state = updatedMap;
+
+    final tappedPlaceIdNotifier = ref.read(tappedPlaceIdProvider.notifier);
+    controller.onSymbolTapped.clear();
+    controller.onSymbolTapped.add((symbol) {
+      final placeId = state[symbol.id];
+      if (placeId != null) {
+        tappedPlaceIdNotifier.setPlaceId(placeId);
+      }
+    });
   }
 }
