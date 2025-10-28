@@ -6,6 +6,7 @@ import 'package:maplibre_gl/maplibre_gl.dart';
 
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
+import 'package:serpa_maps/providers/bottom_sheet_open_provider.dart';
 import 'package:serpa_maps/providers/category_provider.dart';
 import 'package:serpa_maps/providers/map_controller_provider.dart';
 import 'package:serpa_maps/providers/map_markers_provider.dart';
@@ -24,7 +25,7 @@ class MapScreen extends ConsumerStatefulWidget {
 
 class _MapScreenState extends ConsumerState<MapScreen> {
   late final String baseUrl;
-  bool _bottomSheetOpen = false;
+
   bool _uploadSheetOpen = false;
 
   @override
@@ -59,31 +60,34 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     final places = await ref.watch(placeProvider.future);
     final categories = await ref.watch(categoryProvider.future);
 
-    if (_bottomSheetOpen) return;
+    final isOpen = ref.read(bottomSheetOpenProvider);
+    if (isOpen) return;
+    if (!isOpen) {
+      ref.read(bottomSheetOpenProvider.notifier).openSheet();
 
-    _bottomSheetOpen = true;
-    final updatedPlace = await showModalBottomSheet<Place>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      barrierColor: Colors.transparent,
-      builder: (_) => SizedBox(
-        height: MediaQuery.of(context).size.height,
-        child: PlaceBottomSheet(
-          place: place,
-          category: category,
-          categories: categories,
-          baseUrl: baseUrl,
+      final updatedPlace = await showModalBottomSheet<Place>(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        barrierColor: Colors.transparent,
+        builder: (_) => SizedBox(
+          height: MediaQuery.of(context).size.height,
+          child: PlaceBottomSheet(
+            place: place,
+            category: category,
+            categories: categories,
+            baseUrl: baseUrl,
+          ),
         ),
-      ),
-    );
-    _bottomSheetOpen = false;
+      );
+      ref.read(bottomSheetOpenProvider.notifier).closeSheet();
 
-    if (updatedPlace != null) {
-      ref.invalidate(placeProvider);
-      await ref
-          .read(mapMarkersProvider.notifier)
-          .addPlaceMarkers(places, categories);
+      if (updatedPlace != null) {
+        ref.invalidate(placeProvider);
+        await ref
+            .read(mapMarkersProvider.notifier)
+            .addPlaceMarkers(places, categories);
+      }
     }
   }
 
@@ -122,7 +126,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   @override
   Widget build(BuildContext context) {
     ref.listen<int?>(tappedPlaceIdProvider, (previous, placeId) async {
-      if (placeId != null && !_bottomSheetOpen) {
+      final isBottomSheetOpen = ref.watch(bottomSheetOpenProvider);
+      if (placeId != null && !isBottomSheetOpen) {
         final places = await ref.watch(placeProvider.future);
         final categories = await ref.watch(categoryProvider.future);
 
