@@ -7,11 +7,10 @@ import 'package:collection/collection.dart';
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/providers/category_provider.dart';
-import 'package:serpa_maps/providers/location_circle_provider.dart';
 import 'package:serpa_maps/providers/map_controller_provider.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/services/api_service.dart';
-import 'package:serpa_maps/services/location_service.dart';
+import 'package:serpa_maps/services/location_marker_service.dart';
 import 'package:serpa_maps/services/place_service.dart';
 import 'package:serpa_maps/utils/icon_color_utils.dart';
 import 'package:serpa_maps/widgets/place/place_bottom_sheet.dart';
@@ -45,7 +44,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       final places = await ref.read(placeProvider.future);
       final categories = await ref.read(categoryProvider.future);
 
-      await _updateLocationMarker();
+      await updateLocationMarker(ref);
       await _addPlaceMarkers(places, categories);
     } catch (error) {
       debugPrint('Failed to load places or categories: $error');
@@ -149,24 +148,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     }
   }
 
-  Future<void> _updateLocationMarker() async {
-    final mapController = ref.read(mapControllerProvider);
-    if (mapController == null) return;
-    try {
-      final pos = await determinePosition();
-      final myLocation = LatLng(pos.latitude, pos.longitude);
-
-      await mapController.animateCamera(
-        CameraUpdate.newLatLngZoom(myLocation, 13),
-      );
-
-      final locationCircle = ref.read(locationCircleProvider.notifier);
-      await locationCircle.updateCircle(myLocation, mapController);
-    } catch (e) {
-      debugPrint('Error getting location: $e');
-    }
-  }
-
   Future<void> _showUploadSheet() async {
     final places = await ref.watch(placeProvider.future);
     final categories = await ref.watch(categoryProvider.future);
@@ -232,7 +213,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               ),
               child: IconButton(
                 icon: const Icon(Icons.my_location, color: Colors.white),
-                onPressed: _updateLocationMarker,
+                onPressed: () async {
+                  await updateLocationMarker(ref);
+                },
               ),
             ),
             const SizedBox(height: 16),
