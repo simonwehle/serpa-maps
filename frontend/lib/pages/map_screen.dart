@@ -2,17 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
-import 'package:collection/collection.dart';
 
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/providers/category_provider.dart';
 import 'package:serpa_maps/providers/map_controller_provider.dart';
+import 'package:serpa_maps/providers/map_markers_provider.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/services/api_service.dart';
 import 'package:serpa_maps/services/location_marker_service.dart';
-import 'package:serpa_maps/services/place_service.dart';
-import 'package:serpa_maps/utils/icon_color_utils.dart';
 import 'package:serpa_maps/widgets/place/place_bottom_sheet.dart';
 import 'package:serpa_maps/widgets/upload_bottom_sheet.dart';
 
@@ -28,7 +26,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   late final String baseUrl;
   bool _bottomSheetOpen = false;
   bool _uploadSheetOpen = false;
-  final Map<String, int> _symbolToPlaceId = {};
 
   @override
   void initState() {
@@ -45,65 +42,12 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       final categories = await ref.read(categoryProvider.future);
 
       await updateLocationMarker(ref);
-      await _addPlaceMarkers(places, categories);
+      await ref
+          .read(mapMarkersProvider.notifier)
+          .addPlaceMarkers(places, categories);
     } catch (error) {
       debugPrint('Failed to load places or categories: $error');
     }
-  }
-
-  Future<void> _addPlaceMarkers(
-    List<Place> places,
-    List<Category> categories,
-  ) async {
-    final mapController = ref.read(mapControllerProvider);
-    if (mapController == null) return;
-
-    for (final symbolId in _symbolToPlaceId.keys) {
-      final symbol = Symbol(symbolId, SymbolOptions());
-      await mapController.removeSymbol(symbol);
-    }
-
-    _symbolToPlaceId.clear();
-    mapController.onSymbolTapped.clear();
-
-    for (final place in places) {
-      final category = categories.firstWhereOrNull(
-        (c) => c.id == place.categoryId,
-      );
-      if (category == null) {
-        continue;
-      }
-
-      final bytes = await createMarkerImage(
-        iconFromString(category.icon),
-        colorFromHex(category.color),
-      );
-
-      final markerId = 'place_${place.id}';
-      await mapController.addImage(markerId, bytes);
-
-      final symbol = await mapController.addSymbol(
-        SymbolOptions(
-          geometry: LatLng(place.latitude, place.longitude),
-          iconImage: markerId,
-          iconSize: 0.6,
-        ),
-      );
-
-      _symbolToPlaceId[symbol.id] = place.id;
-    }
-
-    mapController.onSymbolTapped.add((symbol) {
-      final placeId = _symbolToPlaceId[symbol.id];
-      if (placeId == null) return;
-
-      final place = places.firstWhereOrNull((p) => p.id == placeId);
-      if (place == null) return;
-
-      final category = categories.firstWhere((c) => c.id == place.categoryId);
-
-      _showBottomSheet(place, category);
-    });
   }
 
   Future<void> _showBottomSheet(Place place, Category category) async {
@@ -131,7 +75,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     _bottomSheetOpen = false;
 
     if (updatedPlace != null) {
-      setState(() {
+      setState(() async {
         // TODO: update this function when using UUID's
         final index = places.indexWhere((p) => p.id == updatedPlace.id);
         if (index != -1) {
@@ -143,7 +87,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           orElse: () => category,
         );
 
-        _addPlaceMarkers(places, categories);
+        await ref
+            .read(mapMarkersProvider.notifier)
+            .addPlaceMarkers(places, categories);
       });
     }
   }
@@ -166,14 +112,16 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     ).whenComplete(() => _uploadSheetOpen = false);
 
     if (addPlace != null) {
-      setState(() {
+      setState(() async {
         final existingIndex = places.indexWhere((p) => p.id == addPlace.id);
         if (existingIndex == -1) {
           places.add(addPlace);
         } else {
           places[existingIndex] = addPlace;
         }
-        _addPlaceMarkers(places, categories);
+        await ref
+            .read(mapMarkersProvider.notifier)
+            .addPlaceMarkers(places, categories);
       });
     }
   }
