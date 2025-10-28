@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
+import 'package:serpa_maps/providers/item_by_id_providers.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/widgets/bottom_sheet.dart';
 import 'package:serpa_maps/widgets/place/place_display.dart';
@@ -111,15 +112,20 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final place = ref.watch(placeByIdProvider(widget.placeId));
+    if (place == null) return Text('Place not found');
+    final category = ref.watch(categoryByIdProvider(place.categoryId));
+    if (category == null) return Text('Category not found');
     return SerpaBottomSheet(
       bottomActions: isEditing
           ? PlaceEditForm(onSave: _saveChanges, onCancel: _cancel)
           : null,
       child: !isEditing
           ? PlaceDisplay(
-              placeId: widget.placeId,
               baseUrl: widget.baseUrl,
               toggleEditing: toggleEditing,
+              category: category,
+              place: place,
             )
           : PlaceForm(
               place: widget.place,

@@ -1,27 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:serpa_maps/providers/item_by_id_providers.dart';
+import 'package:serpa_maps/models/category.dart';
+import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/utils/icon_color_utils.dart';
 import 'package:serpa_maps/widgets/place/place_assets.dart';
 
 class PlaceDisplay extends ConsumerWidget {
-  final int placeId;
+  final Category category;
+  final Place place;
   final String baseUrl;
   final Function toggleEditing;
 
   const PlaceDisplay({
     super.key,
-    required this.placeId,
+    required this.category,
+    required this.place,
     required this.baseUrl,
     required this.toggleEditing,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final place = ref.watch(placeByIdProvider(placeId));
-    if (place == null) return Text('Place not found');
-    final category = ref.watch(categoryByIdProvider(place.categoryId));
-    if (category == null) return Text('Category not found');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
