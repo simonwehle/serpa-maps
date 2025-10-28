@@ -7,10 +7,10 @@ import 'package:collection/collection.dart';
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/providers/category_provider.dart';
+import 'package:serpa_maps/providers/location_circle_provider.dart';
 import 'package:serpa_maps/providers/map_controller_provider.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/services/api_service.dart';
-import 'package:serpa_maps/services/map_service.dart';
 import 'package:serpa_maps/services/location_service.dart';
 import 'package:serpa_maps/services/place_service.dart';
 import 'package:serpa_maps/utils/icon_color_utils.dart';
@@ -25,13 +25,10 @@ class MapScreen extends ConsumerStatefulWidget {
 }
 
 class _MapScreenState extends ConsumerState<MapScreen> {
-  List<Place> places = [];
-  List<Category> categories = [];
   late final ApiService api;
   late final String baseUrl;
   bool _bottomSheetOpen = false;
   bool _uploadSheetOpen = false;
-  Circle? _myLocationMarker;
   final Map<String, int> _symbolToPlaceId = {};
 
   @override
@@ -39,18 +36,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     super.initState();
     baseUrl = dotenv.env['BASE_URL'] ?? "http://localhost:3465";
     api = ApiService(baseUrl, apiVersion: '/api/v1');
-    _loadData();
-  }
-
-  Future<void> _loadData() async {
-    try {
-      categories = await api.fetchCategories();
-      places = await api.fetchPlaces();
-
-      setState(() {});
-    } catch (e) {
-      throw Exception('Error while loading data: $e');
-    }
   }
 
   Future<void> _onMapCreated(MapLibreMapController controller) async {
@@ -123,8 +108,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   Future<void> _showBottomSheet(Place place, Category category) async {
-    final places = await ref.read(placeProvider.future);
-    final categories = await ref.read(categoryProvider.future);
+    final places = await ref.watch(placeProvider.future);
+    final categories = await ref.watch(categoryProvider.future);
     if (_bottomSheetOpen) return;
 
     _bottomSheetOpen = true;
@@ -175,19 +160,16 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         CameraUpdate.newLatLngZoom(myLocation, 13),
       );
 
-      await updateMyLocationMarker(
-        myLocation,
-        _myLocationMarker,
-        mapController,
-      );
+      final locationCircle = ref.read(locationCircleProvider.notifier);
+      await locationCircle.updateCircle(myLocation, mapController);
     } catch (e) {
       debugPrint('Error getting location: $e');
     }
   }
 
   Future<void> _showUploadSheet() async {
-    final places = await ref.read(placeProvider.future);
-    final categories = await ref.read(categoryProvider.future);
+    final places = await ref.watch(placeProvider.future);
+    final categories = await ref.watch(categoryProvider.future);
     if (_uploadSheetOpen) return;
 
     _uploadSheetOpen = true;
