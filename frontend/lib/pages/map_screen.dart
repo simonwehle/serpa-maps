@@ -12,6 +12,7 @@ import 'package:serpa_maps/providers/map_controller_provider.dart';
 import 'package:serpa_maps/providers/map_markers_provider.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/providers/tapped_place_provider.dart';
+import 'package:serpa_maps/providers/upload_sheet_provider.dart';
 import 'package:serpa_maps/services/location_marker_service.dart';
 import 'package:serpa_maps/widgets/place/place_bottom_sheet.dart';
 import 'package:serpa_maps/widgets/upload_bottom_sheet.dart';
@@ -25,8 +26,6 @@ class MapScreen extends ConsumerStatefulWidget {
 
 class _MapScreenState extends ConsumerState<MapScreen> {
   late final String baseUrl;
-
-  bool _uploadSheetOpen = false;
 
   @override
   void initState() {
@@ -94,32 +93,35 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   Future<void> _showUploadSheet() async {
     final places = await ref.watch(placeProvider.future);
     final categories = await ref.watch(categoryProvider.future);
-    if (_uploadSheetOpen) return;
+    final isOpen = ref.read(uploadSheetProvider);
+    if (isOpen) return;
+    if (!isOpen) {
+      ref.read(uploadSheetProvider.notifier).openSheet();
 
-    _uploadSheetOpen = true;
-    final addPlace = await showModalBottomSheet<Place>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      barrierColor: Colors.transparent,
-      builder: (_) => SizedBox(
-        height: MediaQuery.of(context).size.height,
-        child: UploadBottomSheet(categories: categories, baseUrl: baseUrl),
-      ),
-    ).whenComplete(() => _uploadSheetOpen = false);
+      final addPlace = await showModalBottomSheet<Place>(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        barrierColor: Colors.transparent,
+        builder: (_) => SizedBox(
+          height: MediaQuery.of(context).size.height,
+          child: UploadBottomSheet(categories: categories, baseUrl: baseUrl),
+        ),
+      ).whenComplete(() => ref.read(uploadSheetProvider.notifier).closeSheet());
 
-    if (addPlace != null) {
-      setState(() async {
-        final existingIndex = places.indexWhere((p) => p.id == addPlace.id);
-        if (existingIndex == -1) {
-          places.add(addPlace);
-        } else {
-          places[existingIndex] = addPlace;
-        }
-        await ref
-            .read(mapMarkersProvider.notifier)
-            .addPlaceMarkers(places, categories);
-      });
+      if (addPlace != null) {
+        setState(() async {
+          final existingIndex = places.indexWhere((p) => p.id == addPlace.id);
+          if (existingIndex == -1) {
+            places.add(addPlace);
+          } else {
+            places[existingIndex] = addPlace;
+          }
+          await ref
+              .read(mapMarkersProvider.notifier)
+              .addPlaceMarkers(places, categories);
+        });
+      }
     }
   }
 
