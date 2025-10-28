@@ -76,6 +76,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             category: category,
             categories: categories,
             baseUrl: baseUrl,
+            placeId: place.id,
           ),
         ),
       );

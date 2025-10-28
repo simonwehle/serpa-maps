@@ -14,6 +14,7 @@ class PlaceBottomSheet extends ConsumerStatefulWidget {
   final Category category;
   final List<Category> categories;
   final String baseUrl;
+  final int placeId;
 
   const PlaceBottomSheet({
     super.key,
@@ -21,6 +22,7 @@ class PlaceBottomSheet extends ConsumerStatefulWidget {
     required this.category,
     required this.categories,
     required this.baseUrl,
+    required this.placeId,
   });
 
   @override
@@ -89,7 +91,7 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
             longitude: double.parse(longitudeController.text),
             categoryId: selectedCategory.id,
           );
-      if (mounted) Navigator.of(context).pop();
+      toggleEditing();
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(
@@ -115,8 +117,7 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
           : null,
       child: !isEditing
           ? PlaceDisplay(
-              place: widget.place,
-              category: selectedCategory,
+              placeId: widget.placeId,
               baseUrl: widget.baseUrl,
               toggleEditing: toggleEditing,
             )
