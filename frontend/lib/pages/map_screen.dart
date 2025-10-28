@@ -110,17 +110,19 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       ).whenComplete(() => ref.read(uploadSheetProvider.notifier).closeSheet());
 
       if (addPlace != null) {
-        setState(() async {
-          final existingIndex = places.indexWhere((p) => p.id == addPlace.id);
-          if (existingIndex == -1) {
+        await Future.microtask(() async {
+          final index = places.indexWhere((p) => p.id == addPlace.id);
+          if (index == -1) {
             places.add(addPlace);
           } else {
-            places[existingIndex] = addPlace;
+            places[index] = addPlace;
           }
-          await ref
-              .read(mapMarkersProvider.notifier)
-              .addPlaceMarkers(places, categories);
+
+          setState(() {});
         });
+        await ref
+            .read(mapMarkersProvider.notifier)
+            .addPlaceMarkers(places, categories);
       }
     }
   }
