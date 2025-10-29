@@ -25,12 +25,9 @@ class MapScreen extends ConsumerStatefulWidget {
 }
 
 class _MapScreenState extends ConsumerState<MapScreen> {
-  late final String baseUrl;
-
   @override
   void initState() {
     super.initState();
-    baseUrl = dotenv.env['BASE_URL'] ?? "http://localhost:3465";
   }
 
   Future<void> _onMapCreated(MapLibreMapController controller) async {
@@ -54,7 +51,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     required WidgetRef ref,
     required Place place,
     required Category category,
-    required String baseUrl,
   }) async {
     final places = await ref.watch(placeProvider.future);
     final categories = await ref.watch(categoryProvider.future);
@@ -75,7 +71,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             place: place,
             category: category,
             categories: categories,
-            baseUrl: baseUrl,
             placeId: place.id,
           ),
         ),
@@ -106,7 +101,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         barrierColor: Colors.transparent,
         builder: (_) => SizedBox(
           height: MediaQuery.of(context).size.height,
-          child: UploadBottomSheet(categories: categories, baseUrl: baseUrl),
+          child: UploadBottomSheet(categories: categories),
         ),
       ).whenComplete(() => ref.read(uploadSheetProvider.notifier).closeSheet());
 
@@ -147,7 +142,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             ref: ref,
             place: place,
             category: category,
-            baseUrl: baseUrl,
           );
         }
 

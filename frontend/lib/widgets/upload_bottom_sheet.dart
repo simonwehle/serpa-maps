@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
 import 'bottom_sheet.dart';
@@ -9,13 +10,8 @@ import './place/place_edit_form.dart';
 
 class UploadBottomSheet extends ConsumerStatefulWidget {
   final List<Category> categories;
-  final String baseUrl;
 
-  const UploadBottomSheet({
-    super.key,
-    required this.categories,
-    required this.baseUrl,
-  });
+  const UploadBottomSheet({super.key, required this.categories});
 
   @override
   ConsumerState<UploadBottomSheet> createState() => _UploadBottomSheetState();
@@ -30,6 +26,7 @@ class _UploadBottomSheetState extends ConsumerState<UploadBottomSheet> {
 
   late List<Category> categories;
   late Category selectedCategory;
+  late String baseUrl;
 
   @override
   void initState() {
@@ -42,6 +39,7 @@ class _UploadBottomSheetState extends ConsumerState<UploadBottomSheet> {
     categories = widget.categories;
 
     selectedCategory = categories.first;
+    baseUrl = dotenv.env['BASE_URL'] ?? "http://localhost:3465";
   }
 
   @override
@@ -95,7 +93,7 @@ class _UploadBottomSheetState extends ConsumerState<UploadBottomSheet> {
         onSave: _saveChanges,
       ),
       child: PlaceForm(
-        baseUrl: widget.baseUrl,
+        baseUrl: baseUrl,
         categories: categories,
         selectedCategory: selectedCategory,
         nameController: nameController,
