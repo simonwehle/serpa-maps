@@ -8,6 +8,7 @@ import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/providers/bottom_sheet_open_provider.dart';
 import 'package:serpa_maps/providers/category_provider.dart';
+import 'package:serpa_maps/providers/item_by_id_providers.dart';
 import 'package:serpa_maps/providers/map_controller_provider.dart';
 import 'package:serpa_maps/providers/map_markers_provider.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
@@ -40,7 +41,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       await updateLocationMarker(ref);
       await ref
           .read(mapMarkersProvider.notifier)
-          .addPlaceMarkers(places, categories);
+          .addAllPlaceMarkers(places, categories);
     } catch (error) {
       debugPrint('Failed to load places or categories: $error');
     }
@@ -56,8 +57,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     final categories = await ref.watch(categoryProvider.future);
 
     final isOpen = ref.read(bottomSheetOpenProvider);
-    if (isOpen) return;
-    if (!isOpen) {
+    if (isOpen) {
+      return;
+    } else {
       ref.read(bottomSheetOpenProvider.notifier).openSheet();
 
       final updatedPlace = await showModalBottomSheet<Place>(
@@ -81,7 +83,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         ref.invalidate(placeProvider);
         await ref
             .read(mapMarkersProvider.notifier)
-            .addPlaceMarkers(places, categories);
+            .updatePlaceMarker(place, category);
       }
     }
   }
@@ -106,19 +108,24 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       ).whenComplete(() => ref.read(uploadSheetProvider.notifier).closeSheet());
 
       if (addPlace != null) {
-        await Future.microtask(() async {
-          final index = places.indexWhere((p) => p.id == addPlace.id);
-          if (index == -1) {
-            places.add(addPlace);
-          } else {
-            places[index] = addPlace;
-          }
+        final index = places.indexWhere((p) => p.id == addPlace.id);
+        if (index == -1) {
+          places.add(addPlace);
+        } else {
+          places[index] = addPlace;
+        }
 
-          setState(() {});
-        });
-        await ref
-            .read(mapMarkersProvider.notifier)
-            .addPlaceMarkers(places, categories);
+        setState(() {});
+
+        final category = categories.firstWhereOrNull(
+          (c) => c.id == addPlace.categoryId,
+        );
+
+        if (category != null) {
+          await ref
+              .read(mapMarkersProvider.notifier)
+              .addPlaceMarker(addPlace, category);
+        }
       }
     }
   }
@@ -128,22 +135,17 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     ref.listen<int?>(tappedPlaceIdProvider, (previous, placeId) async {
       final isBottomSheetOpen = ref.watch(bottomSheetOpenProvider);
       if (placeId != null && !isBottomSheetOpen) {
-        final places = await ref.watch(placeProvider.future);
-        final categories = await ref.watch(categoryProvider.future);
+        final place = ref.watch(placeByIdProvider(placeId));
+        if (place == null) return;
+        final category = ref.watch(categoryByIdProvider(place.categoryId));
+        if (category == null) return;
 
-        final place = places.firstWhereOrNull((p) => p.id == placeId);
-        final category = categories.firstWhereOrNull(
-          (c) => c.id == place?.categoryId,
+        await _showBottomSheet(
+          context: context,
+          ref: ref,
+          place: place,
+          category: category,
         );
-
-        if (place != null && category != null) {
-          await _showBottomSheet(
-            context: context,
-            ref: ref,
-            place: place,
-            category: category,
-          );
-        }
 
         ref.read(tappedPlaceIdProvider.notifier).setPlaceId(null);
       }

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/providers/item_by_id_providers.dart';
+import 'package:serpa_maps/providers/map_markers_provider.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/widgets/bottom_sheet.dart';
 import 'package:serpa_maps/widgets/place/place_display.dart';
@@ -148,9 +149,11 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
                 try {
                   await ref
                       .read(placeProvider.notifier)
-                      .deletePlace(id: place.categoryId);
+                      .deletePlace(id: place.id);
+                  await ref
+                      .read(mapMarkersProvider.notifier)
+                      .deletePlaceMarker(place.id);
                   ref.invalidate(placeProvider);
-                  print('Place deleted!');
                 } catch (e) {
                   print('Fehler beim Löschen: $e');
                 }
