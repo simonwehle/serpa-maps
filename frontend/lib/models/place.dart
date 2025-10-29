@@ -21,14 +21,19 @@ class Place {
     required this.createdAt,
   });
 
-  factory Place.fromJson(Map<String, dynamic> json) => Place(
-    id: json['place_id'],
-    name: json['name'],
-    description: json['description'],
-    latitude: json['latitude'],
-    longitude: json['longitude'],
-    categoryId: json['category_id'],
-    createdAt: DateTime.parse(json['created_at']),
-    assets: (json['assets'] as List).map((e) => Asset.fromJson(e)).toList(),
-  );
+  factory Place.fromJson(Map<String, dynamic> json) {
+    final assetsJson = json['assets'];
+    return Place(
+      id: json['place_id'],
+      name: json['name'],
+      description: json['description'],
+      latitude: (json['latitude'] as num).toDouble(),
+      longitude: (json['longitude'] as num).toDouble(),
+      categoryId: json['category_id'],
+      createdAt: DateTime.parse(json['created_at']),
+      assets: (assetsJson is List)
+          ? assetsJson.map((e) => Asset.fromJson(e)).toList()
+          : [],
+    );
+  }
 }
