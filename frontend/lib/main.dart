@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serpa_maps/pages/flutter_map.dart';
 
 import 'package:serpa_maps/pages/map_screen.dart';
 
@@ -32,7 +33,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       themeMode: ThemeMode.system,
-      home: const MapScreen(),
+      home: const FlutterMapScreen(),
+      //home: const MapScreen(),
     );
   }
 }
