@@ -8,14 +8,12 @@ import 'package:serpa_maps/widgets/place/place_assets.dart';
 class PlaceDisplay extends ConsumerWidget {
   final Category category;
   final Place place;
-  final String baseUrl;
   final Function toggleEditing;
 
   const PlaceDisplay({
     super.key,
     required this.category,
     required this.place,
-    required this.baseUrl,
     required this.toggleEditing,
   });
 
@@ -67,7 +65,7 @@ class PlaceDisplay extends ConsumerWidget {
             ],
           ),
         ),
-        PlaceAssets(place: place, baseUrl: baseUrl),
+        PlaceAssets(place: place),
         const SizedBox(height: 16),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),

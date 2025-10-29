@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serpa_maps/providers/baseurl_provider.dart';
 import '../../models/place.dart';
 
-class PlaceAssets extends StatelessWidget {
+class PlaceAssets extends ConsumerWidget {
   final Place place;
-  final String baseUrl;
 
-  const PlaceAssets({super.key, required this.place, required this.baseUrl});
+  const PlaceAssets({super.key, required this.place});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final baseUrl = ref.read(baseUrlProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

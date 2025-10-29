@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:serpa_maps/models/category.dart';
@@ -38,7 +37,6 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
 
   late List<Category> categories;
   late Category selectedCategory;
-  late final String baseUrl;
 
   void toggleEditing() {
     setState(() {
@@ -62,7 +60,6 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
     categories = widget.categories;
 
     selectedCategory = widget.category;
-    baseUrl = dotenv.env['BASE_URL'] ?? "http://localhost:3465";
   }
 
   @override
@@ -130,14 +127,12 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
           : null,
       child: !isEditing
           ? PlaceDisplay(
-              baseUrl: baseUrl,
               toggleEditing: toggleEditing,
               category: category,
               place: place,
             )
           : PlaceForm(
               place: place,
-              baseUrl: baseUrl,
               nameController: nameController,
               descriptionController: descriptionController,
               latitudeController: latitudeController,

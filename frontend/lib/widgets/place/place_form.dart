@@ -9,7 +9,6 @@ import 'package:serpa_maps/widgets/place/place_assets.dart';
 
 class PlaceForm extends StatelessWidget {
   final Place? place;
-  final String baseUrl;
   final TextEditingController nameController;
   final TextEditingController descriptionController;
   final TextEditingController latitudeController;
@@ -22,7 +21,6 @@ class PlaceForm extends StatelessWidget {
   const PlaceForm({
     super.key,
     this.place,
-    required this.baseUrl,
     required this.nameController,
     required this.descriptionController,
     required this.latitudeController,
@@ -83,7 +81,7 @@ class PlaceForm extends StatelessWidget {
           ),
         ),
         if (place != null) ...[
-          PlaceAssets(place: place!, baseUrl: baseUrl),
+          PlaceAssets(place: place!),
           if (place!.assets.isNotEmpty) const SizedBox(height: 16),
         ],
         if (place == null)
