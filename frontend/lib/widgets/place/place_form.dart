@@ -169,16 +169,26 @@ class PlaceForm extends StatelessWidget {
               style: ButtonStyle(
                 backgroundColor: WidgetStatePropertyAll<Color>(Colors.red),
               ),
-              onPressed: deletePlace != null
-                  ? () async {
-                      try {
-                        await deletePlace!();
-                        print('Place deleted!');
-                      } catch (e) {
-                        print('Fehler beim Löschen: $e');
-                      }
-                    }
-                  : null,
+              onPressed: () => showDialog<String>(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: const Text('Delete Place'),
+                  content: const Text('Do you want to delete this place?'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        if (deletePlace != null) await deletePlace!();
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Yes'),
+                    ),
+                  ],
+                ),
+              ),
               child: const Text('Delete Place'),
             ),
           ),

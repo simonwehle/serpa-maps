@@ -154,6 +154,7 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
                       .read(mapMarkersProvider.notifier)
                       .deletePlaceMarker(place.id);
                   ref.invalidate(placeProvider);
+                  Navigator.pop(context);
                 } catch (e) {
                   print('Fehler beim Löschen: $e');
                 }
