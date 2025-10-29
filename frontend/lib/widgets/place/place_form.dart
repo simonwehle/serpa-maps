@@ -81,7 +81,7 @@ class PlaceForm extends StatelessWidget {
           ),
         ),
         if (place != null) ...[
-          PlaceAssets(place: place!),
+          PlaceAssets(assets: place!.assets),
           if (place!.assets.isNotEmpty) const SizedBox(height: 16),
         ],
         if (place == null)

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'package:serpa_maps/models/asset.dart';
 import 'package:serpa_maps/providers/baseurl_provider.dart';
-import '../../models/place.dart';
 
 class PlaceAssets extends ConsumerWidget {
-  final Place place;
+  final List<Asset> assets;
 
-  const PlaceAssets({super.key, required this.place});
+  const PlaceAssets({super.key, required this.assets});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -14,14 +15,14 @@ class PlaceAssets extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (place.assets.isNotEmpty)
+        if (assets.isNotEmpty)
           SizedBox(
             height: 150,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: place.assets.length,
+              itemCount: assets.length,
               itemBuilder: (context, index) {
-                final asset = place.assets[index];
+                final asset = assets[index];
                 final url = asset.assetUrl;
 
                 return Padding(

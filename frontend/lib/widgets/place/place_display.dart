@@ -65,7 +65,7 @@ class PlaceDisplay extends ConsumerWidget {
             ],
           ),
         ),
-        PlaceAssets(place: place),
+        PlaceAssets(assets: place.assets),
         const SizedBox(height: 16),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
