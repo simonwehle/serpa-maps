@@ -15,7 +15,7 @@ import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/providers/tapped_place_provider.dart';
 import 'package:serpa_maps/providers/upload_sheet_provider.dart';
 import 'package:serpa_maps/services/location_marker_service.dart';
-import 'package:serpa_maps/widgets/place/place_bottom_sheet.dart';
+import 'package:serpa_maps/widgets/place_bottom_sheet.dart';
 import 'package:serpa_maps/widgets/upload_bottom_sheet.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
@@ -53,7 +53,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     required Place place,
     required Category category,
   }) async {
-    final places = await ref.watch(placeProvider.future);
+    //final places = await ref.watch(placeProvider.future);
     final categories = await ref.watch(categoryProvider.future);
 
     final isOpen = ref.read(bottomSheetOpenProvider);
@@ -80,10 +80,12 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       ref.read(bottomSheetOpenProvider.notifier).closeSheet();
 
       if (updatedPlace != null) {
-        ref.invalidate(placeProvider);
+        final updatedPlaces = await ref.read(placeProvider.future);
+        final updatedCategories = await ref.read(categoryProvider.future);
+        //ref.invalidate(placeProvider);
         await ref
             .read(mapMarkersProvider.notifier)
-            .updatePlaceMarker(place, category);
+            .updateAllMarkers(updatedPlaces, updatedCategories);
       }
     }
   }
