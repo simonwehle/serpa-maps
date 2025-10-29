@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import '../../../models/place.dart';
-import '../../../models/category.dart';
-import 'place_assets.dart';
-import 'package:material_symbols_icons/symbols.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../utils/extract_gps.dart';
+import 'package:material_symbols_icons/symbols.dart';
+
+import 'package:serpa_maps/models/category.dart';
+import 'package:serpa_maps/models/place.dart';
+import 'package:serpa_maps/utils/extract_gps.dart';
+import 'package:serpa_maps/widgets/place/place_assets.dart';
 
 class PlaceForm extends StatelessWidget {
   final Place? place;
@@ -173,11 +174,9 @@ class PlaceForm extends StatelessWidget {
               onPressed: deletePlace != null
                   ? () async {
                       try {
-                        // Die Funktion 'deletePlace' aufrufen
-                        await deletePlace!(); // Wir stellen sicher, dass 'deletePlace' nicht null ist
+                        await deletePlace!();
                         print('Place deleted!');
                       } catch (e) {
-                        // Fehlerbehandlung
                         print('Fehler beim Löschen: $e');
                       }
                     }

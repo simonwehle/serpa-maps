@@ -73,7 +73,7 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
     super.dispose();
   }
 
-  Future<void> _saveChanges() async {
+  Future<void> _saveChanges(int placeId) async {
     try {
       final latitude = double.tryParse(latitudeController.text);
       final longitude = double.tryParse(longitudeController.text);
@@ -85,7 +85,7 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
       await ref
           .read(placeProvider.notifier)
           .updatePlace(
-            id: widget.place.id,
+            id: placeId,
             name: nameController.text,
             description: descriptionController.text,
             latitude: double.parse(latitudeController.text),
@@ -102,10 +102,10 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
     }
   }
 
-  Future<void> _cancel() async {
+  Future<void> _cancel(String placeName, String? placeDescription) async {
     setState(() {
-      nameController.text = widget.place.name;
-      descriptionController.text = widget.place.description ?? '';
+      nameController.text = placeName;
+      descriptionController.text = placeDescription ?? '';
       isEditing = false;
     });
   }
@@ -118,7 +118,14 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
     if (category == null) return Text('Category not found');
     return SerpaBottomSheet(
       bottomActions: isEditing
-          ? PlaceEditForm(onSave: _saveChanges, onCancel: _cancel)
+          ? PlaceEditForm(
+              onSave: () {
+                _saveChanges(place.id);
+              },
+              onCancel: () {
+                _cancel(place.name, place.description);
+              },
+            )
           : null,
       child: !isEditing
           ? PlaceDisplay(
@@ -128,7 +135,7 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
               place: place,
             )
           : PlaceForm(
-              place: widget.place,
+              place: place,
               baseUrl: widget.baseUrl,
               nameController: nameController,
               descriptionController: descriptionController,
@@ -145,7 +152,7 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
                 try {
                   await ref
                       .read(placeProvider.notifier)
-                      .deletePlace(id: widget.place.categoryId);
+                      .deletePlace(id: place.categoryId);
                   ref.invalidate(placeProvider);
                   print('Place deleted!');
                 } catch (e) {
