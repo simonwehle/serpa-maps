@@ -3,7 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_compass/flutter_map_compass.dart';
+import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_rotation_sensor/flutter_rotation_sensor.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -17,10 +20,33 @@ class MapScreen extends ConsumerStatefulWidget {
 
 class _MapScreenState extends ConsumerState<MapScreen> {
   List<Marker> markerList = [];
+  late final Stream<LocationMarkerPosition?> _positionStream;
+  late final Stream<LocationMarkerHeading?> _headingStream;
+  late final Stream<Position?> _geolocatorStream;
+  late final Stream<OrientationEvent> _rotationSensorStream;
 
   @override
   void initState() {
     super.initState();
+    const factory = LocationMarkerDataStreamFactory();
+    // _positionStream = factory
+    //     .fromGeolocatorPositionStream()
+    //     .asBroadcastStream();
+    // _headingStream = factory
+    //     .fromRotationSensorHeadingStream()
+    //     .asBroadcastStream();
+    _geolocatorStream = factory
+        .defaultPositionStreamSource()
+        .asBroadcastStream();
+    _rotationSensorStream = factory
+        .defaultHeadingStreamSource()
+        .asBroadcastStream();
+    _positionStream = factory.fromGeolocatorPositionStream(
+      stream: _geolocatorStream,
+    );
+    _headingStream = factory.fromRotationSensorHeadingStream(
+      stream: _rotationSensorStream,
+    );
     getPlaceMarkers();
   }
 
@@ -38,6 +64,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         options: MapOptions(
           initialCenter: LatLng(0, 0),
           initialZoom: 2,
+          minZoom: 0,
+          maxZoom: 19,
           // Orientation Lock
           // interactionOptions: const InteractionOptions(
           //   flags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
@@ -51,6 +79,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             userAgentPackageName:
                 'com.serpamaps.app', // Add your app identifier
             // And many more recommended properties!
+          ),
+          CurrentLocationLayer(
+            positionStream: _positionStream,
+            headingStream: _headingStream,
           ),
           const MapCompass.cupertino(
             hideIfRotatedNorth: true,
