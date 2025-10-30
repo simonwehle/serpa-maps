@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:serpa_maps/pages/map.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'package:serpa_maps/pages/map_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +25,7 @@ class SerpaMaps extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
-      home: const SimpleMapPage(),
+      home: const MapScreen(),
     );
   }
 }
