@@ -41,6 +41,7 @@ dependencies:
   http: ^1.5.0
   flutter_riverpod: ^3.0.3
   collection: ^1.19.1
+  vector_map_tiles: ^9.0.0-beta.8
 
 dev_dependencies:
   flutter_test:

@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:vector_map_tiles/vector_map_tiles.dart';
 
 import 'package:serpa_maps/services/marker_service.dart';
 
@@ -15,11 +17,21 @@ class MapScreen extends ConsumerStatefulWidget {
 }
 
 class _MapScreenState extends ConsumerState<MapScreen> {
+  Style? style;
   List<Marker> markerList = [];
 
   @override
   void initState() {
     super.initState();
+    StyleReader(
+      uri: 'https://api.maptiler.com/maps/streets/style.json?key={key}',
+      // ignore: undefined_identifier
+      apiKey: dotenv.env['API_KEY'],
+      //logger: const Logger.console(),
+    ).read().then((style) {
+      this.style = style;
+      setState(() {});
+    });
     getPlaceMarkers();
   }
 
@@ -42,13 +54,19 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         ),
       ),
       children: [
-        TileLayer(
-          // Bring your own tiles
-          urlTemplate:
-              'https://a.tile.openstreetmap.de/{z}/{x}/{y}.png', // For demonstration only
-          userAgentPackageName: 'com.serpamaps.app', // Add your app identifier
-          // And many more recommended properties!
-        ),
+        if (style != null)
+          VectorTileLayer(
+            tileProviders: style!.providers,
+            theme: style!.theme,
+            tileOffset: TileOffset.DEFAULT,
+          ),
+        // TileLayer(
+        //   // Bring your own tiles
+        //   urlTemplate:
+        //       'https://a.tile.openstreetmap.de/{z}/{x}/{y}.png', // For demonstration only
+        //   userAgentPackageName: 'com.serpamaps.app', // Add your app identifier
+        //   // And many more recommended properties!
+        // ),
         MarkerLayer(markers: markerList),
         RichAttributionWidget(
           // Include a stylish prebuilt attribution widget that meets all requirments
