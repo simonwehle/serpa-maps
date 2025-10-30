@@ -1,17 +1,41 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:serpa_maps/widgets/markers/place_marker.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class MapScreen extends StatelessWidget {
+import 'package:serpa_maps/services/marker_service.dart';
+
+class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
+  @override
+  ConsumerState<MapScreen> createState() => _MapScreenState();
+}
+
+class _MapScreenState extends ConsumerState<MapScreen> {
+  List<Marker> markerList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getPlaceMarkers();
+  }
+
+  Future getPlaceMarkers() async {
+    final markers = await createPlaceMarkers(ref);
+    setState(() {
+      markerList = markers;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return FlutterMap(
       options: MapOptions(
-        initialCenter: LatLng(51.509364, -0.128928),
-        initialZoom: 9.2,
+        initialCenter: LatLng(0, 0),
+        initialZoom: 2,
         // Orientation Lock
         interactionOptions: const InteractionOptions(
           flags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
@@ -25,16 +49,7 @@ class MapScreen extends StatelessWidget {
           userAgentPackageName: 'com.serpamaps.app', // Add your app identifier
           // And many more recommended properties!
         ),
-        MarkerLayer(
-          markers: [
-            Marker(
-              point: LatLng(51.509364, -0.128928),
-              width: 25,
-              height: 25,
-              child: PlaceMarker(icon: Icons.camera_alt, color: Colors.purple),
-            ),
-          ],
-        ),
+        MarkerLayer(markers: markerList),
         RichAttributionWidget(
           // Include a stylish prebuilt attribution widget that meets all requirments
           attributions: [
