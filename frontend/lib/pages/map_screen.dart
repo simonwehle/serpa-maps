@@ -45,8 +45,58 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         onStyleLoaded: (style) {
           debugPrint('Map loaded 😎');
         },
-        //layers: [MarkerLayer()],
-        children: [const SourceAttribution()],
+        children: [
+          WidgetLayer(
+            markers: [
+              Marker(
+                // must be the same dimension as the inner widget
+                size: const Size.square(50),
+                // the longitude / latitude position on the map
+                point: Geographic(lon: -10, lat: 0),
+                // child can be any flutter widget tree
+                child: const Icon(
+                  Icons.location_on,
+                  color: Colors.red,
+                  // must be the same as Marker.size
+                  size: 50,
+                ),
+                // the used Icon should be attached to the map at the bottom center
+                alignment: Alignment.bottomCenter,
+              ),
+              Marker(
+                // must be the same dimension as the inner widget
+                size: const Size.square(50),
+                // the longitude / latitude position on the map
+                point: Geographic(lon: 8, lat: 49),
+                // child can be any flutter widget tree
+                child: const Icon(
+                  Icons.location_on,
+                  color: Colors.red,
+                  // must be the same as Marker.size
+                  size: 50,
+                ),
+                // the used Icon should be attached to the map at the bottom center
+                alignment: Alignment.bottomCenter,
+              ),
+              Marker(
+                // must be the same dimension as the inner widget
+                size: const Size.square(50),
+                // the longitude / latitude position on the map
+                point: Geographic(lon: -17, lat: 65),
+                // child can be any flutter widget tree
+                child: const Icon(
+                  Icons.location_on,
+                  color: Colors.red,
+                  // must be the same as Marker.size
+                  size: 50,
+                ),
+                // the used Icon should be attached to the map at the bottom center
+                alignment: Alignment.bottomCenter,
+              ),
+            ],
+          ),
+          const SourceAttribution(),
+        ],
       ),
       // floatingActionButton: FloatingActionButton(
       //   onPressed: () => print("pressed"),
