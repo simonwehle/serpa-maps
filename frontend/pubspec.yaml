@@ -42,6 +42,7 @@ dependencies:
   flutter_riverpod: ^3.0.3
   collection: ^1.19.1
   flutter_map_compass: ^1.0.0
+  maplibre: ^0.3.0
 
 dev_dependencies:
   flutter_test:
@@ -59,6 +60,10 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+
+  config: # App-specific configuration flags that mirror `flutter config`
+    enable-swift-package-manager: true
+
   assets:
     - .env
 

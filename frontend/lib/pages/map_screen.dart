@@ -1,11 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
+// import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_compass/flutter_map_compass.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:maplibre/maplibre.dart';
 
 import 'package:serpa_maps/services/marker_service.dart';
 
@@ -17,6 +18,7 @@ class MapScreen extends ConsumerStatefulWidget {
 
 class _MapScreenState extends ConsumerState<MapScreen> {
   List<Marker> markerList = [];
+  MapController? _mapController;
 
   @override
   void initState() {
@@ -34,47 +36,22 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FlutterMap(
-        options: MapOptions(
-          initialCenter: LatLng(0, 0),
-          initialZoom: 2,
-          // Orientation Lock
-          // interactionOptions: const InteractionOptions(
-          //   flags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
-          // ),
-        ),
-        children: [
-          TileLayer(
-            // Bring your own tiles
-            urlTemplate:
-                'https://a.tile.openstreetmap.de/{z}/{x}/{y}.png', // For demonstration only
-            userAgentPackageName:
-                'com.serpamaps.app', // Add your app identifier
-            // And many more recommended properties!
-          ),
-          const MapCompass.cupertino(
-            hideIfRotatedNorth: true,
-            padding: EdgeInsets.fromLTRB(0, 40, 10, 0),
-          ),
-          MarkerLayer(markers: markerList),
-          RichAttributionWidget(
-            // Include a stylish prebuilt attribution widget that meets all requirments
-            attributions: [
-              TextSourceAttribution(
-                'OpenStreetMap contributors',
-                onTap: () => launchUrl(
-                  Uri.parse('https://openstreetmap.org/copyright'),
-                ), // (external)
-              ),
-              // Also add images...
-            ],
-          ),
-        ],
+      body: MapLibreMap(
+        onMapCreated: (controller) {
+          // Don't add additional annotations here,
+          // wait for the onStyleLoadedCallback.
+          _mapController = controller;
+        },
+        onStyleLoaded: (style) {
+          debugPrint('Map loaded 😎');
+        },
+        //layers: [MarkerLayer()],
+        children: [const SourceAttribution()],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => print("pressed"),
-        child: const Icon(Icons.add),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () => print("pressed"),
+      //   child: const Icon(Icons.add),
+      // ),
     );
   }
 }
