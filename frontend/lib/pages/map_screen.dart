@@ -38,35 +38,38 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         options: MapOptions(
           initialCenter: LatLng(0, 0),
           initialZoom: 2,
+          minZoom: 1,
+          maxZoom: 20,
           // Orientation Lock
           // interactionOptions: const InteractionOptions(
           //   flags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
           // ),
+          cameraConstraint: const CameraConstraint.containLatitude(),
         ),
         children: [
           TileLayer(
-            // Bring your own tiles
-            urlTemplate:
-                'https://a.tile.openstreetmap.de/{z}/{x}/{y}.png', // For demonstration only
-            userAgentPackageName:
-                'com.serpamaps.app', // Add your app identifier
-            // And many more recommended properties!
+            urlTemplate: 'https://a.tile.openstreetmap.de/{z}/{x}/{y}.png',
+            userAgentPackageName: 'com.serpamaps.app',
           ),
           const MapCompass.cupertino(
             hideIfRotatedNorth: true,
-            padding: EdgeInsets.fromLTRB(0, 40, 10, 0),
+            padding: EdgeInsets.fromLTRB(0, 50, 10, 0),
           ),
           MarkerLayer(markers: markerList),
           RichAttributionWidget(
-            // Include a stylish prebuilt attribution widget that meets all requirments
+            alignment: AttributionAlignment.bottomLeft,
+            showFlutterMapAttribution: false,
             attributions: [
               TextSourceAttribution(
                 'OpenStreetMap contributors',
-                onTap: () => launchUrl(
-                  Uri.parse('https://openstreetmap.org/copyright'),
-                ), // (external)
+                onTap: () =>
+                    launchUrl(Uri.parse('https://openstreetmap.org/copyright')),
               ),
-              // Also add images...
+              TextSourceAttribution(
+                "Made with 'flutter_map'",
+                prependCopyright: false,
+                textStyle: TextStyle(fontStyle: FontStyle.italic),
+              ),
             ],
           ),
         ],
