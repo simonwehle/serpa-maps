@@ -3,10 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_compass/flutter_map_compass.dart';
+import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'package:serpa_maps/services/location_permission.dart';
 import 'package:serpa_maps/services/marker_service.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
@@ -16,12 +18,21 @@ class MapScreen extends ConsumerStatefulWidget {
 }
 
 class _MapScreenState extends ConsumerState<MapScreen> {
+  bool _permissionGranted = false;
   List<Marker> markerList = [];
 
   @override
   void initState() {
     super.initState();
+    checkPermission();
     getPlaceMarkers();
+  }
+
+  void checkPermission() async {
+    bool granted = await requestPermission();
+    setState(() {
+      _permissionGranted = granted;
+    });
   }
 
   Future getPlaceMarkers() async {
@@ -56,6 +67,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             padding: EdgeInsets.fromLTRB(0, 50, 10, 0),
           ),
           MarkerLayer(markers: markerList),
+          if (_permissionGranted) CurrentLocationLayer(),
           RichAttributionWidget(
             alignment: AttributionAlignment.bottomLeft,
             showFlutterMapAttribution: false,
