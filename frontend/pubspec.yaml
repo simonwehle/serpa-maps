@@ -35,6 +35,8 @@ dependencies:
   flutter_map_compass: ^1.0.0
   flutter_map_location_marker: ^10.1.0
   geolocator: ^14.0.2
+  flutter_open_app_settings: ^0.1.0
+  app_settings: ^6.1.1
 
 dev_dependencies:
   flutter_test:

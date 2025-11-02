@@ -5,8 +5,10 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_compass/flutter_map_compass.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:app_settings/app_settings.dart';
 
 import 'package:serpa_maps/services/location_permission.dart';
 import 'package:serpa_maps/services/marker_service.dart';
@@ -20,6 +22,7 @@ class MapScreen extends ConsumerStatefulWidget {
 class _MapScreenState extends ConsumerState<MapScreen> {
   bool _permissionGranted = false;
   List<Marker> markerList = [];
+  final _mapController = MapController();
 
   @override
   void initState() {
@@ -42,10 +45,18 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     });
   }
 
+  Future zoomToLocationMarker() async {
+    final Position location = await Geolocator.getCurrentPosition();
+    final latlng = LatLng(location.latitude, location.longitude);
+    double zoom = 13.0;
+    _mapController.move(latlng, zoom);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: FlutterMap(
+        mapController: _mapController,
         options: MapOptions(
           initialCenter: LatLng(0, 0),
           initialZoom: 2,
@@ -86,9 +97,27 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => print("pressed"),
-        child: const Icon(Icons.add),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            backgroundColor: Colors.white,
+            shape: const CircleBorder(),
+            onPressed: () {
+              if (!_permissionGranted) {
+                AppSettings.openAppSettings(type: AppSettingsType.location);
+              } else {
+                zoomToLocationMarker();
+              }
+            },
+            child: const Icon(Icons.my_location),
+          ),
+          const SizedBox(height: 15),
+          FloatingActionButton(
+            onPressed: () => print("Add button pressed"),
+            child: const Icon(Icons.add),
+          ),
+        ],
       ),
     );
   }

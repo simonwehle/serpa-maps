@@ -17,6 +17,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.7.1"
+  app_settings:
+    dependency: "direct main"
+    description:
+      name: app_settings
+      sha256: "3e46c561441e5820d3a25339bf8b51b9e45a5f686873851a20c257a530917795"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.1.1"
   args:
     dependency: transitive
     description:
@@ -206,6 +214,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "10.1.0"
+  flutter_open_app_settings:
+    dependency: "direct main"
+    description:
+      name: flutter_open_app_settings
+      sha256: "9a4e4d174fc3a358b5737a2a0886b8a350ec3cc6478586a8e23568b811e0895b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.4"
   flutter_riverpod:
     dependency: "direct main"
     description:
