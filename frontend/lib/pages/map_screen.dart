@@ -34,11 +34,12 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   void openAddPlaceBottomSheet() {
-    showModalBottomSheet<void>(
+    showModalBottomSheet(
       context: context,
-      builder: (BuildContext context) {
-        return AddPlaceBottomSheet();
-      },
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      //barrierColor: Colors.transparent,
+      builder: (_) => AddPlaceBottomSheet(),
     );
   }
 
