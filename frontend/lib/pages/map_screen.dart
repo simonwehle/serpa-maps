@@ -5,6 +5,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_compass/flutter_map_compass.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:serpa_maps/widgets/sheets/add_place_bottom_sheet.dart';
+import 'package:serpa_maps/widgets/sheets/serpa_bottom_sheet.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:serpa_maps/services/marker_service.dart';
@@ -29,6 +31,15 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     setState(() {
       markerList = markers;
     });
+  }
+
+  void openAddPlaceBottomSheet() {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AddPlaceBottomSheet();
+      },
+    );
   }
 
   @override
@@ -75,7 +86,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => print("pressed"),
+        onPressed: () {
+          openAddPlaceBottomSheet();
+        },
         child: const Icon(Icons.add),
       ),
     );

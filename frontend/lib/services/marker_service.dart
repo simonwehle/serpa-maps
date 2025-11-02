@@ -9,7 +9,7 @@ import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/providers/category_provider.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/utils/icon_color_utils.dart';
-import 'package:serpa_maps/widgets/markers/place_marker.dart';
+import 'package:serpa_maps/widgets/markers/clickable_marker.dart';
 
 Future<List<Marker>> createPlaceMarkers(WidgetRef ref) async {
   final List<Place> places = await ref.read(placeProvider.future);
@@ -30,7 +30,7 @@ Future<List<Marker>> createPlaceMarkers(WidgetRef ref) async {
       Marker(
         key: Key(place.id.toString()),
         point: LatLng(place.latitude, place.longitude),
-        child: PlaceMarker(icon: icon, color: color),
+        child: ClickableMarker(icon: icon, color: color, placeId: place.id),
       ),
     );
   }
