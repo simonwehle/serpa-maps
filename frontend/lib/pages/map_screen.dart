@@ -27,31 +27,44 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   @override
   void initState() {
     super.initState();
-    checkPermission();
+    checkPermissionOrZoomMap();
     getPlaceMarkers();
   }
 
-  void checkPermission() async {
+  Future checkPermission() async {
     bool isLocationServiceEnabled = await checkLocationServiceStatus();
-    print("Check Location $isLocationServiceEnabled");
     setState(() {
       _locationService = isLocationServiceEnabled;
     });
   }
 
-  void requestPermission() async {
+  Future requestPermission() async {
     bool permissionGranted = await requestLocationPermission();
-    print("Request Location $permissionGranted");
+    print("After Request Location $_locationService");
     setState(() {
       _locationService = permissionGranted;
     });
   }
 
-  Future getPlaceMarkers() async {
-    final markers = await createPlaceMarkers(ref);
-    setState(() {
-      markerList = markers;
-    });
+  Future<void> checkPermissionOrZoomMap() async {
+    await checkPermission();
+    if (_locationService) {
+      await zoomToLocationMarker();
+    }
+  }
+
+  void requestLocationOrZoomMap() async {
+    if (!_locationService) {
+      bool permissionGranted = await requestLocationPermission();
+      print("Permission after request $_locationService");
+      if (!permissionGranted) {
+        AppSettings.openAppSettings(type: AppSettingsType.location);
+      } else {
+        await zoomToLocationMarker();
+      }
+    } else {
+      await zoomToLocationMarker();
+    }
   }
 
   Future zoomToLocationMarker() async {
@@ -59,6 +72,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     final latlng = LatLng(location.latitude, location.longitude);
     double zoom = 13.0;
     _mapController.move(latlng, zoom);
+    setState(() {});
+  }
+
+  Future getPlaceMarkers() async {
+    final markers = await createPlaceMarkers(ref);
+    setState(() {
+      markerList = markers;
+    });
   }
 
   @override
@@ -113,14 +134,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             backgroundColor: Colors.white,
             shape: const CircleBorder(),
             onPressed: () {
-              if (!_locationService) {
-                requestLocationPermission();
-                // if (!_locationService) {
-                //   AppSettings.openAppSettings(type: AppSettingsType.location);
-                // }
-              } else {
-                zoomToLocationMarker();
-              }
+              requestLocationOrZoomMap();
             },
             child: const Icon(Icons.my_location),
           ),

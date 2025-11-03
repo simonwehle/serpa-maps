@@ -1,19 +1,23 @@
-import 'package:permission_handler/permission_handler.dart';
-
-Future requestLocationPermission() async {
-  var permission = await Permission.location.request();
-  if (permission.isGranted) {
-    return true;
-  } else {
-    return false;
-  }
-}
+import 'package:geolocator/geolocator.dart';
 
 Future<bool> checkLocationServiceStatus() async {
-  var status = await Permission.location.status;
-  if (status.isDenied) {
+  LocationPermission permission = await Geolocator.checkPermission();
+
+  if (permission == LocationPermission.denied ||
+      permission == LocationPermission.deniedForever) {
     return false;
-  } else {
-    return true;
   }
+
+  return true;
+}
+
+Future<bool> requestLocationPermission() async {
+  LocationPermission permission = await Geolocator.requestPermission();
+
+  if (permission == LocationPermission.denied ||
+      permission == LocationPermission.deniedForever) {
+    return false;
+  }
+
+  return true;
 }
