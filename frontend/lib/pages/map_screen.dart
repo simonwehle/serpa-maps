@@ -33,6 +33,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   void checkPermission() async {
     bool isLocationServiceEnabled = await checkLocationServiceStatus();
+    print("Check Location $isLocationServiceEnabled");
     setState(() {
       _locationService = isLocationServiceEnabled;
     });
@@ -40,6 +41,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   void requestPermission() async {
     bool permissionGranted = await requestLocationPermission();
+    print("Request Location $permissionGranted");
     setState(() {
       _locationService = permissionGranted;
     });
@@ -113,9 +115,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             onPressed: () {
               if (!_locationService) {
                 requestLocationPermission();
-                if (!_locationService) {
-                  AppSettings.openAppSettings(type: AppSettingsType.location);
-                }
+                // if (!_locationService) {
+                //   AppSettings.openAppSettings(type: AppSettingsType.location);
+                // }
               } else {
                 zoomToLocationMarker();
               }
