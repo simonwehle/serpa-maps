@@ -31,16 +31,16 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     getPlaceMarkers();
   }
 
-  Future checkPermission() async {
+  Future<void> checkPermission() async {
     bool isLocationServiceEnabled = await checkLocationServiceStatus();
     setState(() {
       _locationService = isLocationServiceEnabled;
     });
   }
 
-  Future requestPermission() async {
-    bool permissionGranted = await requestLocationPermission();
-    print("After Request Location $_locationService");
+  Future<void> requestPermission() async {
+    await requestLocationPermission();
+    bool permissionGranted = await checkLocationServiceStatus();
     setState(() {
       _locationService = permissionGranted;
     });
@@ -53,10 +53,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     }
   }
 
-  void requestLocationOrZoomMap() async {
+  Future<void> requestLocationOrZoomMap() async {
     if (!_locationService) {
-      bool permissionGranted = await requestLocationPermission();
-      print("Permission after request $_locationService");
+      await requestLocationPermission();
+      bool permissionGranted = await checkLocationServiceStatus();
+      setState(() {
+        _locationService = permissionGranted;
+      });
+
       if (!permissionGranted) {
         AppSettings.openAppSettings(type: AppSettingsType.location);
       } else {
