@@ -71,14 +71,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     }
   }
 
-  Future zoomToLocationMarker() async {
+  Future<void> zoomToLocationMarker() async {
     final Position location = await Geolocator.getCurrentPosition();
     final latlng = LatLng(location.latitude, location.longitude);
     double zoom = 13.0;
     _mapController.move(latlng, zoom);
   }
 
-  Future getPlaceMarkers() async {
+  Future<void> getPlaceMarkers() async {
     final markers = await createPlaceMarkers(ref);
     setState(() {
       markerList = markers;
