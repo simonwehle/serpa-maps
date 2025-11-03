@@ -5,12 +5,10 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_compass/flutter_map_compass.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:serpa_maps/providers/location_permission_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:app_settings/app_settings.dart';
 
-import 'package:serpa_maps/services/location_permission_service.dart';
 import 'package:serpa_maps/services/marker_service.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
@@ -20,62 +18,13 @@ class MapScreen extends ConsumerStatefulWidget {
 }
 
 class _MapScreenState extends ConsumerState<MapScreen> {
-  bool _locationService = false;
   List<Marker> markerList = [];
   final _mapController = MapController();
 
   @override
   void initState() {
     super.initState();
-    checkPermissionOrZoomMap();
     getPlaceMarkers();
-  }
-
-  Future<void> checkPermission() async {
-    bool isLocationServiceEnabled = await checkLocationServiceStatus();
-    setState(() {
-      _locationService = isLocationServiceEnabled;
-    });
-  }
-
-  Future<void> requestPermission() async {
-    await requestLocationPermission();
-    bool permissionGranted = await checkLocationServiceStatus();
-    setState(() {
-      _locationService = permissionGranted;
-    });
-  }
-
-  Future<void> checkPermissionOrZoomMap() async {
-    await checkPermission();
-    if (_locationService) {
-      await zoomToLocationMarker();
-    }
-  }
-
-  Future<void> requestLocationOrZoomMap() async {
-    if (!_locationService) {
-      await requestLocationPermission();
-      bool permissionGranted = await checkLocationServiceStatus();
-      setState(() {
-        _locationService = permissionGranted;
-      });
-
-      if (!permissionGranted) {
-        AppSettings.openAppSettings(type: AppSettingsType.location);
-      } else {
-        await zoomToLocationMarker();
-      }
-    } else {
-      await zoomToLocationMarker();
-    }
-  }
-
-  Future<void> zoomToLocationMarker() async {
-    final Position location = await Geolocator.getCurrentPosition();
-    final latlng = LatLng(location.latitude, location.longitude);
-    double zoom = 13.0;
-    _mapController.move(latlng, zoom);
   }
 
   Future<void> getPlaceMarkers() async {
@@ -95,6 +44,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           initialZoom: 2,
           minZoom: 1,
           maxZoom: 20,
+          onMapReady: () async {
+            await ref
+                .read(locationPermissionProvider.notifier)
+                .checkPermissionOrZoomMap(_mapController);
+          },
           // Orientation Lock
           // interactionOptions: const InteractionOptions(
           //   flags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
@@ -111,7 +65,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             padding: EdgeInsets.fromLTRB(0, 50, 10, 0),
           ),
           MarkerLayer(markers: markerList),
-          if (_locationService) CurrentLocationLayer(),
+          if (ref.watch(locationPermissionProvider)) CurrentLocationLayer(),
           RichAttributionWidget(
             alignment: AttributionAlignment.bottomLeft,
             showFlutterMapAttribution: false,
@@ -136,8 +90,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           FloatingActionButton(
             backgroundColor: Colors.white,
             shape: const CircleBorder(),
-            onPressed: () {
-              requestLocationOrZoomMap();
+            onPressed: () async {
+              await ref
+                  .read(locationPermissionProvider.notifier)
+                  .requestLocationOrZoomMap(_mapController);
             },
             child: const Icon(Icons.my_location),
           ),

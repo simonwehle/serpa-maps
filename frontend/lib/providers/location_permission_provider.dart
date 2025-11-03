@@ -1,5 +1,8 @@
+import 'package:app_settings/app_settings.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
 
 // maybe change type to PermissionStatus
 
@@ -11,31 +14,59 @@ final locationPermissionProvider =
 class LocationPermissionNotifier extends Notifier<bool> {
   @override
   bool build() {
-    // call checkLocationServiceStatus here
+    _checkPermissionAsync();
     return false;
   }
 
-  Future<bool> checkLocationServiceStatus() async {
-    LocationPermission permission = await Geolocator.checkPermission();
-
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
-      state = false;
-      return false;
+  Future<void> _checkPermissionAsync() async {
+    final isGranted = await _checkLocationServiceStatus();
+    if (ref.mounted) {
+      state = isGranted;
     }
-    state = true;
-    return true;
   }
 
-  Future<bool> requestLocationPermission() async {
-    LocationPermission permission = await Geolocator.requestPermission();
+  Future<bool> _checkLocationServiceStatus() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    return !(permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever);
+  }
 
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
-      state = false;
-      return false;
+  Future<bool> _requestLocationPermission() async {
+    LocationPermission permission = await Geolocator.requestPermission();
+    final granted =
+        !(permission == LocationPermission.denied ||
+            permission == LocationPermission.deniedForever);
+    if (ref.mounted) {
+      state = granted;
     }
-    state = true;
-    return true;
+    return granted;
+  }
+
+  Future<void> checkPermissionOrZoomMap(MapController mapController) async {
+    await _checkLocationServiceStatus();
+    if (state) {
+      await _zoomToLocationMarker(mapController);
+    }
+  }
+
+  Future<void> requestLocationOrZoomMap(MapController mapController) async {
+    if (!state) {
+      await _requestLocationPermission();
+
+      if (!state) {
+        AppSettings.openAppSettings(type: AppSettingsType.location);
+      } else {
+        await _zoomToLocationMarker(mapController);
+      }
+    } else {
+      await _zoomToLocationMarker(mapController);
+    }
+  }
+
+  Future<void> _zoomToLocationMarker(MapController mapController) async {
+    final Position location = await Geolocator.getCurrentPosition();
+    final latlng = LatLng(location.latitude, location.longitude);
+    double zoom = 13.0;
+    mapController.move(latlng, zoom);
   }
 }
