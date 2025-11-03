@@ -10,7 +10,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:app_settings/app_settings.dart';
 
-import 'package:serpa_maps/services/location_permission.dart';
+import 'package:serpa_maps/services/location_permission_service.dart';
 import 'package:serpa_maps/services/marker_service.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
@@ -76,7 +76,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     final latlng = LatLng(location.latitude, location.longitude);
     double zoom = 13.0;
     _mapController.move(latlng, zoom);
-    setState(() {});
   }
 
   Future getPlaceMarkers() async {
