@@ -6,7 +6,6 @@ import 'package:flutter_map_compass/flutter_map_compass.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:serpa_maps/widgets/sheets/add_place_bottom_sheet.dart';
-import 'package:serpa_maps/widgets/sheets/serpa_bottom_sheet.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:serpa_maps/services/marker_service.dart';
