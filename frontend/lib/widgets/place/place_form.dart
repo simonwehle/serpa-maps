@@ -182,7 +182,7 @@ class PlaceForm extends StatelessWidget {
                     TextButton(
                       onPressed: () async {
                         if (deletePlace != null) await deletePlace!();
-                        Navigator.pop(context);
+                        if (context.mounted) Navigator.pop(context);
                       },
                       child: const Text('Yes'),
                     ),

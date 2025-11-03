@@ -34,7 +34,7 @@ class PlaceAssets extends ConsumerWidget {
                       width: 200,
                       height: 200,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
+                      errorBuilder: (_, _, _) => Container(
                         width: 200,
                         height: 200,
                         color: Colors.grey[300],
