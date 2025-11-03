@@ -1,13 +1,7 @@
 import 'package:geolocator/geolocator.dart';
 
-Future<bool> requestPermission() async {
-  bool serviceEnabled;
+Future<bool> requestLocationPermission() async {
   LocationPermission permission;
-
-  serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  if (!serviceEnabled) {
-    return Future.error('Location services are disabled.');
-  }
 
   permission = await Geolocator.checkPermission();
   if (permission == LocationPermission.denied) {
@@ -24,4 +18,14 @@ Future<bool> requestPermission() async {
   }
 
   return true;
+}
+
+Future<bool> checkLocationServiceStatus() async {
+  bool serviceEnabled;
+  serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  if (!serviceEnabled) {
+    return Future.error('Location services are disabled.');
+  } else {
+    return true;
+  }
 }

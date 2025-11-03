@@ -20,7 +20,7 @@ class MapScreen extends ConsumerStatefulWidget {
 }
 
 class _MapScreenState extends ConsumerState<MapScreen> {
-  bool _permissionGranted = false;
+  bool _locationService = false;
   List<Marker> markerList = [];
   final _mapController = MapController();
 
@@ -32,9 +32,16 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   void checkPermission() async {
-    bool granted = await requestPermission();
+    bool isLocationServiceEnabled = await checkLocationServiceStatus();
     setState(() {
-      _permissionGranted = granted;
+      _locationService = isLocationServiceEnabled;
+    });
+  }
+
+  void requestPermission() async {
+    bool permissionGranted = await requestLocationPermission();
+    setState(() {
+      _locationService = permissionGranted;
     });
   }
 
@@ -78,7 +85,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             padding: EdgeInsets.fromLTRB(0, 50, 10, 0),
           ),
           MarkerLayer(markers: markerList),
-          if (_permissionGranted) CurrentLocationLayer(),
+          if (_locationService) CurrentLocationLayer(),
           RichAttributionWidget(
             alignment: AttributionAlignment.bottomLeft,
             showFlutterMapAttribution: false,
@@ -104,8 +111,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             backgroundColor: Colors.white,
             shape: const CircleBorder(),
             onPressed: () {
-              if (!_permissionGranted) {
-                AppSettings.openAppSettings(type: AppSettingsType.location);
+              if (!_locationService) {
+                requestLocationPermission();
+                if (!_locationService) {
+                  AppSettings.openAppSettings(type: AppSettingsType.location);
+                }
               } else {
                 zoomToLocationMarker();
               }
