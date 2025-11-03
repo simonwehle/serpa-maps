@@ -4,8 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
-// maybe change type to PermissionStatus
-
 final locationPermissionProvider =
     NotifierProvider<LocationPermissionNotifier, bool>(
       LocationPermissionNotifier.new,
@@ -26,16 +24,16 @@ class LocationPermissionNotifier extends Notifier<bool> {
   }
 
   Future<bool> _checkLocationServiceStatus() async {
-    LocationPermission permission = await Geolocator.checkPermission();
-    return !(permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever);
+    final permission = await Geolocator.checkPermission();
+    return permission != LocationPermission.denied &&
+        permission != LocationPermission.deniedForever;
   }
 
   Future<bool> _requestLocationPermission() async {
-    LocationPermission permission = await Geolocator.requestPermission();
+    final permission = await Geolocator.requestPermission();
     final granted =
-        !(permission == LocationPermission.denied ||
-            permission == LocationPermission.deniedForever);
+        permission != LocationPermission.denied &&
+        permission != LocationPermission.deniedForever;
     if (ref.mounted) {
       state = granted;
     }
@@ -43,17 +41,16 @@ class LocationPermissionNotifier extends Notifier<bool> {
   }
 
   Future<void> checkPermissionOrZoomMap(MapController mapController) async {
-    await _checkLocationServiceStatus();
-    if (state) {
+    final granted = await _checkLocationServiceStatus();
+    if (granted) {
       await _zoomToLocationMarker(mapController);
     }
   }
 
   Future<void> requestLocationOrZoomMap(MapController mapController) async {
     if (!state) {
-      await _requestLocationPermission();
-
-      if (!state) {
+      final granted = await _requestLocationPermission();
+      if (!granted) {
         AppSettings.openAppSettings(type: AppSettingsType.location);
       } else {
         await _zoomToLocationMarker(mapController);
@@ -64,9 +61,8 @@ class LocationPermissionNotifier extends Notifier<bool> {
   }
 
   Future<void> _zoomToLocationMarker(MapController mapController) async {
-    final Position location = await Geolocator.getCurrentPosition();
-    final latlng = LatLng(location.latitude, location.longitude);
-    double zoom = 13.0;
-    mapController.move(latlng, zoom);
+    final position = await Geolocator.getCurrentPosition();
+    final latlng = LatLng(position.latitude, position.longitude);
+    mapController.move(latlng, 13.0);
   }
 }
