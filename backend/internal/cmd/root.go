@@ -40,5 +40,5 @@ func Execute() {
 	api.PATCH("/place/:id/assets/positions", handlers.UpdateAssetPositions(postgres))
 	api.DELETE("/place/:id/asset", )
 
-	r.Run(":3465")
+	r.Run(":53164")
 }
