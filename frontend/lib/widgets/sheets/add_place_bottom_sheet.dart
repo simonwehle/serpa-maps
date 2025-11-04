@@ -8,7 +8,9 @@ import 'package:serpa_maps/widgets/place/place_form.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_bottom_sheet.dart';
 
 class AddPlaceBottomSheet extends ConsumerStatefulWidget {
-  const AddPlaceBottomSheet({super.key});
+  final double? latitude;
+  final double? longitude;
+  const AddPlaceBottomSheet({super.key, this.latitude, this.longitude});
 
   @override
   ConsumerState<AddPlaceBottomSheet> createState() =>
@@ -28,8 +30,12 @@ class _AddPlaceBottomSheetState extends ConsumerState<AddPlaceBottomSheet> {
     super.initState();
     nameController = TextEditingController();
     descriptionController = TextEditingController();
-    latitudeController = TextEditingController();
-    longitudeController = TextEditingController();
+    latitudeController = TextEditingController(
+      text: widget.latitude != null ? widget.latitude.toString() : '',
+    );
+    longitudeController = TextEditingController(
+      text: widget.longitude != null ? widget.longitude.toString() : '',
+    );
 
     //selectedCategory = categories.first;
   }

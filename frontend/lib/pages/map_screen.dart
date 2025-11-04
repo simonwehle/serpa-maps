@@ -23,13 +23,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     super.initState();
   }
 
-  void openAddPlaceBottomSheet() {
+  void openAddPlaceBottomSheet({double? latitude, double? longitude}) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       //barrierColor: Colors.transparent,
-      builder: (_) => AddPlaceBottomSheet(),
+      builder: (_) =>
+          AddPlaceBottomSheet(latitude: latitude, longitude: longitude),
     );
   }
 
@@ -53,6 +54,12 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           //   flags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
           // ),
           cameraConstraint: const CameraConstraint.containLatitude(),
+          onLongPress: (tapPosition, point) {
+            openAddPlaceBottomSheet(
+              latitude: point.latitude,
+              longitude: point.longitude,
+            );
+          },
         ),
         children: [
           TileLayer(
