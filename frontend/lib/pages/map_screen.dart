@@ -4,13 +4,10 @@ import 'package:flutter_map_compass/flutter_map_compass.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:serpa_maps/providers/category_provider.dart';
-import 'package:serpa_maps/providers/place_provider.dart';
+import 'package:serpa_maps/widgets/map/place_markers_layer.dart';
 import 'package:serpa_maps/widgets/sheets/add_place_bottom_sheet.dart';
 import 'package:serpa_maps/providers/location_permission_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import 'package:serpa_maps/services/marker_service.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
@@ -66,28 +63,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             hideIfRotatedNorth: true,
             padding: EdgeInsets.fromLTRB(0, 50, 10, 0),
           ),
-          Consumer(
-            builder: (context, ref, child) {
-              final placesAsync = ref.watch(placeProvider);
-              final categoriesAsync = ref.watch(categoryProvider);
-
-              return placesAsync.when(
-                data: (places) => categoriesAsync.when(
-                  data: (categories) {
-                    final markers = createPlaceMarkersSync(
-                      places: places,
-                      categories: categories,
-                    );
-                    return MarkerLayer(markers: markers);
-                  },
-                  loading: () => MarkerLayer(markers: []),
-                  error: (error, stack) => MarkerLayer(markers: []),
-                ),
-                loading: () => MarkerLayer(markers: []),
-                error: (error, stack) => MarkerLayer(markers: []),
-              );
-            },
-          ),
+          PlaceMarkersLayer(),
           if (ref.watch(locationPermissionProvider)) CurrentLocationLayer(),
           RichAttributionWidget(
             alignment: AttributionAlignment.bottomLeft,
