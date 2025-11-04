@@ -1,11 +1,11 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_compass/flutter_map_compass.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:serpa_maps/providers/category_provider.dart';
+import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/widgets/sheets/add_place_bottom_sheet.dart';
 import 'package:serpa_maps/providers/location_permission_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -19,20 +19,11 @@ class MapScreen extends ConsumerStatefulWidget {
 }
 
 class _MapScreenState extends ConsumerState<MapScreen> {
-  List<Marker> markerList = [];
   final _mapController = MapController();
 
   @override
   void initState() {
     super.initState();
-    getPlaceMarkers();
-  }
-
-  Future<void> getPlaceMarkers() async {
-    final markers = await createPlaceMarkers(ref);
-    setState(() {
-      markerList = markers;
-    });
   }
 
   void openAddPlaceBottomSheet() {
@@ -75,7 +66,28 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             hideIfRotatedNorth: true,
             padding: EdgeInsets.fromLTRB(0, 50, 10, 0),
           ),
-          MarkerLayer(markers: markerList),
+          Consumer(
+            builder: (context, ref, child) {
+              final placesAsync = ref.watch(placeProvider);
+              final categoriesAsync = ref.watch(categoryProvider);
+
+              return placesAsync.when(
+                data: (places) => categoriesAsync.when(
+                  data: (categories) {
+                    final markers = createPlaceMarkersSync(
+                      places: places,
+                      categories: categories,
+                    );
+                    return MarkerLayer(markers: markers);
+                  },
+                  loading: () => MarkerLayer(markers: []),
+                  error: (error, stack) => MarkerLayer(markers: []),
+                ),
+                loading: () => MarkerLayer(markers: []),
+                error: (error, stack) => MarkerLayer(markers: []),
+              );
+            },
+          ),
           if (ref.watch(locationPermissionProvider)) CurrentLocationLayer(),
           RichAttributionWidget(
             alignment: AttributionAlignment.bottomLeft,

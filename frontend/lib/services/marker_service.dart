@@ -1,20 +1,17 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
-import 'package:serpa_maps/providers/category_provider.dart';
-import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/utils/icon_color_utils.dart';
 import 'package:serpa_maps/widgets/markers/clickable_marker.dart';
 
-Future<List<Marker>> createPlaceMarkers(WidgetRef ref) async {
-  final List<Place> places = await ref.read(placeProvider.future);
-  final List<Category> categories = await ref.read(categoryProvider.future);
-
+List<Marker> createPlaceMarkersSync({
+  required List<Place> places,
+  required List<Category> categories,
+}) {
   final List<Marker> markerList = [];
 
   for (final place in places) {
