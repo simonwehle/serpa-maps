@@ -1,4 +1,19 @@
 services:
+  serpa-maps:
+    image: ghcr.io/simonwehle/serpa-maps:latest
+    container_name: serpa-maps
+    restart: unless-stopped
+    environment:
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE_NAME: ${DB_DATABASE_NAME}
+    ports:
+      - "53164:53164"
+    depends_on:
+      postgres:
+        condition: service_healthy
+        restart: true
+
   postgres:
     image: postgres:bookworm
     container_name: postgres
@@ -14,7 +29,7 @@ services:
     env_file:
       - .env
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME}"]
       interval: 5s
       timeout: 5s
       retries: 5
