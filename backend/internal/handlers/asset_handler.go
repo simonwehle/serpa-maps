@@ -52,7 +52,7 @@ func UploadPlaceAssets(db *sqlx.DB) gin.HandlerFunc {
             var nextPos int
             err = db.Get(&nextPos, `
                 SELECT COALESCE(MAX(position), 0) + 1 
-                FROM place_assets 
+                FROM assets 
                 WHERE place_id = $1
             `, placeID)
             if err != nil {
@@ -61,7 +61,7 @@ func UploadPlaceAssets(db *sqlx.DB) gin.HandlerFunc {
             }
 
             _, err = db.Exec(`
-                INSERT INTO place_assets (place_id, asset_url, asset_type, position)
+                INSERT INTO assets (place_id, asset_url, asset_type, position)
                 VALUES ($1, $2, $3, $4)
             `, placeID, filename, assetType, nextPos)
             if err != nil {
@@ -99,7 +99,7 @@ func UpdateAssetPositions(db *sqlx.DB) gin.HandlerFunc {
 
         for _, u := range updates {
             _, err := tx.Exec(`
-                UPDATE place_assets
+                UPDATE assets
                 SET position = $1
                 WHERE asset_id = $2 AND place_id = $3
             `, u.Position, u.AssetID, placeID)
@@ -124,20 +124,20 @@ func DeletePlaceAsset(db *sqlx.DB) gin.HandlerFunc {
         assetID := c.Param("id")
 
         var asset models.Asset
-        err := db.Get(&asset, "SELECT * FROM place_assets WHERE asset_id = $1", assetID)
+        err := db.Get(&asset, "SELECT * FROM assets WHERE asset_id = $1", assetID)
         if err != nil {
             c.JSON(http.StatusNotFound, gin.H{"error": "Asset not found"})
             return
         }
 
-        _, err = db.Exec("DELETE FROM place_assets WHERE asset_id = $1", assetID)
+        _, err = db.Exec("DELETE FROM assets WHERE asset_id = $1", assetID)
         if err != nil {
             c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete asset", "details": err.Error()})
             return
         }
 
         _, err = db.Exec(
-            "UPDATE place_assets SET position = position - 1 WHERE place_id = $1 AND position > $2",
+            "UPDATE assets SET position = position - 1 WHERE place_id = $1 AND position > $2",
             asset.PlaceID, asset.Position,
         )
         if err != nil {
