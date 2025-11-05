@@ -49,10 +49,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 .read(locationPermissionProvider.notifier)
                 .checkPermissionOrZoomMap(_mapController);
           },
-          // Orientation Lock
-          // interactionOptions: const InteractionOptions(
-          //   flags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
-          // ),
+          interactionOptions: const InteractionOptions(
+            // reduce rotation on pinch zoom
+            enableMultiFingerGestureRace: true,
+          ),
           cameraConstraint: const CameraConstraint.containLatitude(),
           onLongPress: (tapPosition, point) {
             openAddPlaceBottomSheet(
