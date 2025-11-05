@@ -9,23 +9,22 @@ services:
       DB_DATABASE_NAME: ${DB_DATABASE_NAME}
     ports:
       - "53164:53164"
+    env_file:
+      - .env
     depends_on:
-      postgres:
+      database:
         condition: service_healthy
-        restart: true
 
-  postgres:
+  database:
     image: postgres:bookworm
-    container_name: postgres
+    container_name: serpa-maps-db
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_DATABASE_NAME}
-    ports:
-      - "5432:5432"
     volumes:
-      - pg-data:/var/lib/postgresql/data
+      - pg-data:/var/lib/postgresql
     env_file:
       - .env
     healthcheck:
