@@ -5,10 +5,10 @@ COPY backend/go.mod backend/go.sum ./
 RUN go mod download
 COPY backend/ .
 ENV GIN_MODE=release
-ENV CGO_ENABLED=1
+ENV CGO_ENABLED=0
 RUN go build -o main .
 
-FROM debian:bookworm-slim
+FROM alpine:latest
 WORKDIR /app
 COPY --from=build /app/main .
 EXPOSE 53164
