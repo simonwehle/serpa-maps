@@ -5,7 +5,7 @@ COPY backend/go.mod backend/go.sum ./
 RUN go mod download
 COPY backend/ .
 ENV GIN_MODE=release
-ENV CGO_ENABLED=0
+ENV CGO_ENABLED=1
 RUN go build -o main .
 
 FROM alpine:latest
