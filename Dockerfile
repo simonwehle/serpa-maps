@@ -8,7 +8,7 @@ ENV GIN_MODE=release
 ENV CGO_ENABLED=1
 RUN go build -o main .
 
-FROM alpine:latest
+FROM debian:bookworm-slim
 WORKDIR /app
 COPY --from=build /app/main .
 EXPOSE 53164
