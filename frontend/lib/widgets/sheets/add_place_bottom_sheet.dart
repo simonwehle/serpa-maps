@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/providers/category_provider.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
-import 'package:serpa_maps/widgets/place/place_edit_form.dart';
+import 'package:serpa_maps/widgets/place/place_form_actions.dart';
 import 'package:serpa_maps/widgets/place/place_form.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_bottom_sheet.dart';
 
@@ -92,7 +92,7 @@ class _AddPlaceBottomSheetState extends ConsumerState<AddPlaceBottomSheet> {
           return Text('Keine Kategorien verfügbar');
         }
         return SerpaBottomSheet(
-          bottomActions: PlaceEditForm(
+          bottomActions: PlaceFormActions(
             onCancel: () => Navigator.pop(context),
             isNew: true,
             onSave: _saveChanges,

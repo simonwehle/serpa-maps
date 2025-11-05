@@ -11,6 +11,7 @@ import 'package:serpa_maps/widgets/markers/clickable_marker.dart';
 List<Marker> createPlaceMarkersSync({
   required List<Place> places,
   required List<Category> categories,
+  required void Function(int) onTap,
 }) {
   final List<Marker> markerList = [];
 
@@ -27,7 +28,12 @@ List<Marker> createPlaceMarkersSync({
       Marker(
         key: Key(place.id.toString()),
         point: LatLng(place.latitude, place.longitude),
-        child: ClickableMarker(icon: icon, color: color, placeId: place.id),
+        child: ClickableMarker(
+          icon: icon,
+          color: color,
+          placeId: place.id,
+          onTap: onTap,
+        ),
       ),
     );
   }
