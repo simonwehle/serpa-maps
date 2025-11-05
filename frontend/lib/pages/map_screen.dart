@@ -1,15 +1,13 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_compass/flutter_map_compass.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:serpa_maps/widgets/map/place_markers_layer.dart';
+import 'package:serpa_maps/widgets/sheets/add_place_bottom_sheet.dart';
 import 'package:serpa_maps/providers/location_permission_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import 'package:serpa_maps/services/marker_service.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
@@ -18,20 +16,22 @@ class MapScreen extends ConsumerStatefulWidget {
 }
 
 class _MapScreenState extends ConsumerState<MapScreen> {
-  List<Marker> markerList = [];
   final _mapController = MapController();
 
   @override
   void initState() {
     super.initState();
-    getPlaceMarkers();
   }
 
-  Future<void> getPlaceMarkers() async {
-    final markers = await createPlaceMarkers(ref);
-    setState(() {
-      markerList = markers;
-    });
+  void openAddPlaceBottomSheet({double? latitude, double? longitude}) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      //barrierColor: Colors.transparent,
+      builder: (_) =>
+          AddPlaceBottomSheet(latitude: latitude, longitude: longitude),
+    );
   }
 
   @override
@@ -54,6 +54,12 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           //   flags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
           // ),
           cameraConstraint: const CameraConstraint.containLatitude(),
+          onLongPress: (tapPosition, point) {
+            openAddPlaceBottomSheet(
+              latitude: point.latitude,
+              longitude: point.longitude,
+            );
+          },
         ),
         children: [
           TileLayer(
@@ -64,7 +70,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             hideIfRotatedNorth: true,
             padding: EdgeInsets.fromLTRB(0, 50, 10, 0),
           ),
-          MarkerLayer(markers: markerList),
+          PlaceMarkersLayer(),
           if (ref.watch(locationPermissionProvider)) CurrentLocationLayer(),
           RichAttributionWidget(
             alignment: AttributionAlignment.bottomLeft,
@@ -99,7 +105,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           ),
           const SizedBox(height: 15),
           FloatingActionButton(
-            onPressed: () => print("Add button pressed"),
+            onPressed: () {
+              openAddPlaceBottomSheet();
+            },
             child: const Icon(Icons.add),
           ),
         ],

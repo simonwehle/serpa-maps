@@ -28,7 +28,7 @@ class PlaceNotifier extends AsyncNotifier<List<Place>> {
       longitude: longitude,
       categoryId: categoryId,
     );
-    ref.invalidateSelf();
+    state = state.whenData((places) => [...places, ?addedPlace]);
     return addedPlace;
   }
 
