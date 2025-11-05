@@ -49,13 +49,21 @@ class PlaceNotifier extends AsyncNotifier<List<Place>> {
       longitude: longitude,
       categoryId: categoryId,
     );
-    ref.invalidateSelf();
+    state = state.whenData((places) {
+      final index = places.indexWhere((p) => p.id == updatedPlace.id);
+      if (index == -1) return places;
+      final updatedPlaces = [...places];
+      updatedPlaces[index] = updatedPlace;
+      return updatedPlaces;
+    });
     return updatedPlace;
   }
 
   Future<void> deletePlace({required int id}) async {
     final api = ref.read(apiServiceProvider);
     await api.deletePlace(id: id);
-    ref.invalidateSelf();
+    state = state.whenData(
+      (places) => places.where((p) => p.id != id).toList(),
+    );
   }
 }
