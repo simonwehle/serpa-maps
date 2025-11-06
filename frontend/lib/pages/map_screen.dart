@@ -12,6 +12,7 @@ import 'package:vector_map_tiles/vector_map_tiles.dart';
 import 'package:serpa_maps/providers/location_permission_provider.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_bottom_sheet.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:serpa_maps/widgets/map/map_layers.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
@@ -63,6 +64,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final apiKey = dotenv.env['API_KEY'] ?? '';
+
     return Scaffold(
       body: FlutterMap(
         mapController: _mapController,
@@ -89,24 +92,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           },
         ),
         children: [
-          if (activeLayer == 'Vector')
-            if (style != null)
-              VectorTileLayer(
-                tileProviders: style!.providers,
-                theme: style!.theme,
-                tileOffset: TileOffset.DEFAULT,
-              ),
-          if (activeLayer == 'OSM')
-            TileLayer(
-              urlTemplate: 'https://a.tile.openstreetmap.de/{z}/{x}/{y}.png',
-              userAgentPackageName: 'com.serpamaps.app',
-            ),
-          if (activeLayer == 'Satellite')
-            TileLayer(
-              urlTemplate:
-                  'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key=${dotenv.env['API_KEY']}',
-              userAgentPackageName: 'com.serpamaps.app',
-            ),
+          // buildMapBaseLayers returns a List<Widget> we spread here
+          ...buildMapBaseLayers(style, activeLayer, apiKey: apiKey),
+
           const MapCompass.cupertino(
             hideIfRotatedNorth: true,
             padding: EdgeInsets.fromLTRB(0, 50, 10, 0),
@@ -137,7 +125,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               ),
               TextSourceAttribution(
                 'MapTiler',
-                onTap: () => launchUrl(Uri.parse('www.maptiler.com')),
+                onTap: () => launchUrl(Uri.parse('https://www.maptiler.com')),
               ),
               TextSourceAttribution(
                 "Made with 'flutter_map'",
