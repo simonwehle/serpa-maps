@@ -7,6 +7,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:serpa_maps/widgets/map/place_markers_layer.dart';
 import 'package:serpa_maps/widgets/sheets/add_place_bottom_sheet.dart';
 import 'package:serpa_maps/providers/location_permission_provider.dart';
+import 'package:serpa_maps/widgets/sheets/serpa_bottom_sheet.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
@@ -24,13 +25,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   void openAddPlaceBottomSheet({double? latitude, double? longitude}) {
-    showModalBottomSheet(
+    showSerpaBottomSheet(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      //barrierColor: Colors.transparent,
-      builder: (_) =>
-          AddPlaceBottomSheet(latitude: latitude, longitude: longitude),
+      child: AddPlaceBottomSheet(latitude: latitude, longitude: longitude),
     );
   }
 
@@ -54,7 +51,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             enableMultiFingerGestureRace: true,
           ),
           cameraConstraint: const CameraConstraint.containLatitude(),
-          onLongPress: (tapPosition, point) {
+          onLongPress: (_, point) {
             openAddPlaceBottomSheet(
               latitude: point.latitude,
               longitude: point.longitude,

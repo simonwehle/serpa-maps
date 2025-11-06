@@ -67,3 +67,21 @@ class SerpaBottomSheet extends StatelessWidget {
     );
   }
 }
+
+void showSerpaBottomSheet({
+  required BuildContext context,
+  required Widget child,
+  bool isScrollControlled = true,
+  Color backgroundColor = Colors.transparent,
+  Color barrierColor = Colors.transparent,
+  bool isDismissible = true,
+}) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: isScrollControlled,
+    backgroundColor: backgroundColor,
+    barrierColor: barrierColor,
+    isDismissible: isDismissible,
+    builder: (_) => child,
+  );
+}
