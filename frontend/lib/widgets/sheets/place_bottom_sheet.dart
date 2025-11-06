@@ -155,14 +155,10 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
                     });
                   },
                   deletePlace: () async {
-                    try {
-                      await ref
-                          .read(placeProvider.notifier)
-                          .deletePlace(id: place.id);
-                      Navigator.pop(context);
-                    } catch (e) {
-                      print('Fehler beim Löschen: $e');
-                    }
+                    await ref
+                        .read(placeProvider.notifier)
+                        .deletePlace(id: place.id);
+                    if (context.mounted) Navigator.pop(context);
                   },
                 ),
         );
