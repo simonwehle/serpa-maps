@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -113,19 +112,14 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final place = ref.watch(placeByIdProvider(widget.placeId));
-    final categoriesAsync = ref.watch(categoryProvider);
     if (place == null) return const Text('Place not found');
 
     final category = ref.watch(categoryByIdProvider(place.categoryId));
     if (category == null) return const Text('Category not found');
 
+    final categoriesAsync = ref.watch(categoryProvider);
     return categoriesAsync.when(
       data: (categories) {
-        final category = categories.firstWhereOrNull(
-          (c) => c.id == place.categoryId,
-        );
-        if (category == null) return const Text('Category not found');
-
         initializeControllers(place, categories, category);
 
         return SerpaBottomSheet(
