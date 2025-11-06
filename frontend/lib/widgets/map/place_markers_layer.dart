@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/providers/category_provider.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/services/marker_service.dart';
+import 'package:serpa_maps/widgets/sheets/place_bottom_sheet.dart';
 
 class PlaceMarkersLayer extends StatelessWidget {
   const PlaceMarkersLayer({super.key});
@@ -21,6 +22,7 @@ class PlaceMarkersLayer extends StatelessWidget {
               final markers = createPlaceMarkersSync(
                 places: places,
                 categories: categories,
+                onTap: (placeId) => openPlaceBottomSheet(context, placeId),
               );
               return MarkerLayer(markers: markers);
             },
@@ -33,4 +35,14 @@ class PlaceMarkersLayer extends StatelessWidget {
       },
     );
   }
+}
+
+void openPlaceBottomSheet(BuildContext context, int placeId) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    //barrierColor: Colors.transparent,
+    builder: (_) => PlaceBottomSheet(placeId: placeId),
+  );
 }

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class PlaceEditForm extends StatelessWidget {
+class PlaceFormActions extends StatelessWidget {
   final VoidCallback onCancel;
   final VoidCallback onSave;
   final bool isNew;
 
-  const PlaceEditForm({
+  const PlaceFormActions({
     super.key,
     required this.onCancel,
     required this.onSave,

@@ -5,19 +5,19 @@ class ClickableMarker extends StatelessWidget {
   final IconData icon;
   final Color color;
   final int placeId;
+  final void Function(int) onTap;
   const ClickableMarker({
     super.key,
     required this.icon,
     required this.color,
     required this.placeId,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        print("Place $placeId clicked");
-      },
+      onTap: () => onTap(placeId),
       child: PlaceMarker(icon: icon, color: color),
     );
   }
