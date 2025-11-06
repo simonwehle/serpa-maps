@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_animations/flutter_map_animations.dart';
 import 'package:flutter_map_compass/flutter_map_compass.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,8 +16,13 @@ class MapScreen extends ConsumerStatefulWidget {
   ConsumerState<MapScreen> createState() => _MapScreenState();
 }
 
-class _MapScreenState extends ConsumerState<MapScreen> {
-  final _mapController = MapController();
+class _MapScreenState extends ConsumerState<MapScreen>
+    with TickerProviderStateMixin {
+  late final _animatedMapController = AnimatedMapController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1000),
+    curve: Curves.easeInOut,
+  );
 
   @override
   void initState() {
@@ -38,7 +44,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FlutterMap(
-        mapController: _mapController,
+        mapController: _animatedMapController.mapController,
         options: MapOptions(
           initialCenter: LatLng(0, 0),
           initialZoom: 2,
@@ -47,7 +53,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           onMapReady: () async {
             await ref
                 .read(locationPermissionProvider.notifier)
-                .checkPermissionOrZoomMap(_mapController);
+                .checkPermissionOrZoomMap(_animatedMapController.mapController);
           },
           interactionOptions: const InteractionOptions(
             // reduce rotation on pinch zoom
@@ -99,7 +105,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             onPressed: () async {
               await ref
                   .read(locationPermissionProvider.notifier)
-                  .requestLocationOrZoomMap(_mapController);
+                  .requestLocationOrZoomMap(
+                    _animatedMapController.mapController,
+                  );
             },
             child: const Icon(Icons.my_location),
           ),
