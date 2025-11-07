@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
@@ -24,9 +23,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   void initState() {
     super.initState();
     StyleReader(
-      uri: 'https://api.maptiler.com/maps/streets/style.json?key={key}',
+      uri: 'https://tiles.openfreemap.org/styles/liberty',
       // ignore: undefined_identifier
-      apiKey: dotenv.env['API_KEY'],
       //logger: const Logger.console(),
     ).read().then((style) {
       this.style = style;
