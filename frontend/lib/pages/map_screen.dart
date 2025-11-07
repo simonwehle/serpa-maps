@@ -23,15 +23,14 @@ class MapScreen extends ConsumerStatefulWidget {
 class _MapScreenState extends ConsumerState<MapScreen> {
   final _mapController = MapController();
   Style? style;
-  String activeLayer = 'OSM';
+  String activeLayer = 'Vector';
 
   @override
   void initState() {
     super.initState();
 
     StyleReader(
-      uri: 'https://api.maptiler.com/maps/streets/style.json?key={key}',
-      apiKey: dotenv.env['API_KEY'],
+      uri: 'https://tiles.openfreemap.org/styles/liberty',
       //logger: const Logger.console(),
     ).read().then((style) {
       this.style = style;
@@ -56,7 +55,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           setState(() {
             activeLayer = layer;
           });
-          // you can also trigger additional actions here, e.g. switch map tiles
         },
       ),
     );
@@ -92,7 +90,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           },
         ),
         children: [
-          // buildMapBaseLayers returns a List<Widget> we spread here
           ...buildMapBaseLayers(style, activeLayer, apiKey: apiKey),
 
           const MapCompass.cupertino(

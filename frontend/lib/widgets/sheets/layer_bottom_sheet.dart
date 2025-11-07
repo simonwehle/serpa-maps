@@ -21,17 +21,6 @@ class LayerBottomSheet extends StatelessWidget {
           children: [
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: activeLayer == 'OSM' ? Colors.lightBlue : null,
-              ),
-              onPressed: () {
-                onLayerSelected("OSM");
-                Navigator.of(context).pop();
-              },
-              child: const Text("OSM"),
-            ),
-            const SizedBox(width: 8),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
                 backgroundColor: activeLayer == 'Vector'
                     ? Colors.lightBlue
                     : null,
@@ -45,8 +34,19 @@ class LayerBottomSheet extends StatelessWidget {
             const SizedBox(width: 8),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
+                backgroundColor: activeLayer == 'OSM' ? Colors.lightBlue : null,
+              ),
+              onPressed: () {
+                onLayerSelected("OSM");
+                Navigator.of(context).pop();
+              },
+              child: const Text("OSM"),
+            ),
+            const SizedBox(width: 8),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
                 backgroundColor: activeLayer == 'Satellite'
-                    ? Theme.of(context).colorScheme.primary
+                    ? Colors.blue
                     : null,
               ),
               onPressed: () {

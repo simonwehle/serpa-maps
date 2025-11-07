@@ -9,17 +9,6 @@ List<Widget> buildMapBaseLayers(
 }) {
   final List<Widget> layers = [];
 
-  // OSM raster
-  if (activeLayer == 'OSM') {
-    layers.add(
-      TileLayer(
-        urlTemplate: 'https://a.tile.openstreetmap.de/{z}/{x}/{y}.png',
-        userAgentPackageName: 'com.serpamaps.app',
-      ),
-    );
-  }
-
-  // Pure vector
   if (activeLayer == 'Vector' && style != null) {
     layers.add(
       VectorTileLayer(
@@ -30,13 +19,21 @@ List<Widget> buildMapBaseLayers(
     );
   }
 
-  // Satellite raster (MapTiler) + optional vector overlay (hybrid)
+  if (activeLayer == 'OSM') {
+    layers.add(
+      TileLayer(
+        urlTemplate: 'https://a.tile.openstreetmap.de/{z}/{x}/{y}.png',
+        userAgentPackageName: 'org.serpamaps',
+      ),
+    );
+  }
+
   if (activeLayer == 'Satellite') {
     layers.add(
       TileLayer(
         urlTemplate:
-            'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key=$apiKey',
-        userAgentPackageName: 'com.serpamaps.app',
+            'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        userAgentPackageName: 'org.serpamaps',
       ),
     );
   }
