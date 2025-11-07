@@ -5,6 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:serpa_maps/proto/vector_map_tiles_pmtiles.dart';
 import 'package:serpa_maps/widgets/map/place_markers_layer.dart';
 import 'package:serpa_maps/widgets/sheets/add_place_bottom_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/layer_bottom_sheet.dart';
@@ -65,6 +66,15 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   @override
   Widget build(BuildContext context) {
     final apiKey = dotenv.env['API_KEY'] ?? '';
+    final protoMaps = dotenv.env['PROTO_MAPS'] ?? '';
+    VectorTileProvider _tileProvider() => NetworkVectorTileProvider(
+      urlTemplate:
+          'https://api.protomaps.com/tiles/v4/{z}/{x}/{y}.mvt?key=$protoMaps',
+      // this is the maximum zoom of the provider, not the
+      // maximum of the map. vector tiles are rendered
+      // to larger sizes to support higher zoom levels
+      //maximumZoom: 14,
+    );
 
     return Scaffold(
       body: FlutterMap(
@@ -93,7 +103,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         ),
         children: [
           // buildMapBaseLayers returns a List<Widget> we spread here
-          ...buildMapBaseLayers(style, activeLayer, apiKey: apiKey),
+          //...buildMapBaseLayers(style, activeLayer, apiKey: apiKey),
+          VectorTileLayer(
+            tileProviders: TileProviders({'protomaps': _tileProvider()}),
+            theme: ProtomapsThemes.lightV4(), //ProtomapsThemes.light(),
+          ),
 
           const MapCompass.cupertino(
             hideIfRotatedNorth: true,
