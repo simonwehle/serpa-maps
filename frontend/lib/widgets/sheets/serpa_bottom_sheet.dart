@@ -11,7 +11,7 @@ class SerpaBottomSheet extends StatelessWidget {
     return Stack(
       children: [
         DraggableScrollableSheet(
-          initialChildSize: 0.65,
+          initialChildSize: 0.6,
           minChildSize: 0.2,
           maxChildSize: 0.85,
           builder: (context, scrollController) {

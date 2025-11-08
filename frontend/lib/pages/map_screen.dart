@@ -109,26 +109,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               ),
             ),
           ),
-          RichAttributionWidget(
-            alignment: AttributionAlignment.bottomLeft,
-            showFlutterMapAttribution: false,
-            attributions: [
-              TextSourceAttribution(
-                'OpenStreetMap contributors',
-                onTap: () =>
-                    launchUrl(Uri.parse('https://openstreetmap.org/copyright')),
-              ),
-              TextSourceAttribution(
-                'MapTiler',
-                onTap: () => launchUrl(Uri.parse('https://www.maptiler.com')),
-              ),
-              TextSourceAttribution(
-                "Made with 'flutter_map'",
-                prependCopyright: false,
-                textStyle: TextStyle(fontStyle: FontStyle.italic),
-              ),
-            ],
-          ),
         ],
       ),
       floatingActionButton: Column(
