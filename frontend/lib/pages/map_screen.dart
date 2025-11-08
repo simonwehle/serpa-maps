@@ -4,11 +4,15 @@ import 'package:flutter_map_compass/flutter_map_compass.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:vector_map_tiles/vector_map_tiles.dart';
+
 import 'package:serpa_maps/widgets/map/place_markers_layer.dart';
 import 'package:serpa_maps/widgets/sheets/add_place_bottom_sheet.dart';
+import 'package:serpa_maps/widgets/sheets/layer_bottom_sheet.dart';
 import 'package:serpa_maps/providers/location_permission_provider.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_bottom_sheet.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:serpa_maps/widgets/map/map_layers.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
@@ -18,16 +22,41 @@ class MapScreen extends ConsumerStatefulWidget {
 
 class _MapScreenState extends ConsumerState<MapScreen> {
   final _mapController = MapController();
+  Style? style;
+  String activeLayer = 'Vector';
 
   @override
   void initState() {
     super.initState();
+
+    StyleReader(
+      uri: 'https://tiles.openfreemap.org/styles/liberty',
+      //logger: const Logger.console(),
+    ).read().then((style) {
+      this.style = style;
+
+      setState(() {});
+    });
   }
 
   void openAddPlaceBottomSheet({double? latitude, double? longitude}) {
     showSerpaBottomSheet(
       context: context,
       child: AddPlaceBottomSheet(latitude: latitude, longitude: longitude),
+    );
+  }
+
+  void openLayerBottomSheet() {
+    showSerpaBottomSheet(
+      context: context,
+      child: LayerBottomSheet(
+        activeLayer: activeLayer,
+        onLayerSelected: (layer) {
+          setState(() {
+            activeLayer = layer;
+          });
+        },
+      ),
     );
   }
 
@@ -59,31 +88,26 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           },
         ),
         children: [
-          TileLayer(
-            urlTemplate: 'https://a.tile.openstreetmap.de/{z}/{x}/{y}.png',
-            userAgentPackageName: 'com.serpamaps.app',
-          ),
+          ...buildMapBaseLayers(style: style, activeLayer: activeLayer),
+
           const MapCompass.cupertino(
             hideIfRotatedNorth: true,
             padding: EdgeInsets.fromLTRB(0, 50, 10, 0),
           ),
           PlaceMarkersLayer(),
           if (ref.watch(locationPermissionProvider)) CurrentLocationLayer(),
-          RichAttributionWidget(
-            alignment: AttributionAlignment.bottomLeft,
-            showFlutterMapAttribution: false,
-            attributions: [
-              TextSourceAttribution(
-                'OpenStreetMap contributors',
-                onTap: () =>
-                    launchUrl(Uri.parse('https://openstreetmap.org/copyright')),
+          Align(
+            alignment: Alignment.topRight,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(0, 100, 10, 0),
+              child: FloatingActionButton(
+                mini: true,
+                backgroundColor: Colors.white,
+                onPressed: openLayerBottomSheet,
+                shape: CircleBorder(),
+                child: const Icon(Icons.layers),
               ),
-              TextSourceAttribution(
-                "Made with 'flutter_map'",
-                prependCopyright: false,
-                textStyle: TextStyle(fontStyle: FontStyle.italic),
-              ),
-            ],
+            ),
           ),
         ],
       ),
