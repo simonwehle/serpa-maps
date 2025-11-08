@@ -5,13 +5,14 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:vector_map_tiles/vector_map_tiles.dart';
+
 import 'package:serpa_maps/widgets/map/place_markers_layer.dart';
 import 'package:serpa_maps/widgets/sheets/add_place_bottom_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/layer_bottom_sheet.dart';
-import 'package:vector_map_tiles/vector_map_tiles.dart';
 import 'package:serpa_maps/providers/location_permission_provider.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_bottom_sheet.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:serpa_maps/widgets/map/map_layers.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
@@ -62,8 +63,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final apiKey = dotenv.env['API_KEY'] ?? '';
-
     return Scaffold(
       body: FlutterMap(
         mapController: _mapController,
@@ -90,7 +89,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           },
         ),
         children: [
-          ...buildMapBaseLayers(style, activeLayer, apiKey: apiKey),
+          ...buildMapBaseLayers(style: style, activeLayer: activeLayer),
 
           const MapCompass.cupertino(
             hideIfRotatedNorth: true,

@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:vector_map_tiles/vector_map_tiles.dart';
 
-List<Widget> buildMapBaseLayers(
-  Style? style,
-  String activeLayer, {
-  required String apiKey,
+List<Widget> buildMapBaseLayers({
+  required Style? style,
+  required String activeLayer,
 }) {
   final List<Widget> layers = [];
 
