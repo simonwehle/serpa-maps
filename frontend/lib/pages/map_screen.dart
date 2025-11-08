@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_compass/flutter_map_compass.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:vector_map_tiles_pmtiles/vector_map_tiles_pmtiles.dart';
+import 'package:vector_map_tiles/vector_map_tiles.dart';
+
 import 'package:serpa_maps/widgets/map/place_markers_layer.dart';
 import 'package:serpa_maps/widgets/sheets/add_place_bottom_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/layer_bottom_sheet.dart';
-import 'package:vector_map_tiles/vector_map_tiles.dart';
 import 'package:serpa_maps/providers/location_permission_provider.dart';
-import 'package:serpa_maps/widgets/sheets/serpa_bottom_sheet.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:serpa_maps/widgets/map/attribution_widget.dart';
 import 'package:serpa_maps/widgets/map/map_layers.dart';
+import 'package:serpa_maps/widgets/sheets/serpa_bottom_sheet.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
@@ -24,15 +25,14 @@ class MapScreen extends ConsumerStatefulWidget {
 class _MapScreenState extends ConsumerState<MapScreen> {
   final _mapController = MapController();
   Style? style;
-  String activeLayer = 'OSM';
+  String activeLayer = 'Vector';
 
   @override
   void initState() {
     super.initState();
 
     StyleReader(
-      uri: 'https://api.maptiler.com/maps/streets/style.json?key={key}',
-      apiKey: dotenv.env['API_KEY'],
+      uri: 'https://tiles.openfreemap.org/styles/liberty',
       //logger: const Logger.console(),
     ).read().then((style) {
       this.style = style;
@@ -57,7 +57,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           setState(() {
             activeLayer = layer;
           });
-          // you can also trigger additional actions here, e.g. switch map tiles
         },
       ),
     );
@@ -106,12 +105,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             theme: ProtomapsThemes.lightV4(),
           ),
 
+          mapBaseLayer(style: style, activeLayer: activeLayer),
+          PlaceMarkersLayer(),
+          if (ref.watch(locationPermissionProvider)) CurrentLocationLayer(),
           const MapCompass.cupertino(
             hideIfRotatedNorth: true,
             padding: EdgeInsets.fromLTRB(0, 50, 10, 0),
           ),
-          PlaceMarkersLayer(),
-          if (ref.watch(locationPermissionProvider)) CurrentLocationLayer(),
           Align(
             alignment: Alignment.topRight,
             child: Padding(
@@ -125,26 +125,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               ),
             ),
           ),
-          RichAttributionWidget(
-            alignment: AttributionAlignment.bottomLeft,
-            showFlutterMapAttribution: false,
-            attributions: [
-              TextSourceAttribution(
-                'OpenStreetMap contributors',
-                onTap: () =>
-                    launchUrl(Uri.parse('https://openstreetmap.org/copyright')),
-              ),
-              TextSourceAttribution(
-                'MapTiler',
-                onTap: () => launchUrl(Uri.parse('https://www.maptiler.com')),
-              ),
-              TextSourceAttribution(
-                "Made with 'flutter_map'",
-                prependCopyright: false,
-                textStyle: TextStyle(fontStyle: FontStyle.italic),
-              ),
-            ],
-          ),
+          AttributionWidget(activeLayer: activeLayer),
         ],
       ),
       floatingActionButton: Column(
