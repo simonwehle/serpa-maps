@@ -63,6 +63,6 @@ class LocationPermissionNotifier extends Notifier<bool> {
   Future<void> _zoomToLocationMarker(MapController mapController) async {
     final position = await Geolocator.getCurrentPosition();
     final latlng = LatLng(position.latitude, position.longitude);
-    mapController.move(latlng, 13.0);
+    mapController.move(latlng, 14.0);
   }
 }

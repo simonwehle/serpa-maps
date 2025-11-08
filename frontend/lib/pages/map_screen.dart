@@ -88,14 +88,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           },
         ),
         children: [
-          ...buildMapBaseLayers(style: style, activeLayer: activeLayer),
-
+          mapBaseLayer(style: style, activeLayer: activeLayer),
+          PlaceMarkersLayer(),
+          if (ref.watch(locationPermissionProvider)) CurrentLocationLayer(),
           const MapCompass.cupertino(
             hideIfRotatedNorth: true,
             padding: EdgeInsets.fromLTRB(0, 50, 10, 0),
           ),
-          PlaceMarkersLayer(),
-          if (ref.watch(locationPermissionProvider)) CurrentLocationLayer(),
           Align(
             alignment: Alignment.topRight,
             child: Padding(
