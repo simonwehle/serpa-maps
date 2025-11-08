@@ -777,7 +777,7 @@ packages:
     source: hosted
     version: "2.1.8"
   pmtiles:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: pmtiles
       sha256: "7e3135c64ec3647e1dd8929fd3c371c8e1c6809b24f1d910d3198a7f41e2068c"
@@ -1069,6 +1069,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "9.0.0-beta.8"
+  vector_map_tiles_pmtiles:
+    dependency: "direct main"
+    description:
+      path: vector_map_tiles_pmtiles
+      ref: HEAD
+      resolved-ref: "6d0b7bd077c70c2013704074bd9cd7229a1bf072"
+      url: "https://github.com/josxha/flutter_map_plugins.git"
+    source: git
+    version: "1.5.1"
   vector_math:
     dependency: transitive
     description:
@@ -1094,7 +1103,7 @@ packages:
     source: hosted
     version: "0.0.2"
   vector_tile_renderer:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: vector_tile_renderer
       sha256: "99530edb073c1cea3c6a4bdb5ca9a5c6779c25ddf1a645678458504708dc221c"
