@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_compass/flutter_map_compass.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:vector_map_tiles_pmtiles/vector_map_tiles_pmtiles.dart';
 import 'package:vector_map_tiles/vector_map_tiles.dart';
 
 import 'package:serpa_maps/widgets/map/place_markers_layer.dart';
@@ -24,10 +26,18 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   final _mapController = MapController();
   Style? style;
   String activeLayer = 'Vector';
+  late final NetworkVectorTileProvider protoMapsProvider;
 
   @override
   void initState() {
     super.initState();
+
+    final protoMaps = dotenv.env['PROTO_MAPS'] ?? '';
+    protoMapsProvider = NetworkVectorTileProvider(
+      urlTemplate:
+          'https://api.protomaps.com/tiles/v4/{z}/{x}/{y}.mvt?key=$protoMaps',
+      maximumZoom: 15,
+    );
 
     StyleReader(
       uri: 'https://tiles.openfreemap.org/styles/liberty',
@@ -88,7 +98,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           },
         ),
         children: [
-          mapBaseLayer(style: style, activeLayer: activeLayer),
+          mapBaseLayer(
+            style: style,
+            activeLayer: activeLayer,
+            protoMapsProvider: protoMapsProvider,
+          ),
           PlaceMarkersLayer(),
           if (ref.watch(locationPermissionProvider)) CurrentLocationLayer(),
           const MapCompass.cupertino(
