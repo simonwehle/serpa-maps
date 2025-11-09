@@ -16,44 +16,67 @@ class LayerBottomSheet extends StatelessWidget {
     return SerpaBottomSheet(
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Column(
           children: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: activeLayer == 'Vector'
-                    ? Colors.lightBlue
-                    : null,
-              ),
-              onPressed: () {
-                onLayerSelected("Vector");
-                Navigator.of(context).pop();
-              },
-              child: const Text("Vector"),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: activeLayer == 'Vector'
+                        ? Colors.lightBlue
+                        : null,
+                  ),
+                  onPressed: () {
+                    onLayerSelected("Vector");
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text("Vector"),
+                ),
+                const SizedBox(width: 8),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: activeLayer == 'OSM'
+                        ? Colors.lightBlue
+                        : null,
+                  ),
+                  onPressed: () {
+                    onLayerSelected("OSM");
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text("OSM"),
+                ),
+                const SizedBox(width: 8),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: activeLayer == 'Satellite'
+                        ? Colors.blue
+                        : null,
+                  ),
+                  onPressed: () {
+                    onLayerSelected("Satellite");
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text("Satellite"),
+                ),
+              ],
             ),
-            const SizedBox(width: 8),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: activeLayer == 'OSM' ? Colors.lightBlue : null,
-              ),
-              onPressed: () {
-                onLayerSelected("OSM");
-                Navigator.of(context).pop();
-              },
-              child: const Text("OSM"),
-            ),
-            const SizedBox(width: 8),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: activeLayer == 'Satellite'
-                    ? Colors.blue
-                    : null,
-              ),
-              onPressed: () {
-                onLayerSelected("Satellite");
-                Navigator.of(context).pop();
-              },
-              child: const Text("Satellite"),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: activeLayer == 'Protomaps'
+                        ? Colors.lightBlue
+                        : null,
+                  ),
+                  onPressed: () {
+                    onLayerSelected("Protomaps");
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text("Protomaps"),
+                ),
+              ],
             ),
           ],
         ),

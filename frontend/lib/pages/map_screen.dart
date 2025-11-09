@@ -26,10 +26,18 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   final _mapController = MapController();
   Style? style;
   String activeLayer = 'Vector';
+  late final NetworkVectorTileProvider protoMapsProvider;
 
   @override
   void initState() {
     super.initState();
+
+    final protoMaps = dotenv.env['PROTO_MAPS'] ?? '';
+    protoMapsProvider = NetworkVectorTileProvider(
+      urlTemplate:
+          'https://api.protomaps.com/tiles/v4/{z}/{x}/{y}.mvt?key=$protoMaps',
+      maximumZoom: 15,
+    );
 
     StyleReader(
       uri: 'https://tiles.openfreemap.org/styles/liberty',
@@ -64,14 +72,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final apiKey = dotenv.env['API_KEY'] ?? '';
-    final protoMaps = dotenv.env['PROTO_MAPS'] ?? '';
-    VectorTileProvider tileProvider() => NetworkVectorTileProvider(
-      urlTemplate:
-          'https://api.protomaps.com/tiles/v4/{z}/{x}/{y}.mvt?key=$protoMaps',
-      maximumZoom: 15,
-    );
-
     return Scaffold(
       body: FlutterMap(
         mapController: _mapController,
@@ -98,14 +98,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           },
         ),
         children: [
-          // buildMapBaseLayers returns a List<Widget> we spread here
-          //...buildMapBaseLayers(style, activeLayer, apiKey: apiKey),
-          VectorTileLayer(
-            tileProviders: TileProviders({'protomaps': tileProvider()}),
-            theme: ProtomapsThemes.lightV4(),
+          mapBaseLayer(
+            style: style,
+            activeLayer: activeLayer,
+            protoMapsProvider: protoMapsProvider,
           ),
-
-          mapBaseLayer(style: style, activeLayer: activeLayer),
           PlaceMarkersLayer(),
           if (ref.watch(locationPermissionProvider)) CurrentLocationLayer(),
           const MapCompass.cupertino(
