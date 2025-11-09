@@ -10,7 +10,11 @@ class PlaceMarker extends StatelessWidget {
     return Container(
       width: 60,
       height: 60,
-      decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: color,
+        border: Border.all(color: Colors.white, width: 1.0),
+      ),
       child: Icon(icon, size: 17.5, color: Colors.white),
     );
   }
