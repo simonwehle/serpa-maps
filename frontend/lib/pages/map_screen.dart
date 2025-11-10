@@ -6,13 +6,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:vector_map_tiles/vector_map_tiles.dart';
 
-import 'package:serpa_maps/widgets/map/place_markers_layer.dart';
-import 'package:serpa_maps/widgets/sheets/add_place_bottom_sheet.dart';
-import 'package:serpa_maps/widgets/sheets/layer_bottom_sheet.dart';
 import 'package:serpa_maps/providers/location_permission_provider.dart';
+import 'package:serpa_maps/providers/markers_visible_provider.dart';
 import 'package:serpa_maps/widgets/map/attribution_widget.dart';
 import 'package:serpa_maps/widgets/map/map_layers.dart';
+import 'package:serpa_maps/widgets/map/place_markers_layer.dart';
+import 'package:serpa_maps/widgets/map/pmtiles_layer.dart';
+import 'package:serpa_maps/widgets/sheets/add_place_bottom_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_bottom_sheet.dart';
+import 'package:serpa_maps/widgets/sheets/layer_bottom_sheet.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
@@ -89,7 +91,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         ),
         children: [
           mapBaseLayer(style: style, activeLayer: activeLayer),
-          PlaceMarkersLayer(),
+          PmtilesLayer(),
+          if (ref.watch(markersVisibleProvider)) PlaceMarkersLayer(),
           if (ref.watch(locationPermissionProvider)) CurrentLocationLayer(),
           const MapCompass.cupertino(
             hideIfRotatedNorth: true,

@@ -12,45 +12,43 @@ class AttributionWidget extends StatelessWidget {
     return RichAttributionWidget(
       alignment: AttributionAlignment.bottomLeft,
       showFlutterMapAttribution: false,
-      attributions:
-          {
-            'Vector': [
-              TextSourceAttribution(
-                'OpenStreetMap contributors',
-                onTap: () =>
-                    launchUrl(Uri.parse('https://openstreetmap.org/copyright')),
-              ),
-              TextSourceAttribution(
-                'OpenMapTiles',
-                onTap: () => launchUrl(Uri.parse('https://openmaptiles.org/')),
-              ),
-            ],
-            'OSM': [
-              TextSourceAttribution(
-                'OpenStreetMap contributors',
-                onTap: () =>
-                    launchUrl(Uri.parse('https://openstreetmap.org/copyright')),
-              ),
-            ],
-            'Satellite': [
-              TextSourceAttribution(
-                'Powered by Esri',
-                prependCopyright: false,
-                onTap: () => launchUrl(Uri.parse('https://www.esri.com')),
-              ),
-              TextSourceAttribution('Sources: Esri,', prependCopyright: false),
-              TextSourceAttribution('Maxar,', prependCopyright: false),
-              TextSourceAttribution(
-                'Earthstar Geographics',
-                prependCopyright: false,
-              ),
-              TextSourceAttribution(
-                'and the GIS User Community',
-                prependCopyright: false,
-              ),
-            ],
-          }[activeLayer] ??
-          [],
+      attributions: [
+        TextSourceAttribution(
+          'OpenStreetMap contributors',
+          onTap: () =>
+              launchUrl(Uri.parse('https://openstreetmap.org/copyright')),
+        ),
+        ...({
+              'Vector': [
+                TextSourceAttribution(
+                  'OpenMapTiles',
+                  onTap: () =>
+                      launchUrl(Uri.parse('https://openmaptiles.org/')),
+                ),
+              ],
+              'Satellite': [
+                TextSourceAttribution(
+                  'Powered by Esri',
+                  prependCopyright: false,
+                  onTap: () => launchUrl(Uri.parse('https://www.esri.com')),
+                ),
+                TextSourceAttribution(
+                  'Sources: Esri,',
+                  prependCopyright: false,
+                ),
+                TextSourceAttribution('Maxar,', prependCopyright: false),
+                TextSourceAttribution(
+                  'Earthstar Geographics',
+                  prependCopyright: false,
+                ),
+                TextSourceAttribution(
+                  'and the GIS User Community',
+                  prependCopyright: false,
+                ),
+              ],
+            }[activeLayer] ??
+            []),
+      ],
     );
   }
 }
