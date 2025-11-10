@@ -71,7 +71,9 @@ class LayerBottomSheet extends ConsumerWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 16),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Show Markers'),
                 Switch(value: showPlaceMarkers, onChanged: togglePlaceMarkers),
@@ -79,6 +81,7 @@ class LayerBottomSheet extends ConsumerWidget {
             ),
             if (ref.read(pmtilesProvider) != '')
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('Show PMTiles Layer'),
                   Switch(value: showPMTiles, onChanged: togglePMTilesLayer),
