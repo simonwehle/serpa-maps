@@ -6,6 +6,8 @@ Widget pmtilesLayer({required String pmtiles, required bool showPMTiles}) {
     return TileLayer(
       urlTemplate: pmtiles,
       userAgentPackageName: 'org.serpamaps',
+      maxZoom: 19,
+      minZoom: 4,
     );
   } else {
     return const SizedBox.shrink();
