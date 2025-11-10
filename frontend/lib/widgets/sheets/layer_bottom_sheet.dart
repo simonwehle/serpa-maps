@@ -1,24 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serpa_maps/providers/markers_visible_provider.dart';
+import 'package:serpa_maps/providers/pmtiles_active_prvoiders.dart';
 import 'package:serpa_maps/providers/pmtiles_provider.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_bottom_sheet.dart';
 
 class LayerBottomSheet extends ConsumerWidget {
   final String activeLayer;
   final ValueChanged<String> onLayerSelected;
-  final bool showPlaceMarkers;
-  final void Function(bool) togglePlaceMarkers;
-  final bool showPMTiles;
-  final void Function(bool) togglePMTilesLayer;
 
   const LayerBottomSheet({
     super.key,
     required this.activeLayer,
     required this.onLayerSelected,
-    required this.showPlaceMarkers,
-    required this.togglePlaceMarkers,
-    required this.showPMTiles,
-    required this.togglePMTilesLayer,
   });
 
   @override
@@ -76,7 +70,12 @@ class LayerBottomSheet extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Show Markers'),
-                Switch(value: showPlaceMarkers, onChanged: togglePlaceMarkers),
+                Switch(
+                  value: ref.watch(markersVisibleProvider),
+                  onChanged: ref
+                      .read(markersVisibleProvider.notifier)
+                      .setMarkersVisible,
+                ),
               ],
             ),
             if (ref.read(pmtilesProvider) != '')
@@ -84,7 +83,12 @@ class LayerBottomSheet extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('Show PMTiles Layer'),
-                  Switch(value: showPMTiles, onChanged: togglePMTilesLayer),
+                  Switch(
+                    value: ref.watch(pmTilesActiveProvider),
+                    onChanged: ref
+                        .read(pmTilesActiveProvider.notifier)
+                        .setPmtiles,
+                  ),
                 ],
               ),
           ],

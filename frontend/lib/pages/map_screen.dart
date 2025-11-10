@@ -8,7 +8,7 @@ import 'package:serpa_maps/widgets/map/pmtiles_layer.dart';
 import 'package:vector_map_tiles/vector_map_tiles.dart';
 
 import 'package:serpa_maps/providers/location_permission_provider.dart';
-import 'package:serpa_maps/providers/pmtiles_provider.dart';
+import 'package:serpa_maps/providers/markers_visible_provider.dart';
 import 'package:serpa_maps/widgets/map/attribution_widget.dart';
 import 'package:serpa_maps/widgets/map/place_markers_layer.dart';
 import 'package:serpa_maps/widgets/map/map_layers.dart';
@@ -26,8 +26,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   final _mapController = MapController();
   Style? style;
   String activeLayer = 'Vector';
-  bool showPMTiles = false;
-  bool showPlaceMarkers = true;
 
   @override
   void initState() {
@@ -50,18 +48,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     );
   }
 
-  void togglePlaceMarkers(bool value) {
-    setState(() {
-      showPlaceMarkers = value;
-    });
-  }
-
-  void togglePMTilesLayer(bool value) {
-    setState(() {
-      showPMTiles = value;
-    });
-  }
-
   void openLayerBottomSheet() {
     showSerpaBottomSheet(
       context: context,
@@ -72,17 +58,12 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             activeLayer = layer;
           });
         },
-        showPlaceMarkers: showPlaceMarkers,
-        togglePlaceMarkers: togglePlaceMarkers,
-        showPMTiles: showPMTiles,
-        togglePMTilesLayer: togglePMTilesLayer,
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final pmtiles = ref.read(pmtilesProvider);
     return Scaffold(
       body: FlutterMap(
         mapController: _mapController,
@@ -110,9 +91,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         ),
         children: [
           mapBaseLayer(style: style, activeLayer: activeLayer),
-          if (pmtiles != '')
-            pmtilesLayer(pmtiles: pmtiles, showPMTiles: showPMTiles),
-          if (showPlaceMarkers) PlaceMarkersLayer(),
+          PmtilesLayer(),
+          if (ref.watch(markersVisibleProvider)) PlaceMarkersLayer(),
           if (ref.watch(locationPermissionProvider)) CurrentLocationLayer(),
           const MapCompass.cupertino(
             hideIfRotatedNorth: true,
