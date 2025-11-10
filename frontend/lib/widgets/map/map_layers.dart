@@ -18,6 +18,6 @@ Widget mapBaseLayer({required Style? style, required String activeLayer}) {
           'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
       userAgentPackageName: 'org.serpamaps',
     ),
-    _ => const SizedBox.shrink(), // Fallback empty widget
+    _ => const SizedBox.shrink(),
   };
 }
