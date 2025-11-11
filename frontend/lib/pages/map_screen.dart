@@ -32,21 +32,19 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   void initState() {
     super.initState();
 
-    final protoMaps = dotenv.env['PROTO_MAPS'] ?? '';
     protoMapsProvider = NetworkVectorTileProvider(
-      urlTemplate:
-          'https://api.protomaps.com/tiles/v4/{z}/{x}/{y}.mvt?key=$protoMaps',
+      urlTemplate: dotenv.env['PROTOMAPS_HOST'] ?? '',
       maximumZoom: 15,
     );
 
-    StyleReader(
-      uri: 'https://tiles.openfreemap.org/styles/liberty',
-      //logger: const Logger.console(),
-    ).read().then((style) {
-      this.style = style;
+    // StyleReader(
+    //   uri: 'https://tiles.openfreemap.org/styles/liberty',
+    //   //logger: const Logger.console(),
+    // ).read().then((style) {
+    //   this.style = style;
 
-      setState(() {});
-    });
+    //   setState(() {});
+    // });
   }
 
   void openAddPlaceBottomSheet({double? latitude, double? longitude}) {

@@ -10,20 +10,10 @@ Widget mapBaseLayer({
 }) {
   switch (activeLayer) {
     case 'Vector':
-      if (style != null) {
-        return VectorTileLayer(
-          key: ValueKey('vector'),
-          tileProviders: style.providers,
-          theme: style.theme,
-          tileOffset: TileOffset.DEFAULT,
-        );
-      }
-      return const SizedBox.shrink();
-    case 'Protomaps':
       return VectorTileLayer(
-        key: ValueKey('protomaps'),
+        key: ValueKey('vector'),
         tileProviders: TileProviders({'protomaps': protoMapsProvider}),
-        theme: ProtomapsThemes.lightV4(),
+        theme: ProtomapsThemes.lightV3(),
       );
     case 'OSM':
       return TileLayer(

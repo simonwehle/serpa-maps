@@ -61,23 +61,6 @@ class LayerBottomSheet extends StatelessWidget {
                 ),
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: activeLayer == 'Protomaps'
-                        ? Colors.lightBlue
-                        : null,
-                  ),
-                  onPressed: () {
-                    onLayerSelected("Protomaps");
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text("Protomaps"),
-                ),
-              ],
-            ),
           ],
         ),
       ),
