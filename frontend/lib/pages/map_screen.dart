@@ -5,7 +5,6 @@ import 'package:flutter_map_compass/flutter_map_compass.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:vector_map_tiles_pmtiles/vector_map_tiles_pmtiles.dart';
 import 'package:vector_map_tiles/vector_map_tiles.dart';
 
 import 'package:serpa_maps/widgets/map/place_markers_layer.dart';
@@ -24,7 +23,6 @@ class MapScreen extends ConsumerStatefulWidget {
 
 class _MapScreenState extends ConsumerState<MapScreen> {
   final _mapController = MapController();
-  Style? style;
   String activeLayer = 'Vector';
   late final NetworkVectorTileProvider protoMapsProvider;
 
@@ -36,15 +34,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       urlTemplate: dotenv.env['PROTOMAPS_HOST'] ?? '',
       maximumZoom: 15,
     );
-
-    // StyleReader(
-    //   uri: 'https://tiles.openfreemap.org/styles/liberty',
-    //   //logger: const Logger.console(),
-    // ).read().then((style) {
-    //   this.style = style;
-
-    //   setState(() {});
-    // });
   }
 
   void openAddPlaceBottomSheet({double? latitude, double? longitude}) {
@@ -97,7 +86,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         ),
         children: [
           mapBaseLayer(
-            style: style,
             activeLayer: activeLayer,
             protoMapsProvider: protoMapsProvider,
           ),
