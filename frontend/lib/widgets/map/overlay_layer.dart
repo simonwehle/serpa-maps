@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:serpa_maps/providers/pmtiles_active_prvoiders.dart';
-import 'package:serpa_maps/providers/pmtiles_provider.dart';
+import 'package:serpa_maps/providers/overlay_active_prvoider.dart';
+import 'package:serpa_maps/providers/overlay_url_provider.dart';
 
-class PmtilesLayer extends ConsumerWidget {
-  const PmtilesLayer({super.key});
+class OverlayLayer extends ConsumerWidget {
+  const OverlayLayer({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pmtiles = ref.read(pmtilesProvider);
-    if (pmtiles != '') {
-      if (ref.watch(pmTilesActiveProvider)) {
+    final overlayUrl = ref.read(overlayUrlProvider);
+    if (overlayUrl != '') {
+      if (ref.watch(overlayActiveProvider)) {
         return TileLayer(
-          urlTemplate: ref.read(pmtilesProvider),
+          urlTemplate: overlayUrl,
           userAgentPackageName: 'org.serpamaps',
         );
       } else {

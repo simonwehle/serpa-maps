@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/providers/markers_visible_provider.dart';
-import 'package:serpa_maps/providers/pmtiles_active_prvoiders.dart';
-import 'package:serpa_maps/providers/pmtiles_provider.dart';
+import 'package:serpa_maps/providers/overlay_active_prvoider.dart';
+import 'package:serpa_maps/providers/overlay_url_provider.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_bottom_sheet.dart';
 
 class LayerBottomSheet extends ConsumerWidget {
@@ -78,15 +78,15 @@ class LayerBottomSheet extends ConsumerWidget {
                 ),
               ],
             ),
-            if (ref.read(pmtilesProvider) != '')
+            if (ref.read(overlayUrlProvider) != '')
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Show PMTiles Layer'),
+                  Text('Show Overlay'),
                   Switch(
-                    value: ref.watch(pmTilesActiveProvider),
+                    value: ref.watch(overlayActiveProvider),
                     onChanged: ref
-                        .read(pmTilesActiveProvider.notifier)
+                        .read(overlayActiveProvider.notifier)
                         .setPmtiles,
                   ),
                 ],

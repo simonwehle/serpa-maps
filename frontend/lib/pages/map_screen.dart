@@ -11,7 +11,7 @@ import 'package:serpa_maps/providers/markers_visible_provider.dart';
 import 'package:serpa_maps/widgets/map/attribution_widget.dart';
 import 'package:serpa_maps/widgets/map/map_layers.dart';
 import 'package:serpa_maps/widgets/map/place_markers_layer.dart';
-import 'package:serpa_maps/widgets/map/pmtiles_layer.dart';
+import 'package:serpa_maps/widgets/map/overlay_layer.dart';
 import 'package:serpa_maps/widgets/sheets/add_place_bottom_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_bottom_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/layer_bottom_sheet.dart';
@@ -91,7 +91,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         ),
         children: [
           mapBaseLayer(style: style, activeLayer: activeLayer),
-          PmtilesLayer(),
+          OverlayLayer(),
           if (ref.watch(markersVisibleProvider)) PlaceMarkersLayer(),
           if (ref.watch(locationPermissionProvider)) CurrentLocationLayer(),
           const MapCompass.cupertino(

@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final pmTilesActiveProvider = NotifierProvider<PmtilesActiveNotifier, bool>(
-  PmtilesActiveNotifier.new,
+final overlayActiveProvider = NotifierProvider<OverlayActiveNotifier, bool>(
+  OverlayActiveNotifier.new,
 );
 
-class PmtilesActiveNotifier extends Notifier<bool> {
+class OverlayActiveNotifier extends Notifier<bool> {
   @override
   bool build() {
     return false;
