@@ -14,8 +14,14 @@ class PlaceMarker extends StatelessWidget {
         shape: BoxShape.circle,
         color: color,
         border: Border.all(color: Colors.white, width: 1.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.2),
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
-      child: Icon(icon, size: 17.5, color: Colors.white),
+      child: Icon(icon, size: 18.5, color: Colors.white),
     );
   }
 }
