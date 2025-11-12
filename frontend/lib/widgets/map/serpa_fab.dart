@@ -5,7 +5,7 @@ import 'package:serpa_maps/providers/location_permission_provider.dart';
 
 class SerpaFab extends ConsumerWidget {
   final MapController mapController;
-  final Function openAddPlaceBottomSheet;
+  final VoidCallback openAddPlaceBottomSheet;
   const SerpaFab({
     super.key,
     required this.mapController,
@@ -33,9 +33,7 @@ class SerpaFab extends ConsumerWidget {
             ),
             const SizedBox(height: 15),
             FloatingActionButton(
-              onPressed: () {
-                openAddPlaceBottomSheet;
-              },
+              onPressed: openAddPlaceBottomSheet,
               child: const Icon(Icons.add),
             ),
           ],
