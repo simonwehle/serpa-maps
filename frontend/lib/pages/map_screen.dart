@@ -7,13 +7,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:vector_map_tiles/vector_map_tiles.dart';
 
-import 'package:serpa_maps/widgets/map/place_markers_layer.dart';
-import 'package:serpa_maps/widgets/sheets/add_place_bottom_sheet.dart';
-import 'package:serpa_maps/widgets/sheets/layer_bottom_sheet.dart';
 import 'package:serpa_maps/providers/location_permission_provider.dart';
+import 'package:serpa_maps/providers/markers_visible_provider.dart';
 import 'package:serpa_maps/widgets/map/attribution_widget.dart';
 import 'package:serpa_maps/widgets/map/map_layers.dart';
+import 'package:serpa_maps/widgets/map/place_markers_layer.dart';
+import 'package:serpa_maps/widgets/map/overlay_layer.dart';
+import 'package:serpa_maps/widgets/sheets/add_place_bottom_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_bottom_sheet.dart';
+import 'package:serpa_maps/widgets/sheets/layer_bottom_sheet.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
@@ -23,7 +25,6 @@ class MapScreen extends ConsumerStatefulWidget {
 
 class _MapScreenState extends ConsumerState<MapScreen> {
   final _mapController = MapController();
-  String activeLayer = 'Vector';
   late final NetworkVectorTileProvider protoMapsProvider;
 
   @override
@@ -44,17 +45,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   void openLayerBottomSheet() {
-    showSerpaBottomSheet(
-      context: context,
-      child: LayerBottomSheet(
-        activeLayer: activeLayer,
-        onLayerSelected: (layer) {
-          setState(() {
-            activeLayer = layer;
-          });
-        },
-      ),
-    );
+    showSerpaBottomSheet(context: context, child: LayerBottomSheet());
   }
 
   @override
@@ -67,6 +58,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           initialZoom: 2,
           minZoom: 1,
           maxZoom: 20,
+          backgroundColor: Colors.white,
           onMapReady: () async {
             await ref
                 .read(locationPermissionProvider.notifier)
@@ -84,12 +76,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             );
           },
         ),
+
         children: [
-          mapBaseLayer(
-            activeLayer: activeLayer,
-            protoMapsProvider: protoMapsProvider,
-          ),
-          PlaceMarkersLayer(),
+          MapBaseLayer(protoMapsProvider: protoMapsProvider),
+          OverlayLayer(),
+          if (ref.watch(markersVisibleProvider)) PlaceMarkersLayer(),
           if (ref.watch(locationPermissionProvider)) CurrentLocationLayer(),
           const MapCompass.cupertino(
             hideIfRotatedNorth: true,
@@ -108,7 +99,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               ),
             ),
           ),
-          AttributionWidget(activeLayer: activeLayer),
+          AttributionWidget(),
         ],
       ),
       floatingActionButton: Column(
