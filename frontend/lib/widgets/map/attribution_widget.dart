@@ -38,14 +38,8 @@ class AttributionWidget extends ConsumerWidget {
             prependCopyright: false,
             onTap: () => launchUrl(Uri.parse('https://www.esri.com')),
           ),
-          TextSourceAttribution('Sources: Esri,', prependCopyright: false),
-          TextSourceAttribution('Maxar,', prependCopyright: false),
           TextSourceAttribution(
-            'Earthstar Geographics',
-            prependCopyright: false,
-          ),
-          TextSourceAttribution(
-            'and the GIS User Community',
+            'Sources: Esri, Maxar, Earthstar Geographics and the GIS User Community',
             prependCopyright: false,
           ),
         ],
