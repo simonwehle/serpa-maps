@@ -4,6 +4,7 @@ import 'package:flutter_map_compass/flutter_map_compass.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:serpa_maps/utils/adaptive_max_zoom.dart';
 import 'package:serpa_maps/widgets/map/serpa_fab.dart';
 import 'package:vector_map_tiles/vector_map_tiles.dart';
 
@@ -56,7 +57,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           initialCenter: LatLng(0, 0),
           initialZoom: 2,
           minZoom: 1,
-          maxZoom: 20,
+          maxZoom: adaptiveMaxZoom(ref: ref),
           backgroundColor: Colors.white,
           onMapReady: () async {
             await ref
