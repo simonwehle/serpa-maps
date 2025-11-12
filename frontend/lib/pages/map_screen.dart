@@ -24,21 +24,16 @@ class MapScreen extends ConsumerStatefulWidget {
 
 class _MapScreenState extends ConsumerState<MapScreen> {
   final _mapController = MapController();
-  Style? style;
+  late Future<Style> styleFuture;
   String activeLayer = 'Vector';
 
   @override
   void initState() {
     super.initState();
 
-    StyleReader(
+    styleFuture = StyleReader(
       uri: 'https://tiles.openfreemap.org/styles/liberty',
-      //logger: const Logger.console(),
-    ).read().then((style) {
-      this.style = style;
-
-      setState(() {});
-    });
+    ).read();
   }
 
   void openAddPlaceBottomSheet({double? latitude, double? longitude}) {
@@ -49,17 +44,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   void openLayerBottomSheet() {
-    showSerpaBottomSheet(
-      context: context,
-      child: LayerBottomSheet(
-        activeLayer: activeLayer,
-        onLayerSelected: (layer) {
-          setState(() {
-            activeLayer = layer;
-          });
-        },
-      ),
-    );
+    showSerpaBottomSheet(context: context, child: LayerBottomSheet());
   }
 
   @override
@@ -72,6 +57,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           initialZoom: 2,
           minZoom: 1,
           maxZoom: 20,
+          backgroundColor: Colors.white,
           onMapReady: () async {
             await ref
                 .read(locationPermissionProvider.notifier)
@@ -89,29 +75,49 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             );
           },
         ),
+
         children: [
-          mapBaseLayer(style: style, activeLayer: activeLayer),
-          OverlayLayer(),
-          if (ref.watch(markersVisibleProvider)) PlaceMarkersLayer(),
-          if (ref.watch(locationPermissionProvider)) CurrentLocationLayer(),
-          const MapCompass.cupertino(
-            hideIfRotatedNorth: true,
-            padding: EdgeInsets.fromLTRB(0, 50, 10, 0),
+          FutureBuilder<Style>(
+            future: styleFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Fehler: ${snapshot.error}'));
+              } else if (snapshot.hasData) {
+                final style = snapshot.data!;
+                return Stack(
+                  children: [
+                    MapBaseLayer(style: style),
+                    OverlayLayer(),
+                    if (ref.watch(markersVisibleProvider)) PlaceMarkersLayer(),
+                    if (ref.watch(locationPermissionProvider))
+                      CurrentLocationLayer(),
+                    const MapCompass.cupertino(
+                      hideIfRotatedNorth: true,
+                      padding: EdgeInsets.fromLTRB(0, 50, 10, 0),
+                    ),
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(0, 100, 10, 0),
+                        child: FloatingActionButton(
+                          mini: true,
+                          backgroundColor: Colors.white,
+                          onPressed: openLayerBottomSheet,
+                          shape: CircleBorder(),
+                          child: const Icon(Icons.layers),
+                        ),
+                      ),
+                    ),
+                    AttributionWidget(activeLayer: activeLayer),
+                  ],
+                );
+              } else {
+                return const SizedBox.shrink();
+              }
+            },
           ),
-          Align(
-            alignment: Alignment.topRight,
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(0, 100, 10, 0),
-              child: FloatingActionButton(
-                mini: true,
-                backgroundColor: Colors.white,
-                onPressed: openLayerBottomSheet,
-                shape: CircleBorder(),
-                child: const Icon(Icons.layers),
-              ),
-            ),
-          ),
-          AttributionWidget(activeLayer: activeLayer),
         ],
       ),
       floatingActionButton: Column(
