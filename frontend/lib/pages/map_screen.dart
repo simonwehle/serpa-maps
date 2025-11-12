@@ -4,6 +4,7 @@ import 'package:flutter_map_compass/flutter_map_compass.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:serpa_maps/widgets/map/serpa_fab.dart';
 import 'package:vector_map_tiles/vector_map_tiles.dart';
 
 import 'package:serpa_maps/providers/location_permission_provider.dart';
@@ -25,7 +26,6 @@ class MapScreen extends ConsumerStatefulWidget {
 class _MapScreenState extends ConsumerState<MapScreen> {
   final _mapController = MapController();
   late Future<Style> styleFuture;
-  String activeLayer = 'Vector';
 
   @override
   void initState() {
@@ -110,35 +110,17 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                         ),
                       ),
                     ),
-                    AttributionWidget(activeLayer: activeLayer),
+                    SerpaFab(
+                      mapController: _mapController,
+                      openAddPlaceBottomSheet: openAddPlaceBottomSheet,
+                    ),
+                    AttributionWidget(),
                   ],
                 );
               } else {
                 return const SizedBox.shrink();
               }
             },
-          ),
-        ],
-      ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            backgroundColor: Colors.white,
-            shape: const CircleBorder(),
-            onPressed: () async {
-              await ref
-                  .read(locationPermissionProvider.notifier)
-                  .requestLocationOrZoomMap(_mapController);
-            },
-            child: const Icon(Icons.my_location),
-          ),
-          const SizedBox(height: 15),
-          FloatingActionButton(
-            onPressed: () {
-              openAddPlaceBottomSheet();
-            },
-            child: const Icon(Icons.add),
           ),
         ],
       ),
