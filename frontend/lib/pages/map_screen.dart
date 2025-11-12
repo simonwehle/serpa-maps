@@ -25,7 +25,6 @@ class MapScreen extends ConsumerStatefulWidget {
 class _MapScreenState extends ConsumerState<MapScreen> {
   final _mapController = MapController();
   late Future<Style> styleFuture;
-  String activeLayer = 'Vector';
 
   @override
   void initState() {
@@ -110,7 +109,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                         ),
                       ),
                     ),
-                    AttributionWidget(activeLayer: activeLayer),
+                    AttributionWidget(),
                   ],
                 );
               } else {
