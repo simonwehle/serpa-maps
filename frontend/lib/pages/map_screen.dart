@@ -86,33 +86,38 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 return Center(child: Text('Fehler: ${snapshot.error}'));
               } else if (snapshot.hasData) {
                 final style = snapshot.data!;
-                return MapBaseLayer(style: style);
+                return Stack(
+                  children: [
+                    MapBaseLayer(style: style),
+                    OverlayLayer(),
+                    if (ref.watch(markersVisibleProvider)) PlaceMarkersLayer(),
+                    if (ref.watch(locationPermissionProvider))
+                      CurrentLocationLayer(),
+                    const MapCompass.cupertino(
+                      hideIfRotatedNorth: true,
+                      padding: EdgeInsets.fromLTRB(0, 50, 10, 0),
+                    ),
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(0, 100, 10, 0),
+                        child: FloatingActionButton(
+                          mini: true,
+                          backgroundColor: Colors.white,
+                          onPressed: openLayerBottomSheet,
+                          shape: CircleBorder(),
+                          child: const Icon(Icons.layers),
+                        ),
+                      ),
+                    ),
+                    AttributionWidget(activeLayer: activeLayer),
+                  ],
+                );
               } else {
                 return const SizedBox.shrink();
               }
             },
           ),
-          OverlayLayer(),
-          if (ref.watch(markersVisibleProvider)) PlaceMarkersLayer(),
-          if (ref.watch(locationPermissionProvider)) CurrentLocationLayer(),
-          const MapCompass.cupertino(
-            hideIfRotatedNorth: true,
-            padding: EdgeInsets.fromLTRB(0, 50, 10, 0),
-          ),
-          Align(
-            alignment: Alignment.topRight,
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(0, 100, 10, 0),
-              child: FloatingActionButton(
-                mini: true,
-                backgroundColor: Colors.white,
-                onPressed: openLayerBottomSheet,
-                shape: CircleBorder(),
-                child: const Icon(Icons.layers),
-              ),
-            ),
-          ),
-          AttributionWidget(activeLayer: activeLayer),
         ],
       ),
       floatingActionButton: Column(
