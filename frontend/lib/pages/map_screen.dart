@@ -58,7 +58,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           initialZoom: 2,
           minZoom: 1,
           maxZoom: adaptiveMaxZoom(ref: ref),
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           onMapReady: () async {
             await ref
                 .read(locationPermissionProvider.notifier)
@@ -104,7 +104,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                         padding: EdgeInsets.fromLTRB(0, 100, 10, 0),
                         child: FloatingActionButton(
                           mini: true,
-                          backgroundColor: Colors.white,
+                          backgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.surface,
                           onPressed: openLayerBottomSheet,
                           shape: CircleBorder(),
                           child: const Icon(Icons.layers),

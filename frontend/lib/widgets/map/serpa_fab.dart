@@ -22,7 +22,7 @@ class SerpaFab extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             FloatingActionButton(
-              backgroundColor: Colors.white,
+              backgroundColor: Theme.of(context).colorScheme.surface,
               shape: const CircleBorder(),
               onPressed: () async {
                 await ref

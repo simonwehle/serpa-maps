@@ -16,8 +16,8 @@ class SerpaBottomSheet extends StatelessWidget {
           maxChildSize: 0.85,
           builder: (context, scrollController) {
             return Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
               ),
               child: ListView(
@@ -49,11 +49,11 @@ class SerpaBottomSheet extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black26,
+                    color: Theme.of(context).colorScheme.shadow,
                     blurRadius: 10,
                     spreadRadius: 0,
                     offset: Offset(0, -4),
