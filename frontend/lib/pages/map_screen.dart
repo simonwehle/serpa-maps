@@ -57,7 +57,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           initialCenter: LatLng(0, 0),
           initialZoom: 2,
           minZoom: 1,
-          maxZoom: adaptiveMaxZoom(ref: ref),
+          maxZoom: adaptiveMaxZoom(ref: ref, mapController: _mapController),
           backgroundColor: Colors.white,
           onMapReady: () async {
             await ref
