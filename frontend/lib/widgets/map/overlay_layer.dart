@@ -13,10 +13,7 @@ class OverlayLayer extends ConsumerWidget {
     final overlayUrl = ref.read(overlayUrlProvider);
     if (overlayUrl != '') {
       if (ref.watch(overlayActiveProvider)) {
-        return TileLayer(
-          urlTemplate: overlayUrl,
-          userAgentPackageName: 'org.serpamaps',
-        );
+        return TileLayer(urlTemplate: overlayUrl);
       } else {
         return const SizedBox.shrink();
       }

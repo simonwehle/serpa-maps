@@ -38,7 +38,7 @@ class SerpaMaps extends StatelessWidget {
           shadow: Colors.blueGrey,
         ),
       ),
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.system,
       home: const MapScreen(),
     );
   }
