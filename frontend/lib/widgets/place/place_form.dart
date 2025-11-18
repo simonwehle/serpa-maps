@@ -6,6 +6,7 @@ import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/utils/extract_gps.dart';
 import 'package:serpa_maps/widgets/place/place_assets.dart';
+import 'package:serpa_maps/widgets/place/place_form_button.dart';
 
 class PlaceForm extends StatelessWidget {
   final Place? place;
@@ -51,6 +52,8 @@ class PlaceForm extends StatelessWidget {
             children: [
               Expanded(
                 child: DropdownMenu<Category>(
+                  width:
+                      MediaQuery.of(context).size.width - 56.0 - 8.0 - 2 * 16.0,
                   initialSelection: selectedCategory,
                   onSelected: (Category? newCategory) {
                     onCategorySelected(newCategory);
@@ -64,18 +67,9 @@ class PlaceForm extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              Container(padding: EdgeInsets.all(8)),
-              Container(
-                height: 56.0,
-                width: 56.0,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey, width: 2.0),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: IconButton(
-                  icon: const Icon(Symbols.forms_add_on),
-                  onPressed: () => print("Button Pressed"),
-                ),
+              PlaceFormButton(
+                icon: Symbols.forms_add_on,
+                onPressed: () => print("Button Pressed"),
               ),
             ],
           ),
@@ -86,30 +80,22 @@ class PlaceForm extends StatelessWidget {
         ],
         if (place == null)
           Center(
-            child: Container(
-              height: 56.0,
-              width: 56.0,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey, width: 2.0),
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: IconButton(
-                icon: const Icon(Icons.add_a_photo),
-                onPressed: () async {
-                  final picker = ImagePicker();
-                  final XFile? image = await picker.pickImage(
-                    source: ImageSource.gallery,
-                  );
+            child: PlaceFormButton(
+              icon: Icons.add_a_photo,
+              onPressed: () async {
+                final picker = ImagePicker();
+                final XFile? image = await picker.pickImage(
+                  source: ImageSource.gallery,
+                );
 
-                  if (image != null) {
-                    final gps = await extractGpsFromImage(image);
-                    if (gps != null) {
-                      latitudeController.text = gps.$1.toString();
-                      longitudeController.text = gps.$2.toString();
-                    }
+                if (image != null) {
+                  final gps = await extractGpsFromImage(image);
+                  if (gps != null) {
+                    latitudeController.text = gps.$1.toString();
+                    longitudeController.text = gps.$2.toString();
                   }
-                },
-              ),
+                }
+              },
             ),
           ),
         const SizedBox(height: 16),
