@@ -5,6 +5,7 @@ import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:serpa_maps/utils/adaptive_max_zoom.dart';
+import 'package:serpa_maps/widgets/map/layer_button.dart';
 import 'package:serpa_maps/widgets/map/serpa_fab.dart';
 import 'package:vector_map_tiles/vector_map_tiles.dart';
 
@@ -98,21 +99,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                       hideIfRotatedNorth: true,
                       padding: EdgeInsets.fromLTRB(0, 50, 10, 0),
                     ),
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(0, 100, 10, 0),
-                        child: FloatingActionButton(
-                          mini: true,
-                          backgroundColor: Theme.of(
-                            context,
-                          ).colorScheme.surface,
-                          onPressed: openLayerBottomSheet,
-                          shape: CircleBorder(),
-                          child: const Icon(Icons.layers),
-                        ),
-                      ),
-                    ),
+                    LayerButton(onPressed: openLayerBottomSheet),
                     SerpaFab(
                       mapController: _mapController,
                       openAddPlaceBottomSheet: openAddPlaceBottomSheet,
