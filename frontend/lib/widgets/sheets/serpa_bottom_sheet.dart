@@ -46,21 +46,25 @@ class SerpaBottomSheet extends StatelessWidget {
             bottom: 0,
             left: 0,
             right: 0,
-            child: Container(
-              padding: const EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Theme.of(context).colorScheme.shadow,
-                    blurRadius: 10,
-                    spreadRadius: 0,
-                    offset: Offset(0, -4),
+            child: Column(
+              children: [
+                Container(
+                  //height: 1,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
                   ),
-                ],
-              ),
-              child: bottomActions,
+                  child: Divider(
+                    color: Theme.of(context).dividerColor,
+                    indent: 16,
+                    endIndent: 16,
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  color: Theme.of(context).colorScheme.surface,
+                  child: bottomActions,
+                ),
+              ],
             ),
           ),
       ],

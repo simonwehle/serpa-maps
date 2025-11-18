@@ -15,7 +15,7 @@ class PlaceFormActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
       child: Row(
         children: [
           Expanded(
@@ -26,7 +26,7 @@ class PlaceFormActions extends StatelessWidget {
           ),
           const SizedBox(width: 16),
           Expanded(
-            child: ElevatedButton(
+            child: FilledButton(
               onPressed: onSave,
               child: Text(isNew ? 'Add' : 'Save'),
             ),

@@ -23,19 +23,19 @@ class SerpaMaps extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Serpa Maps',
       theme: ThemeData(
+        dividerColor: Colors.grey[400],
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.blue,
           brightness: Brightness.light,
           surface: Colors.white,
-          shadow: Colors.black26,
         ),
       ),
       darkTheme: ThemeData(
+        dividerColor: Colors.grey[600],
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.blue,
           brightness: Brightness.dark,
           surface: Colors.black,
-          shadow: Colors.blueGrey,
         ),
       ),
       themeMode: ThemeMode.system,
