@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/pages/map_screen.dart';
 
 void main() async {
@@ -22,6 +23,8 @@ class SerpaMaps extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Serpa Maps',
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       theme: ThemeData(
         dividerColor: Colors.grey[400],
         colorScheme: ColorScheme.fromSeed(

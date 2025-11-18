@@ -23,6 +23,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: any
 
   cupertino_icons: ^1.0.8
   flutter_map: ^8.2.2
@@ -51,6 +54,7 @@ dev_dependencies:
 flutter:
   assets:
     - .env
+  generate: true
 
   uses-material-design: true
 
