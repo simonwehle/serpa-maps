@@ -5,6 +5,7 @@ import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:serpa_maps/utils/adaptive_max_zoom.dart';
+import 'package:serpa_maps/widgets/map/layer_button.dart';
 import 'package:serpa_maps/widgets/map/serpa_fab.dart';
 import 'package:vector_map_tiles/vector_map_tiles.dart';
 
@@ -25,15 +26,108 @@ class MapScreen extends ConsumerStatefulWidget {
 }
 
 class _MapScreenState extends ConsumerState<MapScreen> {
-  final _mapController = MapController();
+  //final _mapController = MapController();
   late Future<Style> styleFuture;
+
+  // camera state
+  LatLng? lastCenter;
+  double? lastZoom;
+  double? lastRotation;
+
+  // style futures
+  late Future<Style> lightStyleFuture;
+  late Future<Style> darkStyleFuture;
+
+  // map controllers
+  late MapController lightController;
+  late MapController darkController;
+
+  // map builder
+  Widget _buildMap({
+    required Key key,
+    required MapController controller,
+    required Future<Style> styleFuture,
+  }) {
+    return FlutterMap(
+      key: key,
+      mapController: controller,
+      options: MapOptions(
+        initialCenter: lastCenter ?? const LatLng(0, 0),
+        initialZoom: lastZoom ?? 2,
+        initialRotation: lastRotation ?? 0,
+
+        minZoom: 1,
+        maxZoom: adaptiveMaxZoom(ref: ref),
+        backgroundColor: Theme.of(context).colorScheme.surface,
+
+        onMapReady: () async {
+          if (lastCenter != null) {
+            controller.move(lastCenter!, lastZoom ?? 2);
+            controller.rotate(lastRotation ?? 0);
+          }
+
+          await ref
+              .read(locationPermissionProvider.notifier)
+              .checkPermissionOrZoomMap(controller);
+        },
+
+        onPositionChanged: (pos, _) {
+          lastCenter = pos.center;
+          lastZoom = pos.zoom;
+          lastRotation = pos.rotation;
+        },
+
+        interactionOptions: const InteractionOptions(
+          enableMultiFingerGestureRace: true,
+        ),
+        cameraConstraint: const CameraConstraint.containLatitude(),
+
+        onLongPress: (_, point) {
+          openAddPlaceBottomSheet(
+            latitude: point.latitude,
+            longitude: point.longitude,
+          );
+        },
+      ),
+      children: [
+        FutureBuilder<Style>(
+          future: styleFuture,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) return const SizedBox.shrink();
+            return MapBaseLayer(style: snapshot.data!);
+          },
+        ),
+        // ---- your other layers stay where they are ----
+        OverlayLayer(),
+        if (ref.watch(markersVisibleProvider)) PlaceMarkersLayer(),
+        if (ref.watch(locationPermissionProvider)) CurrentLocationLayer(),
+        const MapCompass.cupertino(
+          hideIfRotatedNorth: true,
+          padding: EdgeInsets.fromLTRB(0, 50, 10, 0),
+        ),
+        LayerButton(onPressed: openLayerBottomSheet),
+        SerpaFab(
+          mapController: controller,
+          openAddPlaceBottomSheet: openAddPlaceBottomSheet,
+        ),
+        AttributionWidget(),
+      ],
+    );
+  }
 
   @override
   void initState() {
     super.initState();
 
-    styleFuture = StyleReader(
+    lightController = MapController();
+    darkController = MapController();
+
+    lightStyleFuture = StyleReader(
       uri: 'https://tiles.openfreemap.org/styles/liberty',
+    ).read();
+
+    darkStyleFuture = StyleReader(
+      uri: 'https://tiles.openfreemap.org/styles/positron',
     ).read();
   }
 
@@ -50,82 +144,24 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: FlutterMap(
-        mapController: _mapController,
-        options: MapOptions(
-          initialCenter: LatLng(0, 0),
-          initialZoom: 2,
-          minZoom: 1,
-          maxZoom: adaptiveMaxZoom(ref: ref),
-          backgroundColor: Theme.of(context).colorScheme.surface,
-          onMapReady: () async {
-            await ref
-                .read(locationPermissionProvider.notifier)
-                .checkPermissionOrZoomMap(_mapController);
-          },
-          interactionOptions: const InteractionOptions(
-            // reduce rotation on pinch zoom
-            enableMultiFingerGestureRace: true,
-          ),
-          cameraConstraint: const CameraConstraint.containLatitude(),
-          onLongPress: (_, point) {
-            openAddPlaceBottomSheet(
-              latitude: point.latitude,
-              longitude: point.longitude,
-            );
-          },
-        ),
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-        children: [
-          FutureBuilder<Style>(
-            future: styleFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(child: Text('Fehler: ${snapshot.error}'));
-              } else if (snapshot.hasData) {
-                final style = snapshot.data!;
-                return Stack(
-                  children: [
-                    MapBaseLayer(style: style),
-                    OverlayLayer(),
-                    if (ref.watch(markersVisibleProvider)) PlaceMarkersLayer(),
-                    if (ref.watch(locationPermissionProvider))
-                      CurrentLocationLayer(),
-                    const MapCompass.cupertino(
-                      hideIfRotatedNorth: true,
-                      padding: EdgeInsets.fromLTRB(0, 50, 10, 0),
-                    ),
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(0, 100, 10, 0),
-                        child: FloatingActionButton(
-                          mini: true,
-                          backgroundColor: Theme.of(
-                            context,
-                          ).colorScheme.surface,
-                          onPressed: openLayerBottomSheet,
-                          shape: CircleBorder(),
-                          child: const Icon(Icons.layers),
-                        ),
-                      ),
-                    ),
-                    SerpaFab(
-                      mapController: _mapController,
-                      openAddPlaceBottomSheet: openAddPlaceBottomSheet,
-                    ),
-                    AttributionWidget(),
-                  ],
-                );
-              } else {
-                return const SizedBox.shrink();
-              }
-            },
-          ),
-        ],
+    return Scaffold(
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 250),
+        switchInCurve: Curves.easeInOut,
+        switchOutCurve: Curves.easeInOut,
+        child: isDark
+            ? _buildMap(
+                key: const ValueKey('dark-map'),
+                controller: darkController,
+                styleFuture: darkStyleFuture,
+              )
+            : _buildMap(
+                key: const ValueKey('light-map'),
+                controller: lightController,
+                styleFuture: lightStyleFuture,
+              ),
       ),
     );
   }
