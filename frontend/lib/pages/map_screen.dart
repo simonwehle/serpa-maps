@@ -21,106 +21,30 @@ import 'package:serpa_maps/widgets/sheets/layer_bottom_sheet.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
+
   @override
   ConsumerState<MapScreen> createState() => _MapScreenState();
 }
 
 class _MapScreenState extends ConsumerState<MapScreen> {
-  //final _mapController = MapController();
-  late Future<Style> styleFuture;
+  late MapController _mapController;
 
-  // camera state
+  // Style futures
+  late Future<Style> lightStyleFuture;
+  late Future<Style> darkStyleFuture;
+
+  // Layer visibility
+  bool showLightStyle = true;
+
+  // Camera state
   LatLng? lastCenter;
   double? lastZoom;
   double? lastRotation;
 
-  // style futures
-  late Future<Style> lightStyleFuture;
-  late Future<Style> darkStyleFuture;
-
-  // map controllers
-  late MapController lightController;
-  late MapController darkController;
-
-  // map builder
-  Widget _buildMap({
-    required Key key,
-    required MapController controller,
-    required Future<Style> styleFuture,
-  }) {
-    return FlutterMap(
-      key: key,
-      mapController: controller,
-      options: MapOptions(
-        initialCenter: lastCenter ?? const LatLng(0, 0),
-        initialZoom: lastZoom ?? 2,
-        initialRotation: lastRotation ?? 0,
-
-        minZoom: 1,
-        maxZoom: adaptiveMaxZoom(ref: ref),
-        backgroundColor: Theme.of(context).colorScheme.surface,
-
-        onMapReady: () async {
-          if (lastCenter != null) {
-            controller.move(lastCenter!, lastZoom ?? 2);
-            controller.rotate(lastRotation ?? 0);
-          }
-
-          await ref
-              .read(locationPermissionProvider.notifier)
-              .checkPermissionOrZoomMap(controller);
-        },
-
-        onPositionChanged: (pos, _) {
-          lastCenter = pos.center;
-          lastZoom = pos.zoom;
-          lastRotation = pos.rotation;
-        },
-
-        interactionOptions: const InteractionOptions(
-          enableMultiFingerGestureRace: true,
-        ),
-        cameraConstraint: const CameraConstraint.containLatitude(),
-
-        onLongPress: (_, point) {
-          openAddPlaceBottomSheet(
-            latitude: point.latitude,
-            longitude: point.longitude,
-          );
-        },
-      ),
-      children: [
-        FutureBuilder<Style>(
-          future: styleFuture,
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) return const SizedBox.shrink();
-            return MapBaseLayer(style: snapshot.data!);
-          },
-        ),
-        // ---- your other layers stay where they are ----
-        OverlayLayer(),
-        if (ref.watch(markersVisibleProvider)) PlaceMarkersLayer(),
-        if (ref.watch(locationPermissionProvider)) CurrentLocationLayer(),
-        const MapCompass.cupertino(
-          hideIfRotatedNorth: true,
-          padding: EdgeInsets.fromLTRB(0, 50, 10, 0),
-        ),
-        LayerButton(onPressed: openLayerBottomSheet),
-        SerpaFab(
-          mapController: controller,
-          openAddPlaceBottomSheet: openAddPlaceBottomSheet,
-        ),
-        AttributionWidget(),
-      ],
-    );
-  }
-
   @override
   void initState() {
     super.initState();
-
-    lightController = MapController();
-    darkController = MapController();
+    _mapController = MapController();
 
     lightStyleFuture = StyleReader(
       uri: 'https://tiles.openfreemap.org/styles/liberty',
@@ -131,37 +55,63 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     ).read();
   }
 
-  void openAddPlaceBottomSheet({double? latitude, double? longitude}) {
-    showSerpaBottomSheet(
-      context: context,
-      child: AddPlaceBottomSheet(latitude: latitude, longitude: longitude),
-    );
-  }
-
-  void openLayerBottomSheet() {
-    showSerpaBottomSheet(context: context, child: LayerBottomSheet());
+  void toggleStyle() {
+    setState(() {
+      showLightStyle = !showLightStyle;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 250),
-        switchInCurve: Curves.easeInOut,
-        switchOutCurve: Curves.easeInOut,
-        child: isDark
-            ? _buildMap(
-                key: const ValueKey('dark-map'),
-                controller: darkController,
-                styleFuture: darkStyleFuture,
-              )
-            : _buildMap(
-                key: const ValueKey('light-map'),
-                controller: lightController,
-                styleFuture: lightStyleFuture,
-              ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: toggleStyle,
+        child: Icon(showLightStyle ? Icons.dark_mode : Icons.light_mode),
+      ),
+      body: FutureBuilder<List<Style>>(
+        future: Future.wait([lightStyleFuture, darkStyleFuture]),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData)
+            return const Center(child: CircularProgressIndicator());
+
+          final lightStyle = snapshot.data![0];
+          final darkStyle = snapshot.data![1];
+
+          return FlutterMap(
+            mapController: _mapController,
+            options: MapOptions(
+              initialCenter: lastCenter ?? LatLng(0, 0),
+              initialZoom: lastZoom ?? 2,
+              onPositionChanged: (pos, _) {
+                lastCenter = pos.center;
+                lastZoom = pos.zoom;
+                lastRotation = pos.rotation;
+              },
+              minZoom: 1,
+              maxZoom: 20,
+            ),
+            children: [
+              // Light style layer
+              if (showLightStyle)
+                VectorTileLayer(
+                  theme: lightStyle.theme,
+                  tileProviders: lightStyle.providers,
+                ),
+
+              // Dark style layer
+              if (!showLightStyle)
+                VectorTileLayer(
+                  theme: darkStyle.theme,
+                  tileProviders: darkStyle.providers,
+                ),
+
+              // Example overlay layers
+              OverlayLayer(),
+              if (ref.watch(markersVisibleProvider)) PlaceMarkersLayer(),
+              if (ref.watch(locationPermissionProvider)) CurrentLocationLayer(),
+            ],
+          );
+        },
       ),
     );
   }
