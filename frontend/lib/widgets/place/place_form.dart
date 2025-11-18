@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:serpa_maps/l10n/app_localizations.dart';
 
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
@@ -40,9 +41,9 @@ class PlaceForm extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           child: TextField(
             controller: nameController,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: 'Name',
+              labelText: AppLocalizations.of(context)!.name,
             ),
           ),
         ),
@@ -104,9 +105,9 @@ class PlaceForm extends StatelessWidget {
           child: TextField(
             controller: descriptionController,
             maxLines: null,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: 'Beschreibung',
+              labelText: AppLocalizations.of(context)!.description,
             ),
           ),
         ),
@@ -118,9 +119,9 @@ class PlaceForm extends StatelessWidget {
                 child: TextField(
                   controller: latitudeController,
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'Latitude',
+                    labelText: AppLocalizations.of(context)!.latitude,
                   ),
                   onChanged: (value) {
                     double? latitude = double.tryParse(value);
@@ -134,9 +135,9 @@ class PlaceForm extends StatelessWidget {
                 child: TextField(
                   controller: longitudeController,
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'Longitude',
+                    labelText: AppLocalizations.of(context)!.longitude,
                   ),
                   onChanged: (value) {
                     double? longitude = double.tryParse(value);

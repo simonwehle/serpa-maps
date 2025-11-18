@@ -98,17 +98,83 @@ abstract class AppLocalizations {
     Locale('en'),
   ];
 
+  /// No description provided for @add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get add;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @description.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get description;
+
+  /// No description provided for @latitude.
+  ///
+  /// In en, this message translates to:
+  /// **'Latitude'**
+  String get latitude;
+
+  /// No description provided for @longitude.
+  ///
+  /// In en, this message translates to:
+  /// **'Longitude'**
+  String get longitude;
+
+  /// No description provided for @name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get name;
+
+  /// No description provided for @noDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'No description available'**
+  String get noDescription;
+
+  /// No description provided for @osm.
+  ///
+  /// In en, this message translates to:
+  /// **'OSM'**
+  String get osm;
+
+  /// No description provided for @satellite.
+  ///
+  /// In en, this message translates to:
+  /// **'Satellite'**
+  String get satellite;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
   /// No description provided for @showMarkers.
   ///
   /// In en, this message translates to:
-  /// **'Show Markers'**
+  /// **'Show markers'**
   String get showMarkers;
 
   /// No description provided for @showOverlay.
   ///
   /// In en, this message translates to:
-  /// **'Show Overlay'**
+  /// **'Show overlay'**
   String get showOverlay;
+
+  /// No description provided for @vector.
+  ///
+  /// In en, this message translates to:
+  /// **'Vector'**
+  String get vector;
 }
 
 class _AppLocalizationsDelegate

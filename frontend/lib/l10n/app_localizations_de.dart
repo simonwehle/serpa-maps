@@ -9,8 +9,41 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
+  String get add => 'Hinzufügen';
+
+  @override
+  String get cancel => 'Abbrechen';
+
+  @override
+  String get description => 'Beschreibung';
+
+  @override
+  String get latitude => 'Breitengrad';
+
+  @override
+  String get longitude => 'Längengrad';
+
+  @override
+  String get name => 'Name';
+
+  @override
+  String get noDescription => 'Keine Beschreibung verfügbar';
+
+  @override
+  String get osm => 'OSM';
+
+  @override
+  String get satellite => 'Satellit';
+
+  @override
+  String get save => 'Speichern';
+
+  @override
   String get showMarkers => 'Markierungen anzeigen';
 
   @override
   String get showOverlay => 'Overlay anzeigen';
+
+  @override
+  String get vector => 'Vektor';
 }

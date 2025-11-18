@@ -9,8 +9,41 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get showMarkers => 'Show Markers';
+  String get add => 'Add';
 
   @override
-  String get showOverlay => 'Show Overlay';
+  String get cancel => 'Cancel';
+
+  @override
+  String get description => 'Description';
+
+  @override
+  String get latitude => 'Latitude';
+
+  @override
+  String get longitude => 'Longitude';
+
+  @override
+  String get name => 'Name';
+
+  @override
+  String get noDescription => 'No description available';
+
+  @override
+  String get osm => 'OSM';
+
+  @override
+  String get satellite => 'Satellite';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get showMarkers => 'Show markers';
+
+  @override
+  String get showOverlay => 'Show overlay';
+
+  @override
+  String get vector => 'Vector';
 }

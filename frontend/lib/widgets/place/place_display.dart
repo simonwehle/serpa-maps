@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/utils/icon_color_utils.dart';
@@ -72,7 +73,7 @@ class PlaceDisplay extends ConsumerWidget {
           child: Text(
             place.description?.isNotEmpty == true
                 ? place.description!
-                : 'Keine Beschreibung verfügbar.',
+                : AppLocalizations.of(context)!.noDescription,
           ),
         ),
         const SizedBox(height: 16),

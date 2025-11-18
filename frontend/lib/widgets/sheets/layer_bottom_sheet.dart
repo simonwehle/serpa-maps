@@ -18,12 +18,18 @@ class LayerBottomSheet extends ConsumerWidget {
         child: Column(
           children: [
             SegmentedButton<MapLayer>(
-              segments: const <ButtonSegment<MapLayer>>[
-                ButtonSegment(value: MapLayer.vector, label: Text('Vector')),
-                ButtonSegment(value: MapLayer.osm, label: Text('OSM')),
+              segments: <ButtonSegment<MapLayer>>[
+                ButtonSegment(
+                  value: MapLayer.vector,
+                  label: Text(AppLocalizations.of(context)!.vector),
+                ),
+                ButtonSegment(
+                  value: MapLayer.osm,
+                  label: Text(AppLocalizations.of(context)!.osm),
+                ),
                 ButtonSegment(
                   value: MapLayer.satellite,
-                  label: Text('Satellite'),
+                  label: Text(AppLocalizations.of(context)!.satellite),
                 ),
               ],
               selected: <MapLayer>{ref.watch(activeLayerProvider)},

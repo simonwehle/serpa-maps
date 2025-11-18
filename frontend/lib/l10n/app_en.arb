@@ -1,5 +1,16 @@
 {
   "@@locale": "en",
-  "showMarkers": "Show Markers",
-  "showOverlay": "Show Overlay"
+  "add": "Add",
+  "cancel": "Cancel",
+  "description": "Description",
+  "latitude": "Latitude",
+  "longitude": "Longitude",
+  "name": "Name",
+  "noDescription": "No description available",
+  "osm": "OSM",
+  "satellite": "Satellite",
+  "save": "Save",
+  "showMarkers": "Show markers",
+  "showOverlay": "Show overlay",
+  "vector": "Vector"
 }

@@ -1,5 +1,16 @@
 {
   "@@locale": "de",
+  "add": "Hinzufügen",
+  "cancel": "Abbrechen",
+  "description": "Beschreibung",
+  "latitude": "Breitengrad",
+  "longitude": "Längengrad",
+  "name": "Name",
+  "noDescription": "Keine Beschreibung verfügbar",
+  "osm": "OSM",
+  "satellite": "Satellit",
+  "save": "Speichern",
   "showMarkers": "Markierungen anzeigen",
-  "showOverlay": "Overlay anzeigen"
+  "showOverlay": "Overlay anzeigen",
+  "vector": "Vektor"
 }
