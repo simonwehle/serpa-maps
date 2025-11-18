@@ -110,6 +110,24 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get cancel;
 
+  /// No description provided for @categoryNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Category not found'**
+  String get categoryNotFound;
+
+  /// No description provided for @deletePlace.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Place'**
+  String get deletePlace;
+
+  /// No description provided for @deletePlaceQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to delete this place?'**
+  String get deletePlaceQuestion;
+
   /// No description provided for @description.
   ///
   /// In en, this message translates to:
@@ -134,6 +152,12 @@ abstract class AppLocalizations {
   /// **'Name'**
   String get name;
 
+  /// No description provided for @noCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'No categories available'**
+  String get noCategories;
+
   /// No description provided for @noDescription.
   ///
   /// In en, this message translates to:
@@ -145,6 +169,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'OSM'**
   String get osm;
+
+  /// No description provided for @placeNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Place not found'**
+  String get placeNotFound;
 
   /// No description provided for @satellite.
   ///
@@ -175,6 +205,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Vector'**
   String get vector;
+
+  /// No description provided for @yes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get yes;
 }
 
 class _AppLocalizationsDelegate

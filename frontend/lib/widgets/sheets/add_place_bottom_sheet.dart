@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/providers/category_provider.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
@@ -89,7 +90,7 @@ class _AddPlaceBottomSheetState extends ConsumerState<AddPlaceBottomSheet> {
       data: (categories) {
         selectedCategory ??= categories.isNotEmpty ? categories.first : null;
         if (selectedCategory == null) {
-          return Text('Keine Kategorien verfügbar');
+          return Text(AppLocalizations.of(context)!.noCategories);
         }
         return SerpaBottomSheet(
           bottomActions: PlaceFormActions(
@@ -113,7 +114,7 @@ class _AddPlaceBottomSheetState extends ConsumerState<AddPlaceBottomSheet> {
         );
       },
       loading: () => CircularProgressIndicator(),
-      error: (err, _) => Text('Fehler: $err'),
+      error: (err, _) => Text('Error: $err'),
     );
   }
 }

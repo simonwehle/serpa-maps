@@ -15,6 +15,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get cancel => 'Abbrechen';
 
   @override
+  String get categoryNotFound => 'Kategorie nicht gefunden';
+
+  @override
+  String get deletePlace => 'Ort löschen';
+
+  @override
+  String get deletePlaceQuestion => 'Möchten Sie diesen Ort löschen?';
+
+  @override
   String get description => 'Beschreibung';
 
   @override
@@ -27,10 +36,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get name => 'Name';
 
   @override
+  String get noCategories => 'Keine Kategorien verfügbar';
+
+  @override
   String get noDescription => 'Keine Beschreibung verfügbar';
 
   @override
   String get osm => 'OSM';
+
+  @override
+  String get placeNotFound => 'Ort nicht gefunden';
 
   @override
   String get satellite => 'Satellit';
@@ -46,4 +61,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get vector => 'Vektor';
+
+  @override
+  String get yes => 'Ja';
 }

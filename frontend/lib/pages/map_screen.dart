@@ -85,7 +85,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {
-                return Center(child: Text('Fehler: ${snapshot.error}'));
+                return Center(child: Text('Error: ${snapshot.error}'));
               } else if (snapshot.hasData) {
                 final style = snapshot.data!;
                 return Stack(

@@ -159,24 +159,26 @@ class PlaceForm extends StatelessWidget {
               onPressed: () => showDialog<String>(
                 context: context,
                 builder: (BuildContext context) => AlertDialog(
-                  title: const Text('Delete Place'),
-                  content: const Text('Do you want to delete this place?'),
+                  title: Text(AppLocalizations.of(context)!.deletePlace),
+                  content: Text(
+                    AppLocalizations.of(context)!.deletePlaceQuestion,
+                  ),
                   actions: <Widget>[
                     TextButton(
                       onPressed: () => Navigator.pop(context),
-                      child: const Text('Cancel'),
+                      child: Text(AppLocalizations.of(context)!.cancel),
                     ),
                     TextButton(
                       onPressed: () async {
                         if (deletePlace != null) await deletePlace!();
                         if (context.mounted) Navigator.pop(context);
                       },
-                      child: const Text('Yes'),
+                      child: Text(AppLocalizations.of(context)!.yes),
                     ),
                   ],
                 ),
               ),
-              child: const Text('Delete Place'),
+              child: Text(AppLocalizations.of(context)!.deletePlace),
             ),
           ),
       ],

@@ -15,6 +15,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancel => 'Cancel';
 
   @override
+  String get categoryNotFound => 'Category not found';
+
+  @override
+  String get deletePlace => 'Delete Place';
+
+  @override
+  String get deletePlaceQuestion => 'Do you want to delete this place?';
+
+  @override
   String get description => 'Description';
 
   @override
@@ -27,10 +36,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get name => 'Name';
 
   @override
+  String get noCategories => 'No categories available';
+
+  @override
   String get noDescription => 'No description available';
 
   @override
   String get osm => 'OSM';
+
+  @override
+  String get placeNotFound => 'Place not found';
 
   @override
   String get satellite => 'Satellite';
@@ -46,4 +61,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get vector => 'Vector';
+
+  @override
+  String get yes => 'Yes';
 }

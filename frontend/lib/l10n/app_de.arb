@@ -2,15 +2,21 @@
   "@@locale": "de",
   "add": "Hinzufügen",
   "cancel": "Abbrechen",
+  "categoryNotFound": "Kategorie nicht gefunden",
+  "deletePlace": "Ort löschen",
+  "deletePlaceQuestion": "Möchten Sie diesen Ort löschen?",
   "description": "Beschreibung",
   "latitude": "Breitengrad",
   "longitude": "Längengrad",
   "name": "Name",
+  "noCategories": "Keine Kategorien verfügbar",
   "noDescription": "Keine Beschreibung verfügbar",
   "osm": "OSM",
+  "placeNotFound": "Ort nicht gefunden",
   "satellite": "Satellit",
   "save": "Speichern",
   "showMarkers": "Markierungen anzeigen",
   "showOverlay": "Overlay anzeigen",
-  "vector": "Vektor"
+  "vector": "Vektor",
+  "yes": "Ja"
 }

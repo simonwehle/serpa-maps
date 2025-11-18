@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serpa_maps/l10n/app_localizations.dart';
 
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
@@ -112,10 +113,12 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final place = ref.watch(placeByIdProvider(widget.placeId));
-    if (place == null) return const Text('Place not found');
+    if (place == null) return Text(AppLocalizations.of(context)!.placeNotFound);
 
     final category = ref.watch(categoryByIdProvider(place.categoryId));
-    if (category == null) return const Text('Category not found');
+    if (category == null) {
+      return Text(AppLocalizations.of(context)!.categoryNotFound);
+    }
 
     final categoriesAsync = ref.watch(categoryProvider);
     return categoriesAsync.when(
