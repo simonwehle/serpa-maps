@@ -42,7 +42,7 @@ class PlaceDisplay extends ConsumerWidget {
                     icon: Icons.edit,
                     onPressed: () => toggleEditing(),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 12),
                   SheetButton(
                     icon: Icons.close,
                     onPressed: () => Navigator.pop(context),

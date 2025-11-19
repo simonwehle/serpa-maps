@@ -22,6 +22,14 @@ class SerpaDraggableSheet extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Theme.of(context).colorScheme.shadow,
+                    blurRadius: 10,
+                    spreadRadius: 0,
+                    offset: Offset(0, -4),
+                  ),
+                ],
               ),
               child: ListView(
                 controller: scrollController,
