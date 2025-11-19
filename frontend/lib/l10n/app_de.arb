@@ -3,6 +3,7 @@
   "add": "Hinzufügen",
   "cancel": "Abbrechen",
   "categoryNotFound": "Kategorie nicht gefunden",
+  "defaultMap": "Standard",
   "deletePlace": "Ort löschen",
   "deletePlaceQuestion": "Möchten Sie diesen Ort löschen?",
   "description": "Beschreibung",
@@ -11,12 +12,11 @@
   "name": "Name",
   "noCategories": "Keine Kategorien verfügbar",
   "noDescription": "Keine Beschreibung verfügbar",
-  "osm": "OSM",
+  "explore": "Erkunden",
   "placeNotFound": "Ort nicht gefunden",
   "satellite": "Satellit",
   "save": "Speichern",
   "showMarkers": "Markierungen anzeigen",
   "showOverlay": "Overlay anzeigen",
-  "vector": "Vektor",
   "yes": "Ja"
 }

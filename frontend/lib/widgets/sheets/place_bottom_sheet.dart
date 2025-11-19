@@ -7,7 +7,7 @@ import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/providers/category_provider.dart';
 import 'package:serpa_maps/providers/item_by_id_providers.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
-import 'package:serpa_maps/widgets/sheets/serpa_bottom_sheet.dart';
+import 'package:serpa_maps/widgets/sheets/serpa_draggable_sheet.dart';
 import 'package:serpa_maps/widgets/place/place_display.dart';
 import 'package:serpa_maps/widgets/place/place_form_actions.dart';
 import 'package:serpa_maps/widgets/place/place_form.dart';
@@ -125,7 +125,7 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
       data: (categories) {
         initializeControllers(place, categories, category);
 
-        return SerpaBottomSheet(
+        return SerpaDraggableSheet(
           bottomActions: isEditing
               ? PlaceFormActions(
                   onSave: () => _saveChanges(place.id),

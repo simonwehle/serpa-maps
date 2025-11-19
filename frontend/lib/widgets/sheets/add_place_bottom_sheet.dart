@@ -6,7 +6,7 @@ import 'package:serpa_maps/providers/category_provider.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/widgets/place/place_form_actions.dart';
 import 'package:serpa_maps/widgets/place/place_form.dart';
-import 'package:serpa_maps/widgets/sheets/serpa_bottom_sheet.dart';
+import 'package:serpa_maps/widgets/sheets/serpa_draggable_sheet.dart';
 
 class AddPlaceBottomSheet extends ConsumerStatefulWidget {
   final double? latitude;
@@ -92,7 +92,7 @@ class _AddPlaceBottomSheetState extends ConsumerState<AddPlaceBottomSheet> {
         if (selectedCategory == null) {
           return Text(AppLocalizations.of(context)!.noCategories);
         }
-        return SerpaBottomSheet(
+        return SerpaDraggableSheet(
           bottomActions: PlaceFormActions(
             onCancel: () => Navigator.pop(context),
             isNew: true,

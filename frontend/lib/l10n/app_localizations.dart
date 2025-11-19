@@ -116,6 +116,12 @@ abstract class AppLocalizations {
   /// **'Category not found'**
   String get categoryNotFound;
 
+  /// No description provided for @defaultMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get defaultMap;
+
   /// No description provided for @deletePlace.
   ///
   /// In en, this message translates to:
@@ -133,6 +139,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Description'**
   String get description;
+
+  /// No description provided for @explore.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore'**
+  String get explore;
 
   /// No description provided for @latitude.
   ///
@@ -164,12 +176,6 @@ abstract class AppLocalizations {
   /// **'No description available'**
   String get noDescription;
 
-  /// No description provided for @osm.
-  ///
-  /// In en, this message translates to:
-  /// **'OSM'**
-  String get osm;
-
   /// No description provided for @placeNotFound.
   ///
   /// In en, this message translates to:
@@ -199,12 +205,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Show overlay'**
   String get showOverlay;
-
-  /// No description provided for @vector.
-  ///
-  /// In en, this message translates to:
-  /// **'Vector'**
-  String get vector;
 
   /// No description provided for @yes.
   ///

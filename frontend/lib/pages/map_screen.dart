@@ -4,19 +4,19 @@ import 'package:flutter_map_compass/flutter_map_compass.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:serpa_maps/utils/adaptive_max_zoom.dart';
-import 'package:serpa_maps/widgets/map/layer_button.dart';
-import 'package:serpa_maps/widgets/map/serpa_fab.dart';
 import 'package:vector_map_tiles/vector_map_tiles.dart';
 
 import 'package:serpa_maps/providers/location_permission_provider.dart';
 import 'package:serpa_maps/providers/markers_visible_provider.dart';
+import 'package:serpa_maps/utils/adaptive_max_zoom.dart';
+import 'package:serpa_maps/widgets/map/layer_button.dart';
+import 'package:serpa_maps/widgets/map/serpa_fab.dart';
 import 'package:serpa_maps/widgets/map/attribution_widget.dart';
 import 'package:serpa_maps/widgets/map/map_layers.dart';
 import 'package:serpa_maps/widgets/map/place_markers_layer.dart';
 import 'package:serpa_maps/widgets/map/overlay_layer.dart';
 import 'package:serpa_maps/widgets/sheets/add_place_bottom_sheet.dart';
-import 'package:serpa_maps/widgets/sheets/serpa_bottom_sheet.dart';
+import 'package:serpa_maps/widgets/sheets/serpa_draggable_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/layer_bottom_sheet.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
@@ -39,14 +39,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   void openAddPlaceBottomSheet({double? latitude, double? longitude}) {
-    showSerpaBottomSheet(
+    showSerpaDraggableSheet(
       context: context,
       child: AddPlaceBottomSheet(latitude: latitude, longitude: longitude),
     );
   }
 
   void openLayerBottomSheet() {
-    showSerpaBottomSheet(context: context, child: LayerBottomSheet());
+    showSerpaDraggableSheet(context: context, child: LayerBottomSheet());
   }
 
   @override

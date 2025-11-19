@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 
-class SerpaBottomSheet extends StatelessWidget {
+class SerpaDraggableSheet extends StatelessWidget {
   final Widget child;
   final Widget? bottomActions;
 
-  const SerpaBottomSheet({super.key, required this.child, this.bottomActions});
+  const SerpaDraggableSheet({
+    super.key,
+    required this.child,
+    this.bottomActions,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -12,8 +16,7 @@ class SerpaBottomSheet extends StatelessWidget {
       children: [
         DraggableScrollableSheet(
           initialChildSize: 0.6,
-          minChildSize: 0.2,
-          maxChildSize: 0.85,
+          maxChildSize: 0.9,
           builder: (context, scrollController) {
             return Container(
               decoration: BoxDecoration(
@@ -22,7 +25,6 @@ class SerpaBottomSheet extends StatelessWidget {
               ),
               child: ListView(
                 controller: scrollController,
-                padding: const EdgeInsets.symmetric(vertical: 8),
                 children: [
                   Center(
                     child: Container(
@@ -72,7 +74,7 @@ class SerpaBottomSheet extends StatelessWidget {
   }
 }
 
-void showSerpaBottomSheet({
+void showSerpaDraggableSheet({
   required BuildContext context,
   required Widget child,
   bool isScrollControlled = true,

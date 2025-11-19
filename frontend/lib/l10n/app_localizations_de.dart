@@ -18,6 +18,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get categoryNotFound => 'Kategorie nicht gefunden';
 
   @override
+  String get defaultMap => 'Standard';
+
+  @override
   String get deletePlace => 'Ort löschen';
 
   @override
@@ -25,6 +28,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get description => 'Beschreibung';
+
+  @override
+  String get explore => 'Erkunden';
 
   @override
   String get latitude => 'Breitengrad';
@@ -42,9 +48,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get noDescription => 'Keine Beschreibung verfügbar';
 
   @override
-  String get osm => 'OSM';
-
-  @override
   String get placeNotFound => 'Ort nicht gefunden';
 
   @override
@@ -58,9 +61,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get showOverlay => 'Overlay anzeigen';
-
-  @override
-  String get vector => 'Vektor';
 
   @override
   String get yes => 'Ja';

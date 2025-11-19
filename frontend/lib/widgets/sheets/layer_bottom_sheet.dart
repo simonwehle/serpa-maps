@@ -5,14 +5,14 @@ import 'package:serpa_maps/providers/map_layer_provider.dart';
 import 'package:serpa_maps/providers/markers_visible_provider.dart';
 import 'package:serpa_maps/providers/overlay_active_prvoider.dart';
 import 'package:serpa_maps/providers/overlay_url_provider.dart';
-import 'package:serpa_maps/widgets/sheets/serpa_bottom_sheet.dart';
+import 'package:serpa_maps/widgets/sheets/serpa_draggable_sheet.dart';
 
 class LayerBottomSheet extends ConsumerWidget {
   const LayerBottomSheet({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SerpaBottomSheet(
+    return SerpaDraggableSheet(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -21,11 +21,11 @@ class LayerBottomSheet extends ConsumerWidget {
               segments: <ButtonSegment<MapLayer>>[
                 ButtonSegment(
                   value: MapLayer.vector,
-                  label: Text(AppLocalizations.of(context)!.vector),
+                  label: Text(AppLocalizations.of(context)!.defaultMap),
                 ),
                 ButtonSegment(
                   value: MapLayer.osm,
-                  label: Text(AppLocalizations.of(context)!.osm),
+                  label: Text(AppLocalizations.of(context)!.explore),
                 ),
                 ButtonSegment(
                   value: MapLayer.satellite,
