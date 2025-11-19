@@ -5,7 +5,19 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 class PlaceImage extends ConsumerWidget {
   final String url;
-  const PlaceImage({super.key, required this.url});
+  final double width;
+  final double height;
+  final BoxFit fit;
+  final BorderRadius? borderRadius;
+
+  const PlaceImage({
+    super.key,
+    required this.url,
+    this.width = 200,
+    this.height = 200,
+    this.fit = BoxFit.cover,
+    this.borderRadius,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -14,21 +26,21 @@ class PlaceImage extends ConsumerWidget {
     return Skeletonizer(
       enabled: imageAsync.isLoading,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: borderRadius ?? BorderRadius.circular(8),
         child: imageAsync.when(
           loading: () => Container(
-            width: 200,
-            height: 200,
+            width: width,
+            height: height,
             color: Theme.of(context).colorScheme.outlineVariant,
           ),
           error: (_, _) => Container(
-            width: 200,
-            height: 200,
-            color: Colors.grey[300],
+            width: width,
+            height: height,
+            color: Theme.of(context).colorScheme.outlineVariant,
             child: const Icon(Icons.broken_image),
           ),
           data: (bytes) =>
-              Image.memory(bytes, width: 200, height: 200, fit: BoxFit.cover),
+              Image.memory(bytes, width: width, height: height, fit: fit),
         ),
       ),
     );
