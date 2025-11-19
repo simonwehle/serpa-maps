@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:serpa_maps/models/asset.dart';
 import 'package:serpa_maps/providers/baseurl_provider.dart';
+import 'package:serpa_maps/widgets/place/place_image.dart';
 
 class PlaceAssets extends ConsumerWidget {
   final List<Asset> assets;
@@ -27,26 +28,7 @@ class PlaceAssets extends ConsumerWidget {
 
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: Image.network(
-                    '$baseUrl/$url',
-                    width: 200,
-                    height: 200,
-                    fit: BoxFit.cover,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Container(
-                        width: 200,
-                        height: 200,
-                        color: Colors.grey[300],
-                      );
-                    },
-                    errorBuilder: (_, _, _) => Container(
-                      width: 200,
-                      height: 200,
-                      color: Colors.grey[300],
-                      child: const Icon(Icons.broken_image),
-                    ),
-                  ),
+                  child: PlaceImage(url: '$baseUrl/$url'),
                 );
               },
               separatorBuilder: (context, index) => const SizedBox(width: 8),

@@ -44,6 +44,7 @@ dependencies:
   material_symbols_icons: ^4.2874.0
   vector_map_tiles: ^9.0.0-beta.8
   material_design_icons_flutter: ^7.0.7296
+  skeletonizer: ^2.1.0+1
 
 dev_dependencies:
   flutter_test:
