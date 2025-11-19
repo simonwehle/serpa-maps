@@ -31,6 +31,7 @@ class SerpaMaps extends StatelessWidget {
           seedColor: Colors.blue,
           brightness: Brightness.light,
           surface: Colors.white,
+          outline: Colors.grey[200],
         ),
       ),
       darkTheme: ThemeData(
@@ -39,6 +40,7 @@ class SerpaMaps extends StatelessWidget {
           seedColor: Colors.blue,
           brightness: Brightness.dark,
           surface: Colors.black,
+          outline: Colors.grey[800],
         ),
       ),
       themeMode: ThemeMode.system,

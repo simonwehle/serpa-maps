@@ -10,9 +10,14 @@ class SheetButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = 15.0;
     return CircleAvatar(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Theme.of(context).colorScheme.outline,
       radius: size,
-      child: IconButton(icon: Icon(icon), onPressed: onPressed, iconSize: size),
+      child: IconButton(
+        icon: Icon(icon),
+        onPressed: onPressed,
+        iconSize: size,
+        color: Theme.of(context).colorScheme.inverseSurface,
+      ),
     );
   }
 }
