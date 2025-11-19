@@ -32,6 +32,14 @@ class PlaceAssets extends ConsumerWidget {
                     width: 200,
                     height: 200,
                     fit: BoxFit.cover,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Container(
+                        width: 200,
+                        height: 200,
+                        color: Colors.grey[300],
+                      );
+                    },
                     errorBuilder: (_, _, _) => Container(
                       width: 200,
                       height: 200,
