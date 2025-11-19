@@ -5,6 +5,7 @@ import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/utils/icon_color_utils.dart';
 import 'package:serpa_maps/widgets/place/place_assets.dart';
+import 'package:serpa_maps/widgets/sheets/sheet_button.dart';
 
 class PlaceDisplay extends ConsumerWidget {
   final Category category;
@@ -24,7 +25,7 @@ class PlaceDisplay extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -37,12 +38,13 @@ class PlaceDisplay extends ConsumerWidget {
               ),
               Row(
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit),
+                  SheetButton(
+                    icon: Icons.edit,
                     onPressed: () => toggleEditing(),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
+                  const SizedBox(width: 8),
+                  SheetButton(
+                    icon: Icons.close,
                     onPressed: () => Navigator.pop(context),
                   ),
                 ],
@@ -51,12 +53,17 @@ class PlaceDisplay extends ConsumerWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Row(
             children: [
               CircleAvatar(
                 backgroundColor: colorFromHex(category.color),
-                child: Icon(iconFromString(category.icon), color: Colors.white),
+                maxRadius: 12.5,
+                child: Icon(
+                  iconFromString(category.icon),
+                  color: Colors.white,
+                  size: 15,
+                ),
               ),
               const SizedBox(width: 8),
               Text(
@@ -66,6 +73,7 @@ class PlaceDisplay extends ConsumerWidget {
             ],
           ),
         ),
+        const SizedBox(height: 16),
         PlaceAssets(assets: place.assets),
         const SizedBox(height: 16),
         Padding(

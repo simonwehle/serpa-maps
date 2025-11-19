@@ -24,7 +24,6 @@ class MapBaseLayer extends ConsumerWidget {
       MapLayer.satellite => TileLayer(
         urlTemplate:
             'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-        userAgentPackageName: 'org.serpamaps',
       ),
     };
   }

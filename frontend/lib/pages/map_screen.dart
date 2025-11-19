@@ -4,6 +4,7 @@ import 'package:flutter_map_compass/flutter_map_compass.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:serpa_maps/widgets/sheets/serpa_bottom_sheet.dart';
 import 'package:vector_map_tiles/vector_map_tiles.dart';
 
 import 'package:serpa_maps/providers/location_permission_provider.dart';
@@ -46,7 +47,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   void openLayerBottomSheet() {
-    showSerpaDraggableSheet(context: context, child: LayerBottomSheet());
+    showSerpaBottomSheet(context: context, child: LayerBottomSheet());
   }
 
   @override
