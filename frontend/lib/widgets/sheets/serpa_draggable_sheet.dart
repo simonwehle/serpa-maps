@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:serpa_maps/widgets/sheets/serpa_bottom_sheet.dart';
 
 class SerpaDraggableSheet extends StatelessWidget {
   final Widget child;
@@ -18,19 +19,7 @@ class SerpaDraggableSheet extends StatelessWidget {
           initialChildSize: 0.6,
           maxChildSize: 0.9,
           builder: (context, scrollController) {
-            return Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Theme.of(context).colorScheme.shadow,
-                    blurRadius: 10,
-                    spreadRadius: 0,
-                    offset: Offset(0, -4),
-                  ),
-                ],
-              ),
+            return SerpaBottomSheet(
               child: ListView(
                 controller: scrollController,
                 children: [
@@ -40,7 +29,7 @@ class SerpaDraggableSheet extends StatelessWidget {
                       width: 40,
                       height: 4,
                       decoration: BoxDecoration(
-                        color: Colors.grey[400],
+                        color: Theme.of(context).dividerColor,
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),

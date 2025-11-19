@@ -5,7 +5,7 @@ import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/utils/icon_color_utils.dart';
 import 'package:serpa_maps/widgets/place/place_assets.dart';
-import 'package:serpa_maps/widgets/sheets/sheet_button.dart';
+import 'package:serpa_maps/widgets/sheets/sheet_header.dart';
 
 class PlaceDisplay extends ConsumerWidget {
   final Category category;
@@ -26,30 +26,9 @@ class PlaceDisplay extends ConsumerWidget {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                place.name,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Row(
-                children: [
-                  SheetButton(
-                    icon: Icons.edit,
-                    onPressed: () => toggleEditing(),
-                  ),
-                  const SizedBox(width: 12),
-                  SheetButton(
-                    icon: Icons.close,
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
-              ),
-            ],
+          child: SheetHeader(
+            title: place.name,
+            onPressed: () => toggleEditing(),
           ),
         ),
         Padding(

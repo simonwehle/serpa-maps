@@ -4,9 +4,6 @@ import 'package:flutter_map_compass/flutter_map_compass.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:serpa_maps/widgets/sheets/serpa_bottom_sheet.dart';
-import 'package:vector_map_tiles/vector_map_tiles.dart';
-
 import 'package:serpa_maps/providers/location_permission_provider.dart';
 import 'package:serpa_maps/providers/markers_visible_provider.dart';
 import 'package:serpa_maps/utils/adaptive_max_zoom.dart';
@@ -18,7 +15,9 @@ import 'package:serpa_maps/widgets/map/place_markers_layer.dart';
 import 'package:serpa_maps/widgets/map/overlay_layer.dart';
 import 'package:serpa_maps/widgets/sheets/add_place_bottom_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_draggable_sheet.dart';
+import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/layer_bottom_sheet.dart';
+import 'package:vector_map_tiles/vector_map_tiles.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
@@ -47,7 +46,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   void openLayerBottomSheet() {
-    showSerpaBottomSheet(context: context, child: LayerBottomSheet());
+    showSerpaStaticSheet(context: context, child: LayerBottomSheet());
   }
 
   @override
@@ -67,7 +66,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 .checkPermissionOrZoomMap(_mapController);
           },
           interactionOptions: const InteractionOptions(
-            // reduce rotation on pinch zoom
+            /// The following option reduces rotation on pinch zoom
             enableMultiFingerGestureRace: true,
           ),
           cameraConstraint: const CameraConstraint.containLatitude(),

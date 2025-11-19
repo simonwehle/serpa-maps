@@ -1,30 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:serpa_maps/widgets/sheets/serpa_bottom_sheet.dart';
+import 'package:serpa_maps/widgets/sheets/sheet_header.dart';
 
-class SerpaBottomSheet extends StatelessWidget {
+class SerpaStaticSheet extends StatelessWidget {
+  final String title;
   final Widget child;
 
-  const SerpaBottomSheet({super.key, required this.child});
+  const SerpaStaticSheet({super.key, required this.title, required this.child});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-        boxShadow: [
-          BoxShadow(
-            color: Theme.of(context).colorScheme.shadow,
-            blurRadius: 10,
-            offset: Offset(0, -4),
+    return SerpaBottomSheet(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                SheetHeader(title: title),
+                const SizedBox(height: 16),
+                child,
+              ],
+            ),
           ),
         ],
       ),
-      child: child,
     );
   }
 }
 
-void showSerpaBottomSheet({
+void showSerpaStaticSheet({
   required BuildContext context,
   required Widget child,
   bool isScrollControlled = false,
