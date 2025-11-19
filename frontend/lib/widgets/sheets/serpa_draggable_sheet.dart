@@ -13,60 +13,63 @@ class SerpaDraggableSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        DraggableScrollableSheet(
-          initialChildSize: 0.6,
-          maxChildSize: 0.9,
-          builder: (context, scrollController) {
-            return SerpaBottomSheet(
-              child: ListView(
-                controller: scrollController,
-                children: [
-                  Center(
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      width: 40,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).dividerColor,
-                        borderRadius: BorderRadius.circular(2),
+    return TapRegion(
+      onTapOutside: (_) => Navigator.of(context).pop(),
+      child: Stack(
+        children: [
+          DraggableScrollableSheet(
+            initialChildSize: 0.6,
+            maxChildSize: 0.9,
+            builder: (context, scrollController) {
+              return SerpaBottomSheet(
+                child: ListView(
+                  controller: scrollController,
+                  children: [
+                    Center(
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        width: 40,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).dividerColor,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
                       ),
                     ),
+                    child,
+                  ],
+                ),
+              );
+            },
+          ),
+          if (bottomActions != null)
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Column(
+                children: [
+                  Container(
+                    //height: 1,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                    ),
+                    child: Divider(
+                      color: Theme.of(context).dividerColor,
+                      indent: 16,
+                      endIndent: 16,
+                    ),
                   ),
-                  child,
+                  Container(
+                    padding: const EdgeInsets.only(bottom: 16.0),
+                    color: Theme.of(context).colorScheme.surface,
+                    child: bottomActions,
+                  ),
                 ],
               ),
-            );
-          },
-        ),
-        if (bottomActions != null)
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Column(
-              children: [
-                Container(
-                  //height: 1,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
-                  ),
-                  child: Divider(
-                    color: Theme.of(context).dividerColor,
-                    indent: 16,
-                    endIndent: 16,
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.only(bottom: 16.0),
-                  color: Theme.of(context).colorScheme.surface,
-                  child: bottomActions,
-                ),
-              ],
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 }
