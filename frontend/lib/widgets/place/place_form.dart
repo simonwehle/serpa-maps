@@ -35,21 +35,20 @@ class PlaceForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-          child: TextField(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        children: [
+          const SizedBox(height: 8),
+          TextField(
             controller: nameController,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
               labelText: AppLocalizations.of(context)!.name,
             ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
+          const SizedBox(height: 16),
+          Row(
             children: [
               Expanded(
                 child: DropdownMenu<Category>(
@@ -74,35 +73,35 @@ class PlaceForm extends StatelessWidget {
               ),
             ],
           ),
-        ),
-        if (place != null) ...[
-          PlaceAssets(assets: place!.assets),
-          if (place!.assets.isNotEmpty) const SizedBox(height: 16),
-        ],
-        if (place == null)
-          Center(
-            child: PlaceFormButton(
-              icon: Icons.add_a_photo,
-              onPressed: () async {
-                final picker = ImagePicker();
-                final XFile? image = await picker.pickImage(
-                  source: ImageSource.gallery,
-                );
+          const SizedBox(height: 16),
+          if (place != null) ...[
+            PlaceAssets(assets: place!.assets),
+            if (place!.assets.isNotEmpty) const SizedBox(height: 16),
+          ],
+          if (place == null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: Center(
+                child: PlaceFormButton(
+                  icon: Icons.add_a_photo,
+                  onPressed: () async {
+                    final picker = ImagePicker();
+                    final XFile? image = await picker.pickImage(
+                      source: ImageSource.gallery,
+                    );
 
-                if (image != null) {
-                  final gps = await extractGpsFromImage(image);
-                  if (gps != null) {
-                    latitudeController.text = gps.$1.toString();
-                    longitudeController.text = gps.$2.toString();
-                  }
-                }
-              },
+                    if (image != null) {
+                      final gps = await extractGpsFromImage(image);
+                      if (gps != null) {
+                        latitudeController.text = gps.$1.toString();
+                        longitudeController.text = gps.$2.toString();
+                      }
+                    }
+                  },
+                ),
+              ),
             ),
-          ),
-        const SizedBox(height: 16),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: TextField(
+          TextField(
             controller: descriptionController,
             maxLines: null,
             decoration: InputDecoration(
@@ -110,10 +109,8 @@ class PlaceForm extends StatelessWidget {
               labelText: AppLocalizations.of(context)!.description,
             ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
+          const SizedBox(height: 16),
+          Row(
             children: [
               Expanded(
                 child: TextField(
@@ -148,40 +145,40 @@ class PlaceForm extends StatelessWidget {
               ),
             ],
           ),
-        ),
-        if (deletePlace != null)
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: OutlinedButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStatePropertyAll<Color>(Colors.red),
-              ),
-              onPressed: () => showDialog<String>(
-                context: context,
-                builder: (BuildContext context) => AlertDialog(
-                  title: Text(AppLocalizations.of(context)!.deletePlace),
-                  content: Text(
-                    AppLocalizations.of(context)!.deletePlaceQuestion,
-                  ),
-                  actions: <Widget>[
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text(AppLocalizations.of(context)!.cancel),
-                    ),
-                    TextButton(
-                      onPressed: () async {
-                        if (deletePlace != null) await deletePlace!();
-                        if (context.mounted) Navigator.pop(context);
-                      },
-                      child: Text(AppLocalizations.of(context)!.yes),
-                    ),
-                  ],
+          if (deletePlace != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: OutlinedButton(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStatePropertyAll<Color>(Colors.red),
                 ),
+                onPressed: () => showDialog<String>(
+                  context: context,
+                  builder: (BuildContext context) => AlertDialog(
+                    title: Text(AppLocalizations.of(context)!.deletePlace),
+                    content: Text(
+                      AppLocalizations.of(context)!.deletePlaceQuestion,
+                    ),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text(AppLocalizations.of(context)!.cancel),
+                      ),
+                      TextButton(
+                        onPressed: () async {
+                          if (deletePlace != null) await deletePlace!();
+                          if (context.mounted) Navigator.pop(context);
+                        },
+                        child: Text(AppLocalizations.of(context)!.yes),
+                      ),
+                    ],
+                  ),
+                ),
+                child: Text(AppLocalizations.of(context)!.deletePlace),
               ),
-              child: Text(AppLocalizations.of(context)!.deletePlace),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 }

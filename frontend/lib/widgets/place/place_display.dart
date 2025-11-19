@@ -21,19 +21,14 @@ class PlaceDisplay extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: SheetHeader(
-            title: place.name,
-            onPressed: () => toggleEditing(),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Row(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SheetHeader(title: place.name, onPressed: () => toggleEditing()),
+          const SizedBox(height: 8),
+          Row(
             children: [
               CircleAvatar(
                 backgroundColor: colorFromHex(category.color),
@@ -51,26 +46,18 @@ class PlaceDisplay extends ConsumerWidget {
               ),
             ],
           ),
-        ),
-        const SizedBox(height: 16),
-        PlaceAssets(assets: place.assets),
-        const SizedBox(height: 16),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Text(
+          const SizedBox(height: 16),
+          PlaceAssets(assets: place.assets),
+          const SizedBox(height: 16),
+          Text(
             place.description?.isNotEmpty == true
                 ? place.description!
                 : AppLocalizations.of(context)!.noDescription,
           ),
-        ),
-        const SizedBox(height: 16),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Text(
-            "${place.latitude.toString()}, ${place.longitude.toString()}",
-          ),
-        ),
-      ],
+          const SizedBox(height: 16),
+          Text("${place.latitude.toString()}, ${place.longitude.toString()}"),
+        ],
+      ),
     );
   }
 }
