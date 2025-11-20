@@ -22,46 +22,54 @@ class LayerImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double borderWidth = 3;
+    final double borderWidth = 4;
+    final double innerPadding = 3;
     return GestureDetector(
       onTap: onTap,
       child: Padding(
-        padding: EdgeInsets.all(8),
+        padding: EdgeInsets.all(4),
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(radius!),
             border: Border.all(
-              color: isActive ? Colors.blue : Theme.of(context).dividerColor,
+              color: isActive
+                  ? Theme.of(context).colorScheme.primary
+                  : Colors.transparent,
               width: borderWidth,
             ),
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(radius! - borderWidth),
-            child: Stack(
-              children: [
-                Image(image: assetImage, width: width, height: height),
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: 12,
-                    ),
-                    color: Colors.black.withValues(alpha: 0.4),
-                    child: Text(
-                      name,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+          child: Padding(
+            padding: EdgeInsets.all(innerPadding),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(
+                radius! - borderWidth - innerPadding,
+              ),
+              child: Stack(
+                children: [
+                  Image(image: assetImage, width: width, height: height),
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 12,
                       ),
-                      overflow: TextOverflow.ellipsis,
+                      color: Colors.black.withValues(alpha: 0.4),
+                      child: Text(
+                        name,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
