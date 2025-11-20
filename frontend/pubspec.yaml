@@ -56,6 +56,7 @@ dev_dependencies:
 flutter:
   assets:
     - .env
+    - assets/
   generate: true
 
   uses-material-design: true
