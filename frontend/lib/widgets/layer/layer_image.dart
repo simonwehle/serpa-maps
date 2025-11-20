@@ -31,7 +31,7 @@ class LayerImage extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(radius!),
             border: Border.all(
-              color: isActive ? Colors.blue : Colors.grey,
+              color: isActive ? Colors.blue : Theme.of(context).dividerColor,
               width: borderWidth,
             ),
           ),

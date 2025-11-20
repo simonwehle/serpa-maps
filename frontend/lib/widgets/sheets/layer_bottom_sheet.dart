@@ -23,7 +23,7 @@ class LayerBottomSheet extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               LayerImage(
-                name: 'Default',
+                name: AppLocalizations.of(context)!.defaultMap,
                 assetImage: AssetImage('assets/default.jpg'),
                 isActive: activeLayer == MapLayer.vector,
                 onTap: () => ref
@@ -31,7 +31,7 @@ class LayerBottomSheet extends ConsumerWidget {
                     .setActiveLayer(MapLayer.vector),
               ),
               LayerImage(
-                name: 'Explore',
+                name: AppLocalizations.of(context)!.explore,
                 assetImage: AssetImage('assets/explore.jpg'),
                 isActive: activeLayer == MapLayer.osm,
                 onTap: () => ref
@@ -39,7 +39,7 @@ class LayerBottomSheet extends ConsumerWidget {
                     .setActiveLayer(MapLayer.osm),
               ),
               LayerImage(
-                name: 'Satellite',
+                name: AppLocalizations.of(context)!.satellite,
                 assetImage: AssetImage('assets/satellite.jpg'),
                 isActive: activeLayer == MapLayer.satellite,
                 onTap: () => ref
