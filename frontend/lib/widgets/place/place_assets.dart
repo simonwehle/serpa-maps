@@ -13,27 +13,28 @@ class PlaceAssets extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final baseUrl = ref.read(baseUrlProvider);
+
+    if (assets.isEmpty) return const SizedBox.shrink();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (assets.isNotEmpty)
-          SizedBox(
-            height: 150,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: assets.length,
-              itemBuilder: (context, index) {
-                final asset = assets[index];
-                final url = asset.assetUrl;
-
-                return ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: PlaceImage(url: '$baseUrl/$url'),
-                );
-              },
-              separatorBuilder: (context, index) => const SizedBox(width: 8),
-            ),
+        SizedBox(
+          height: 150,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: assets.length,
+            itemBuilder: (context, index) {
+              final asset = assets[index];
+              final url = asset.assetUrl;
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: PlaceImage(url: '$baseUrl/$url'),
+              );
+            },
+            separatorBuilder: (_, _) => const SizedBox(width: 8),
           ),
+        ),
       ],
     );
   }
