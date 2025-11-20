@@ -31,20 +31,20 @@ class LayerBottomSheet extends ConsumerWidget {
                     .setActiveLayer(MapLayer.vector),
               ),
               LayerImage(
-                name: AppLocalizations.of(context)!.explore,
-                assetImage: AssetImage('assets/explore.jpg'),
-                isActive: activeLayer == MapLayer.osm,
-                onTap: () => ref
-                    .read(activeLayerProvider.notifier)
-                    .setActiveLayer(MapLayer.osm),
-              ),
-              LayerImage(
                 name: AppLocalizations.of(context)!.satellite,
                 assetImage: AssetImage('assets/satellite.jpg'),
                 isActive: activeLayer == MapLayer.satellite,
                 onTap: () => ref
                     .read(activeLayerProvider.notifier)
                     .setActiveLayer(MapLayer.satellite),
+              ),
+              LayerImage(
+                name: AppLocalizations.of(context)!.explore,
+                assetImage: AssetImage('assets/explore.jpg'),
+                isActive: activeLayer == MapLayer.osm,
+                onTap: () => ref
+                    .read(activeLayerProvider.notifier)
+                    .setActiveLayer(MapLayer.osm),
               ),
             ],
           ),
