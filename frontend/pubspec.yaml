@@ -23,6 +23,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: any
 
   cupertino_icons: ^1.0.8
   flutter_map: ^8.2.2
@@ -44,6 +47,9 @@ dependencies:
     git:
       url: https://github.com/josxha/flutter_map_plugins.git
       path: vector_map_tiles_pmtiles
+  material_design_icons_flutter: ^7.0.7296
+  skeletonizer: ^2.1.0+1
+  cached_network_image: ^3.4.1
 
 dev_dependencies:
   flutter_test:
@@ -54,6 +60,8 @@ dev_dependencies:
 flutter:
   assets:
     - .env
+    - assets/
+  generate: true
 
   uses-material-design: true
 

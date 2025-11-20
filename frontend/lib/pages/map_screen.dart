@@ -5,17 +5,20 @@ import 'package:flutter_map_compass/flutter_map_compass.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:vector_map_tiles/vector_map_tiles.dart';
-
 import 'package:serpa_maps/providers/location_permission_provider.dart';
 import 'package:serpa_maps/providers/markers_visible_provider.dart';
+import 'package:serpa_maps/utils/adaptive_max_zoom.dart';
+import 'package:serpa_maps/widgets/map/layer_button.dart';
+import 'package:serpa_maps/widgets/map/serpa_fab.dart';
 import 'package:serpa_maps/widgets/map/attribution_widget.dart';
 import 'package:serpa_maps/widgets/map/map_layers.dart';
 import 'package:serpa_maps/widgets/map/place_markers_layer.dart';
 import 'package:serpa_maps/widgets/map/overlay_layer.dart';
 import 'package:serpa_maps/widgets/sheets/add_place_bottom_sheet.dart';
-import 'package:serpa_maps/widgets/sheets/serpa_bottom_sheet.dart';
+import 'package:serpa_maps/widgets/sheets/serpa_draggable_sheet.dart';
+import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/layer_bottom_sheet.dart';
+import 'package:vector_map_tiles/vector_map_tiles.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
@@ -38,14 +41,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   void openAddPlaceBottomSheet({double? latitude, double? longitude}) {
-    showSerpaBottomSheet(
+    showSerpaDraggableSheet(
       context: context,
       child: AddPlaceBottomSheet(latitude: latitude, longitude: longitude),
     );
   }
 
   void openLayerBottomSheet() {
-    showSerpaBottomSheet(context: context, child: LayerBottomSheet());
+    showSerpaStaticSheet(context: context, child: LayerBottomSheet());
   }
 
   @override
@@ -57,15 +60,15 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           initialCenter: LatLng(0, 0),
           initialZoom: 2,
           minZoom: 1,
-          maxZoom: 20,
-          backgroundColor: Colors.white,
+          maxZoom: adaptiveMaxZoom(ref: ref),
+          backgroundColor: Theme.of(context).colorScheme.surface,
           onMapReady: () async {
             await ref
                 .read(locationPermissionProvider.notifier)
                 .checkPermissionOrZoomMap(_mapController);
           },
           interactionOptions: const InteractionOptions(
-            // reduce rotation on pinch zoom
+            /// The following option reduces rotation on pinch zoom
             enableMultiFingerGestureRace: true,
           ),
           cameraConstraint: const CameraConstraint.containLatitude(),
@@ -86,42 +89,12 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             hideIfRotatedNorth: true,
             padding: EdgeInsets.fromLTRB(0, 50, 10, 0),
           ),
-          Align(
-            alignment: Alignment.topRight,
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(0, 100, 10, 0),
-              child: FloatingActionButton(
-                mini: true,
-                backgroundColor: Colors.white,
-                onPressed: openLayerBottomSheet,
-                shape: CircleBorder(),
-                child: const Icon(Icons.layers),
-              ),
-            ),
+          LayerButton(onPressed: openLayerBottomSheet),
+          SerpaFab(
+            mapController: _mapController,
+            openAddPlaceBottomSheet: openAddPlaceBottomSheet,
           ),
           AttributionWidget(),
-        ],
-      ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            backgroundColor: Colors.white,
-            shape: const CircleBorder(),
-            onPressed: () async {
-              await ref
-                  .read(locationPermissionProvider.notifier)
-                  .requestLocationOrZoomMap(_mapController);
-            },
-            child: const Icon(Icons.my_location),
-          ),
-          const SizedBox(height: 15),
-          FloatingActionButton(
-            onPressed: () {
-              openAddPlaceBottomSheet();
-            },
-            child: const Icon(Icons.add),
-          ),
         ],
       ),
     );

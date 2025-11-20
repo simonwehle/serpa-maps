@@ -11,6 +11,8 @@ services:
       - "53164:53164"
     env_file:
       - .env
+    volumes:
+      - serpa-assets:/app/uploads
     depends_on:
       database:
         condition: service_healthy
@@ -35,3 +37,4 @@ services:
 
 volumes:
   pg-data:
+  serpa-assets:

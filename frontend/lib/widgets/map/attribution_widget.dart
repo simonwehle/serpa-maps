@@ -10,51 +10,40 @@ class AttributionWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final activeLayer = ref.watch(activeLayerProvider);
-
-    // Fix: Prepare the attributions list before passing to the widget
-    List<SourceAttribution> attributions = [];
-
-    if (activeLayer == MapLayer.vector) {
-      attributions = [
-        TextSourceAttribution(
-          'OpenMapTiles',
-          onTap: () => launchUrl(Uri.parse('https://openmaptiles.org/')),
-        ),
-        TextSourceAttribution(
-          'OpenStreetMap contributors',
-          onTap: () =>
-              launchUrl(Uri.parse('https://openstreetmap.org/copyright')),
-        ),
-      ];
-    } else if (activeLayer == MapLayer.osm) {
-      attributions = [
-        TextSourceAttribution(
-          'OpenStreetMap contributors',
-          onTap: () =>
-              launchUrl(Uri.parse('https://openstreetmap.org/copyright')),
-        ),
-      ];
-    } else if (activeLayer == MapLayer.satellite) {
-      attributions = [
-        TextSourceAttribution(
-          'Powered by Esri',
-          prependCopyright: false,
-          onTap: () => launchUrl(Uri.parse('https://www.esri.com')),
-        ),
-        TextSourceAttribution('Sources: Esri,', prependCopyright: false),
-        TextSourceAttribution('Maxar,', prependCopyright: false),
-        TextSourceAttribution('Earthstar Geographics', prependCopyright: false),
-        TextSourceAttribution(
-          'and the GIS User Community',
-          prependCopyright: false,
-        ),
-      ];
-    }
-
     return RichAttributionWidget(
       alignment: AttributionAlignment.bottomLeft,
       showFlutterMapAttribution: false,
-      attributions: attributions,
+      attributions: switch (activeLayer) {
+        MapLayer.vector => [
+          TextSourceAttribution(
+            'OpenStreetMap contributors',
+            onTap: () =>
+                launchUrl(Uri.parse('https://openstreetmap.org/copyright')),
+          ),
+          TextSourceAttribution(
+            'OpenMapTiles',
+            onTap: () => launchUrl(Uri.parse('https://openmaptiles.org/')),
+          ),
+        ],
+        MapLayer.osm => [
+          TextSourceAttribution(
+            'OpenStreetMap contributors',
+            onTap: () =>
+                launchUrl(Uri.parse('https://openstreetmap.org/copyright')),
+          ),
+        ],
+        MapLayer.satellite => [
+          TextSourceAttribution(
+            'Powered by Esri',
+            prependCopyright: false,
+            onTap: () => launchUrl(Uri.parse('https://www.esri.com')),
+          ),
+          TextSourceAttribution(
+            'Sources: Esri, Maxar, Earthstar Geographics and the GIS User Community',
+            prependCopyright: false,
+          ),
+        ],
+      },
     );
   }
 }

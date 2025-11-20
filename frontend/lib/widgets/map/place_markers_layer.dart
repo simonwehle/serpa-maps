@@ -5,7 +5,7 @@ import 'package:serpa_maps/providers/category_provider.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/services/marker_service.dart';
 import 'package:serpa_maps/widgets/sheets/place_bottom_sheet.dart';
-import 'package:serpa_maps/widgets/sheets/serpa_bottom_sheet.dart';
+import 'package:serpa_maps/widgets/sheets/serpa_draggable_sheet.dart';
 
 class PlaceMarkersLayer extends StatelessWidget {
   const PlaceMarkersLayer({super.key});
@@ -39,7 +39,7 @@ class PlaceMarkersLayer extends StatelessWidget {
 }
 
 void openPlaceBottomSheet(BuildContext context, int placeId) {
-  showSerpaBottomSheet(
+  showSerpaDraggableSheet(
     context: context,
     child: PlaceBottomSheet(placeId: placeId),
   );

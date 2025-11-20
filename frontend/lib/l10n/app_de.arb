@@ -1,0 +1,22 @@
+{
+  "@@locale": "de",
+  "add": "Hinzufügen",
+  "cancel": "Abbrechen",
+  "categoryNotFound": "Kategorie nicht gefunden",
+  "defaultMap": "Standard",
+  "deletePlace": "Ort löschen",
+  "deletePlaceQuestion": "Möchten Sie diesen Ort löschen?",
+  "description": "Beschreibung",
+  "latitude": "Breitengrad",
+  "longitude": "Längengrad",
+  "name": "Name",
+  "noCategories": "Keine Kategorien verfügbar",
+  "noDescription": "Keine Beschreibung verfügbar",
+  "explore": "Erkunden",
+  "placeNotFound": "Ort nicht gefunden",
+  "satellite": "Satellit",
+  "save": "Speichern",
+  "showMarkers": "Markierungen anzeigen",
+  "showOverlay": "Overlay anzeigen",
+  "yes": "Ja"
+}

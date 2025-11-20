@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:serpa_maps/l10n/app_localizations.dart';
 
 class PlaceFormActions extends StatelessWidget {
   final VoidCallback onCancel;
@@ -15,20 +16,24 @@ class PlaceFormActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
       child: Row(
         children: [
           Expanded(
             child: OutlinedButton(
               onPressed: onCancel,
-              child: const Text('Cancel'),
+              child: Text(AppLocalizations.of(context)!.cancel),
             ),
           ),
           const SizedBox(width: 16),
           Expanded(
-            child: ElevatedButton(
+            child: FilledButton(
               onPressed: onSave,
-              child: Text(isNew ? 'Add' : 'Save'),
+              child: Text(
+                isNew
+                    ? AppLocalizations.of(context)!.add
+                    : AppLocalizations.of(context)!.save,
+              ),
             ),
           ),
         ],
