@@ -5,6 +5,7 @@ import 'package:serpa_maps/providers/map_layer_provider.dart';
 import 'package:serpa_maps/providers/markers_visible_provider.dart';
 import 'package:serpa_maps/providers/overlay_active_prvoider.dart';
 import 'package:serpa_maps/providers/overlay_url_provider.dart';
+import 'package:serpa_maps/widgets/layer/layer_image.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
 
 class LayerBottomSheet extends ConsumerWidget {
@@ -12,36 +13,42 @@ class LayerBottomSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final activeLayer = ref.watch(activeLayerProvider);
+
     return SerpaStaticSheet(
       title: 'Map Layer',
       child: Column(
         children: [
-          SegmentedButton<MapLayer>(
-            segments: <ButtonSegment<MapLayer>>[
-              ButtonSegment(
-                value: MapLayer.vector,
-                label: Text(AppLocalizations.of(context)!.defaultMap),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              LayerImage(
+                name: AppLocalizations.of(context)!.defaultMap,
+                assetImage: AssetImage('assets/default.jpg'),
+                isActive: activeLayer == MapLayer.vector,
+                onTap: () => ref
+                    .read(activeLayerProvider.notifier)
+                    .setActiveLayer(MapLayer.vector),
               ),
-              ButtonSegment(
-                value: MapLayer.osm,
-                label: Text(AppLocalizations.of(context)!.explore),
+              LayerImage(
+                name: AppLocalizations.of(context)!.satellite,
+                assetImage: AssetImage('assets/satellite.jpg'),
+                isActive: activeLayer == MapLayer.satellite,
+                onTap: () => ref
+                    .read(activeLayerProvider.notifier)
+                    .setActiveLayer(MapLayer.satellite),
               ),
-              ButtonSegment(
-                value: MapLayer.satellite,
-                label: Text(AppLocalizations.of(context)!.satellite),
+              LayerImage(
+                name: AppLocalizations.of(context)!.explore,
+                assetImage: AssetImage('assets/explore.jpg'),
+                isActive: activeLayer == MapLayer.osm,
+                onTap: () => ref
+                    .read(activeLayerProvider.notifier)
+                    .setActiveLayer(MapLayer.osm),
               ),
             ],
-            selected: <MapLayer>{ref.watch(activeLayerProvider)},
-            onSelectionChanged: (Set<MapLayer> newSelection) {
-              if (newSelection.isNotEmpty) {
-                final newLayer = newSelection.first;
-                ref.read(activeLayerProvider.notifier).setActiveLayer(newLayer);
-              }
-            },
-            showSelectedIcon: false,
           ),
-
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

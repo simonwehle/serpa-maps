@@ -11,19 +11,15 @@ class SerpaStaticSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SerpaBottomSheet(
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                SheetHeader(title: title),
-                const SizedBox(height: 16),
-                child,
-              ],
-            ),
-          ),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            SheetHeader(title: title),
+            const SizedBox(height: 16),
+            child,
+          ],
+        ),
       ),
     );
   }
