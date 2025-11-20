@@ -13,6 +13,8 @@ class LayerBottomSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final activeLayer = ref.watch(activeLayerProvider);
+
     return SerpaStaticSheet(
       title: 'Map Layer',
       child: Column(
@@ -20,45 +22,44 @@ class LayerBottomSheet extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              LayerImage(
-                name: 'Default',
-                assetImage: AssetImage('assets/default.jpg'),
+              GestureDetector(
+                onTap: () => ref
+                    .read(activeLayerProvider.notifier)
+                    .setActiveLayer(MapLayer.vector),
+                child: LayerImage(
+                  name: 'Default',
+                  assetImage: AssetImage('assets/default.jpg'),
+                  borderColor: activeLayer == MapLayer.vector
+                      ? Colors.blue
+                      : Colors.grey,
+                ),
               ),
-              LayerImage(
-                name: 'Explore',
-                assetImage: AssetImage('assets/explore.jpg'),
+              GestureDetector(
+                onTap: () => ref
+                    .read(activeLayerProvider.notifier)
+                    .setActiveLayer(MapLayer.osm),
+                child: LayerImage(
+                  name: 'Explore',
+                  assetImage: AssetImage('assets/explore.jpg'),
+                  borderColor: activeLayer == MapLayer.osm
+                      ? Colors.blue
+                      : Colors.grey,
+                ),
               ),
-              LayerImage(
-                name: 'Satellite',
-                assetImage: AssetImage('assets/satellite.jpg'),
+              GestureDetector(
+                onTap: () => ref
+                    .read(activeLayerProvider.notifier)
+                    .setActiveLayer(MapLayer.satellite),
+                child: LayerImage(
+                  name: 'Satellite',
+                  assetImage: AssetImage('assets/satellite.jpg'),
+                  borderColor: activeLayer == MapLayer.satellite
+                      ? Colors.blue
+                      : Colors.grey,
+                ),
               ),
             ],
           ),
-          SegmentedButton<MapLayer>(
-            segments: <ButtonSegment<MapLayer>>[
-              ButtonSegment(
-                value: MapLayer.vector,
-                label: Text(AppLocalizations.of(context)!.defaultMap),
-              ),
-              ButtonSegment(
-                value: MapLayer.osm,
-                label: Text(AppLocalizations.of(context)!.explore),
-              ),
-              ButtonSegment(
-                value: MapLayer.satellite,
-                label: Text(AppLocalizations.of(context)!.satellite),
-              ),
-            ],
-            selected: <MapLayer>{ref.watch(activeLayerProvider)},
-            onSelectionChanged: (Set<MapLayer> newSelection) {
-              if (newSelection.isNotEmpty) {
-                final newLayer = newSelection.first;
-                ref.read(activeLayerProvider.notifier).setActiveLayer(newLayer);
-              }
-            },
-            showSelectedIcon: false,
-          ),
-
           const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

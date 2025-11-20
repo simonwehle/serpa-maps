@@ -6,6 +6,8 @@ class LayerImage extends StatelessWidget {
   final double? height;
   final double? width;
   final double? radius;
+  final Color borderColor;
+
   const LayerImage({
     super.key,
     required this.assetImage,
@@ -13,19 +15,20 @@ class LayerImage extends StatelessWidget {
     this.height = 100,
     this.width = 100,
     this.radius = 20,
+    this.borderColor = Colors.grey,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsetsGeometry.all(8),
+      padding: EdgeInsets.all(8),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(radius!),
-          border: Border.all(color: Colors.grey),
+          border: Border.all(color: borderColor, width: 3),
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(radius!),
+          borderRadius: BorderRadius.circular(radius! - 3),
           child: Stack(
             children: [
               Image(image: assetImage, width: width, height: height),
