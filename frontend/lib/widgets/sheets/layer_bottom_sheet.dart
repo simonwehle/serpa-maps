@@ -22,45 +22,33 @@ class LayerBottomSheet extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              GestureDetector(
+              LayerImage(
+                name: 'Default',
+                assetImage: AssetImage('assets/default.jpg'),
+                isActive: activeLayer == MapLayer.vector,
                 onTap: () => ref
                     .read(activeLayerProvider.notifier)
                     .setActiveLayer(MapLayer.vector),
-                child: LayerImage(
-                  name: 'Default',
-                  assetImage: AssetImage('assets/default.jpg'),
-                  borderColor: activeLayer == MapLayer.vector
-                      ? Colors.blue
-                      : Colors.grey,
-                ),
               ),
-              GestureDetector(
+              LayerImage(
+                name: 'Explore',
+                assetImage: AssetImage('assets/explore.jpg'),
+                isActive: activeLayer == MapLayer.osm,
                 onTap: () => ref
                     .read(activeLayerProvider.notifier)
                     .setActiveLayer(MapLayer.osm),
-                child: LayerImage(
-                  name: 'Explore',
-                  assetImage: AssetImage('assets/explore.jpg'),
-                  borderColor: activeLayer == MapLayer.osm
-                      ? Colors.blue
-                      : Colors.grey,
-                ),
               ),
-              GestureDetector(
+              LayerImage(
+                name: 'Satellite',
+                assetImage: AssetImage('assets/satellite.jpg'),
+                isActive: activeLayer == MapLayer.satellite,
                 onTap: () => ref
                     .read(activeLayerProvider.notifier)
                     .setActiveLayer(MapLayer.satellite),
-                child: LayerImage(
-                  name: 'Satellite',
-                  assetImage: AssetImage('assets/satellite.jpg'),
-                  borderColor: activeLayer == MapLayer.satellite
-                      ? Colors.blue
-                      : Colors.grey,
-                ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
