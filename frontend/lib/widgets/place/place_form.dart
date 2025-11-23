@@ -33,6 +33,17 @@ class PlaceForm extends StatelessWidget {
     this.deletePlace,
   });
 
+  void _normalizeDecimalInput(TextEditingController controller, String value) {
+    String normalizedValue = value.replaceAll(',', '.');
+    double? parsed = double.tryParse(normalizedValue);
+    if (parsed != null && normalizedValue != value) {
+      controller.value = controller.value.copyWith(
+        text: normalizedValue,
+        selection: TextSelection.collapsed(offset: normalizedValue.length),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -120,11 +131,8 @@ class PlaceForm extends StatelessWidget {
                     border: OutlineInputBorder(),
                     labelText: AppLocalizations.of(context)!.latitude,
                   ),
-                  onChanged: (value) {
-                    double? latitude = double.tryParse(value);
-                    if (latitude != null) {
-                    } else {}
-                  },
+                  onChanged: (value) =>
+                      _normalizeDecimalInput(latitudeController, value),
                 ),
               ),
               const SizedBox(width: 8),
@@ -136,11 +144,8 @@ class PlaceForm extends StatelessWidget {
                     border: OutlineInputBorder(),
                     labelText: AppLocalizations.of(context)!.longitude,
                   ),
-                  onChanged: (value) {
-                    double? longitude = double.tryParse(value);
-                    if (longitude != null) {
-                    } else {}
-                  },
+                  onChanged: (value) =>
+                      _normalizeDecimalInput(longitudeController, value),
                 ),
               ),
             ],
