@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_animations/flutter_map_animations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/providers/location_permission_provider.dart';
 
 class SerpaFab extends ConsumerWidget {
-  final MapController mapController;
+  final AnimatedMapController animatedMapController;
   final VoidCallback openAddPlaceBottomSheet;
   const SerpaFab({
     super.key,
-    required this.mapController,
+    required this.animatedMapController,
     required this.openAddPlaceBottomSheet,
   });
 
@@ -27,7 +27,7 @@ class SerpaFab extends ConsumerWidget {
               onPressed: () async {
                 await ref
                     .read(locationPermissionProvider.notifier)
-                    .requestLocationOrZoomMap(mapController);
+                    .requestLocationOrZoomMap(animatedMapController);
               },
               child: const Icon(Icons.my_location),
             ),

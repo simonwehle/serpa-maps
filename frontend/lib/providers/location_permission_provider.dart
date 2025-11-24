@@ -1,5 +1,5 @@
 import 'package:app_settings/app_settings.dart';
-import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_animations/flutter_map_animations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
@@ -40,29 +40,35 @@ class LocationPermissionNotifier extends Notifier<bool> {
     return granted;
   }
 
-  Future<void> checkPermissionOrZoomMap(MapController mapController) async {
+  Future<void> checkPermissionOrZoomMap(
+    AnimatedMapController animatedMapController,
+  ) async {
     final granted = await _checkLocationServiceStatus();
     if (granted) {
-      await _zoomToLocationMarker(mapController);
+      await _zoomToLocationMarker(animatedMapController);
     }
   }
 
-  Future<void> requestLocationOrZoomMap(MapController mapController) async {
+  Future<void> requestLocationOrZoomMap(
+    AnimatedMapController animatedMapController,
+  ) async {
     if (!state) {
       final granted = await _requestLocationPermission();
       if (!granted) {
         AppSettings.openAppSettings(type: AppSettingsType.location);
       } else {
-        await _zoomToLocationMarker(mapController);
+        await _zoomToLocationMarker(animatedMapController);
       }
     } else {
-      await _zoomToLocationMarker(mapController);
+      await _zoomToLocationMarker(animatedMapController);
     }
   }
 
-  Future<void> _zoomToLocationMarker(MapController mapController) async {
+  Future<void> _zoomToLocationMarker(
+    AnimatedMapController animatedMapController,
+  ) async {
     final position = await Geolocator.getCurrentPosition();
     final latlng = LatLng(position.latitude, position.longitude);
-    mapController.move(latlng, 14.0);
+    animatedMapController.animateTo(dest: latlng, zoom: 14.0);
   }
 }

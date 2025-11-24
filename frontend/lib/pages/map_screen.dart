@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_animations/flutter_map_animations.dart';
 import 'package:flutter_map_compass/flutter_map_compass.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,8 +27,13 @@ class MapScreen extends ConsumerStatefulWidget {
   ConsumerState<MapScreen> createState() => _MapScreenState();
 }
 
-class _MapScreenState extends ConsumerState<MapScreen> {
-  final _mapController = MapController();
+class _MapScreenState extends ConsumerState<MapScreen>
+    with TickerProviderStateMixin {
+  late final _animatedMapController = AnimatedMapController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1000),
+    curve: Curves.easeInOut,
+  );
   late Future<Style> styleFuture;
 
   @override
@@ -56,7 +62,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FlutterMap(
-        mapController: _mapController,
+        mapController: _animatedMapController.mapController,
         options: MapOptions(
           initialCenter: LatLng(0, 0),
           initialZoom: 2,
@@ -66,7 +72,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           onMapReady: () async {
             await ref
                 .read(locationPermissionProvider.notifier)
-                .checkPermissionOrZoomMap(_mapController);
+                .checkPermissionOrZoomMap(_animatedMapController);
           },
           interactionOptions: const InteractionOptions(
             /// The following option reduces rotation on pinch zoom
@@ -104,7 +110,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     ),
                     LayerButton(onPressed: openLayerBottomSheet),
                     SerpaFab(
-                      mapController: _mapController,
+                      animatedMapController: _animatedMapController,
                       openAddPlaceBottomSheet: openAddPlaceBottomSheet,
                     ),
                     AttributionWidget(),
