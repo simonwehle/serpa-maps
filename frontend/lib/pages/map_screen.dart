@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_compass/flutter_map_compass.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
@@ -34,7 +35,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     super.initState();
 
     styleFuture = StyleReader(
-      uri: 'https://tiles.openfreemap.org/styles/liberty',
+      uri:
+          dotenv.env['STYLE_URL'] ??
+          'http://localhost:3465/styles/liberty.json',
     ).read();
   }
 
