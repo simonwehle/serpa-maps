@@ -14,6 +14,7 @@ import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/widgets/map/layer_button.dart';
 import 'package:serpa_maps/widgets/map/serpa_fab.dart';
 import 'package:serpa_maps/widgets/sheets/add_place_bottom_sheet.dart';
+import 'package:serpa_maps/widgets/sheets/place_bottom_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_draggable_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/layer_bottom_sheet.dart';
@@ -28,16 +29,20 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   late MapLibreMapController _controller;
   bool _mapReady = false;
   bool _sourceAdded = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  int? _tappedPlace = null;
+  bool _placeSheetOpen = false;
 
   void openAddPlaceBottomSheet({double? latitude, double? longitude}) {
     showSerpaDraggableSheet(
       context: context,
       child: AddPlaceBottomSheet(latitude: latitude, longitude: longitude),
+    );
+  }
+
+  void openPlaceBottomSheet({required int placeId}) {
+    showSerpaDraggableSheet(
+      context: context,
+      child: PlaceBottomSheet(placeId: placeId),
     );
   }
 
@@ -95,7 +100,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   Future<void> _onMapCreated(MapLibreMapController controller) async {
     _controller = controller;
-    _mapReady = true;
+    setState(() {
+      _mapReady = true;
+    });
 
     await addMarkerImage();
 
@@ -103,40 +110,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
     await _addPlaceLayer();
 
-    _controller.onSymbolTapped.add(_onSymbolTapped);
-  }
-
-  void _onSymbolTapped(Symbol symbol) {
-    final placeId = symbol.data?['placeId'];
-
-    if (placeId is! int) return;
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Marker?'),
-        content: Text('Do you want to delete marker with ID: $placeId?'),
-        actions: [
-          TextButton(
-            child: const Text('Cancel'),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          TextButton(
-            child: const Text('Delete'),
-            onPressed: () {
-              ref.read(placeProvider.notifier).deletePlace(id: placeId);
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.onSymbolTapped.remove(_onSymbolTapped);
-    super.dispose();
+    _controller.onSymbolTapped.add((symbol) {});
   }
 
   @override
@@ -145,10 +119,17 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       _updatePlacesSource(next.value);
     });
 
+    if (_tappedPlace != null && !_placeSheetOpen) {
+      openPlaceBottomSheet(placeId: _tappedPlace!);
+      _tappedPlace = null;
+    }
+
     return Scaffold(
       body: MapLibreMap(
         styleString: 'http://localhost:3465/styles/liberty.json',
         onMapCreated: _onMapCreated,
+        myLocationEnabled: true,
+        //trackCameraPosition: true,
         initialCameraPosition: const CameraPosition(
           target: LatLng(43.7383, 7.4248),
           zoom: 13,
@@ -159,7 +140,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             longitude: latLng.longitude,
           );
         },
+        attributionButtonPosition: AttributionButtonPosition.bottomLeft,
       ),
+      floatingActionButton: !_mapReady
+          ? null
+          : SerpaFab(
+              mapController: _controller,
+              openAddPlaceBottomSheet: openAddPlaceBottomSheet,
+            ),
     );
   }
 }

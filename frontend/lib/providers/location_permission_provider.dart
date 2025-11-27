@@ -1,8 +1,7 @@
 import 'package:app_settings/app_settings.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:maplibre_gl/maplibre_gl.dart';
 
 final locationPermissionProvider =
     NotifierProvider<LocationPermissionNotifier, bool>(
@@ -40,14 +39,18 @@ class LocationPermissionNotifier extends Notifier<bool> {
     return granted;
   }
 
-  Future<void> checkPermissionOrZoomMap(MapController mapController) async {
+  Future<void> checkPermissionOrZoomMap(
+    MapLibreMapController mapController,
+  ) async {
     final granted = await _checkLocationServiceStatus();
     if (granted) {
       await _zoomToLocationMarker(mapController);
     }
   }
 
-  Future<void> requestLocationOrZoomMap(MapController mapController) async {
+  Future<void> requestLocationOrZoomMap(
+    MapLibreMapController mapController,
+  ) async {
     if (!state) {
       final granted = await _requestLocationPermission();
       if (!granted) {
@@ -60,9 +63,15 @@ class LocationPermissionNotifier extends Notifier<bool> {
     }
   }
 
-  Future<void> _zoomToLocationMarker(MapController mapController) async {
+  Future<void> _zoomToLocationMarker(
+    MapLibreMapController mapController,
+  ) async {
     final position = await Geolocator.getCurrentPosition();
-    final latlng = LatLng(position.latitude, position.longitude);
-    mapController.move(latlng, 14.0);
+    mapController.animateCamera(
+      CameraUpdate.newLatLngZoom(
+        LatLng(position.latitude, position.longitude),
+        14,
+      ),
+    );
   }
 }
