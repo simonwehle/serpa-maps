@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -66,6 +67,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           places?.map((place) {
             return {
               "type": "Feature",
+              "id": place.id,
               "properties": {
                 "placeId": place.id,
                 "categoryId": place.categoryId,
@@ -110,7 +112,17 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
     await _addPlaceLayer();
 
-    _controller.onSymbolTapped.add((symbol) {});
+    controller.onFeatureTapped.add(onFeatureTap);
+  }
+
+  void onFeatureTap(
+    Point<double> point,
+    LatLng latLng,
+    String id,
+    String layerId,
+    Annotation? annotation,
+  ) {
+    openPlaceBottomSheet(placeId: int.parse(id));
   }
 
   @override
