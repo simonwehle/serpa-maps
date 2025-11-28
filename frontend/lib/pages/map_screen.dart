@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -69,10 +68,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             return {
               "type": "Feature",
               "id": place.id,
-              "properties": {
-                "placeId": place.id,
-                "categoryId": place.categoryId,
-              },
+              "properties": {"categoryId": place.categoryId},
               "geometry": {
                 "type": "Point",
                 "coordinates": [place.longitude, place.latitude],
