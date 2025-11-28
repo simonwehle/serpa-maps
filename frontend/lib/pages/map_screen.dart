@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,8 +29,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   late MapLibreMapController _controller;
   bool _mapReady = false;
   bool _sourceAdded = false;
-  int? _tappedPlace = null;
-  bool _placeSheetOpen = false;
 
   void openAddPlaceBottomSheet({double? latitude, double? longitude}) {
     showSerpaDraggableSheet(
@@ -52,10 +49,18 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   Future addMarkerImage() async {
-    Uint8List bytes = await rootBundle
+    Uint8List bytes1 = await rootBundle
+        .load('assets/1.png')
+        .then((b) => b.buffer.asUint8List());
+    await _controller.addImage("1", bytes1);
+    Uint8List bytes2 = await rootBundle
+        .load('assets/2.png')
+        .then((b) => b.buffer.asUint8List());
+    await _controller.addImage("2", bytes2);
+    Uint8List defaultBytes = await rootBundle
         .load('assets/circle.png')
         .then((b) => b.buffer.asUint8List());
-    await _controller.addImage("marker-icon", bytes);
+    await _controller.addImage("default-marker", defaultBytes);
   }
 
   Future<void> _updatePlacesSource(List<Place>? places) async {
@@ -96,7 +101,19 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     await _controller.addSymbolLayer(
       "places", // source id
       "places-layer", // layer id
-      const SymbolLayerProperties(iconImage: "marker-icon", iconSize: 0.5),
+      const SymbolLayerProperties(
+        iconImage: [
+          'match',
+          ['get', 'categoryId'],
+          1,
+          '1',
+          2,
+          '2',
+          'default-marker', // fallback
+        ],
+        iconSize: 0.5,
+      ),
+      enableInteraction: true,
     );
   }
 
@@ -130,11 +147,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     ref.listen(placeProvider, (previous, next) {
       _updatePlacesSource(next.value);
     });
-
-    if (_tappedPlace != null && !_placeSheetOpen) {
-      openPlaceBottomSheet(placeId: _tappedPlace!);
-      _tappedPlace = null;
-    }
 
     return Scaffold(
       body: Stack(
