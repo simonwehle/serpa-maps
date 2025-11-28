@@ -137,22 +137,27 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     }
 
     return Scaffold(
-      body: MapLibreMap(
-        styleString: 'http://localhost:3465/styles/liberty.json',
-        onMapCreated: _onMapCreated,
-        myLocationEnabled: true,
-        //trackCameraPosition: true,
-        initialCameraPosition: const CameraPosition(
-          target: LatLng(43.7383, 7.4248),
-          zoom: 13,
-        ),
-        onMapLongClick: (point, latLng) {
-          openAddPlaceBottomSheet(
-            latitude: latLng.latitude,
-            longitude: latLng.longitude,
-          );
-        },
-        attributionButtonPosition: AttributionButtonPosition.bottomLeft,
+      body: Stack(
+        children: [
+          MapLibreMap(
+            styleString: 'http://localhost:3465/styles/liberty.json',
+            onMapCreated: _onMapCreated,
+            myLocationEnabled: true,
+            //trackCameraPosition: true,
+            initialCameraPosition: const CameraPosition(
+              target: LatLng(43.7383, 7.4248),
+              zoom: 13,
+            ),
+            onMapLongClick: (point, latLng) {
+              openAddPlaceBottomSheet(
+                latitude: latLng.latitude,
+                longitude: latLng.longitude,
+              );
+            },
+            attributionButtonPosition: AttributionButtonPosition.bottomLeft,
+          ),
+          LayerButton(onPressed: openLayerBottomSheet),
+        ],
       ),
       floatingActionButton: !_mapReady
           ? null
