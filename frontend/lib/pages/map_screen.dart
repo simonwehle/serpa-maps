@@ -1,13 +1,11 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
+
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/providers/category_provider.dart';
-import 'package:serpa_maps/providers/location_permission_provider.dart';
 import 'package:serpa_maps/providers/markers_visible_provider.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/utils/create_marker_image.dart';
@@ -96,22 +94,21 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     }
   }
 
-  Future<void> _addPlaceLayer() async {
+  Future<void> _addPlaceLayer(List<Category> categories) async {
+    final matchExpression = [
+      'match',
+      ['get', 'categoryId'],
+    ];
+    for (var category in categories) {
+      matchExpression.add(category.id);
+      matchExpression.add(category.id.toString());
+    }
+    matchExpression.add('default-marker');
+
     await _controller.addSymbolLayer(
       "places", // source id
       "places-layer", // layer id
-      const SymbolLayerProperties(
-        iconImage: [
-          'match',
-          ['get', 'categoryId'],
-          1,
-          '1',
-          2,
-          '2',
-          'default-marker', // fallback
-        ],
-        iconSize: 0.5,
-      ),
+      SymbolLayerProperties(iconImage: matchExpression, iconSize: 0.5),
       enableInteraction: true,
     );
   }
@@ -127,7 +124,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
     await _updatePlacesSource(ref.read(placeProvider).value);
 
-    await _addPlaceLayer();
+    await _addPlaceLayer(categories);
 
     controller.onFeatureTapped.add(onFeatureTap);
   }
