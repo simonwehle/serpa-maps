@@ -10,7 +10,7 @@ import 'package:serpa_maps/providers/category_provider.dart';
 import 'package:serpa_maps/providers/location_permission_provider.dart';
 import 'package:serpa_maps/providers/markers_visible_provider.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
-import 'package:serpa_maps/services/place_service.dart';
+import 'package:serpa_maps/utils/create_marker_image.dart';
 import 'package:serpa_maps/widgets/map/layer_button.dart';
 import 'package:serpa_maps/widgets/map/serpa_fab.dart';
 import 'package:serpa_maps/widgets/sheets/add_place_bottom_sheet.dart';

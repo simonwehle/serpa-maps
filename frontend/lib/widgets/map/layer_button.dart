@@ -10,7 +10,7 @@ class LayerButton extends StatelessWidget {
     return Align(
       alignment: Alignment.topRight,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 100, 10, 0),
+        padding: const EdgeInsets.only(top: 115, right: 5),
         child: FloatingActionButton(
           mini: true,
           backgroundColor: Theme.of(context).colorScheme.surface,

@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 Future<Uint8List> createMarkerImage(
   IconData icon,
   Color color, {
-  double size = 190,
-  double iconSize = 115,
+  double size = 180,
+  double iconSize = 110,
 }) async {
   final recorder = ui.PictureRecorder();
   final canvas = Canvas(recorder);
