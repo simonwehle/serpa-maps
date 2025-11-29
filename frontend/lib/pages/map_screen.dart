@@ -66,21 +66,24 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   Future<void> _updatePlacesSource(List<Place>? places) async {
     if (!_mapReady) return;
 
+    final markersVisible = ref.read(markersVisibleProvider);
+
     final placesGeoJson = {
       "type": "FeatureCollection",
-      "features":
-          places?.map((place) {
-            return {
-              "type": "Feature",
-              "id": place.id,
-              "properties": {"categoryId": place.categoryId},
-              "geometry": {
-                "type": "Point",
-                "coordinates": [place.longitude, place.latitude],
-              },
-            };
-          }).toList() ??
-          [],
+      "features": markersVisible
+          ? places?.map((place) {
+                  return {
+                    "type": "Feature",
+                    "id": place.id,
+                    "properties": {"categoryId": place.categoryId},
+                    "geometry": {
+                      "type": "Point",
+                      "coordinates": [place.longitude, place.latitude],
+                    },
+                  };
+                }).toList() ??
+                []
+          : [],
     };
 
     if (!_sourceAdded) {
@@ -143,6 +146,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   Widget build(BuildContext context) {
     ref.listen(placeProvider, (previous, next) {
       _updatePlacesSource(next.value);
+    });
+
+    ref.listen(markersVisibleProvider, (previous, next) {
+      _updatePlacesSource(ref.read(placeProvider).value);
     });
 
     return Scaffold(
