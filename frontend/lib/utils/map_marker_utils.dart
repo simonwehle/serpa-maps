@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:serpa_maps/models/category.dart';
+import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/utils/create_marker_image.dart';
 import 'package:serpa_maps/utils/icon_color_utils.dart';
 
@@ -40,4 +41,38 @@ Future<void> addPlaceLayer({
     SymbolLayerProperties(iconImage: matchExpression, iconSize: 0.5),
     enableInteraction: true,
   );
+}
+
+Future<void> updatePlacesSource({
+  required MapLibreMapController mapController,
+  required List<Place>? places,
+  required bool markersVisible,
+  required bool sourceAdded,
+}) async {
+  final placesGeoJson = {
+    "type": "FeatureCollection",
+    "features": markersVisible
+        ? places?.map((place) {
+                return {
+                  "type": "Feature",
+                  "id": place.id,
+                  "properties": {"categoryId": place.categoryId},
+                  "geometry": {
+                    "type": "Point",
+                    "coordinates": [place.longitude, place.latitude],
+                  },
+                };
+              }).toList() ??
+              []
+        : [],
+  };
+
+  if (!sourceAdded) {
+    await mapController.addSource(
+      "places",
+      GeojsonSourceProperties(data: placesGeoJson),
+    );
+  } else {
+    await mapController.setGeoJsonSource("places", placesGeoJson);
+  }
 }

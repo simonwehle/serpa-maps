@@ -45,37 +45,18 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     showSerpaStaticSheet(context: context, child: LayerBottomSheet());
   }
 
-  Future<void> _updatePlacesSource(List<Place>? places) async {
+  Future<void> _updatePlaces(List<Place>? places) async {
     if (!_mapReady) return;
 
-    final markersVisible = ref.read(markersVisibleProvider);
-
-    final placesGeoJson = {
-      "type": "FeatureCollection",
-      "features": markersVisible
-          ? places?.map((place) {
-                  return {
-                    "type": "Feature",
-                    "id": place.id,
-                    "properties": {"categoryId": place.categoryId},
-                    "geometry": {
-                      "type": "Point",
-                      "coordinates": [place.longitude, place.latitude],
-                    },
-                  };
-                }).toList() ??
-                []
-          : [],
-    };
+    await updatePlacesSource(
+      mapController: _controller,
+      places: places,
+      markersVisible: ref.read(markersVisibleProvider),
+      sourceAdded: _sourceAdded,
+    );
 
     if (!_sourceAdded) {
-      await _controller.addSource(
-        "places",
-        GeojsonSourceProperties(data: placesGeoJson),
-      );
       _sourceAdded = true;
-    } else {
-      await _controller.setGeoJsonSource("places", placesGeoJson);
     }
   }
 
@@ -88,7 +69,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     final categories = await ref.read(categoryProvider.future);
     await addMarkerImage(categories: categories, mapController: _controller);
 
-    await _updatePlacesSource(ref.read(placeProvider).value);
+    await _updatePlaces(ref.read(placeProvider).value);
 
     await addPlaceLayer(categories: categories, mapController: _controller);
 
@@ -108,11 +89,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   @override
   Widget build(BuildContext context) {
     ref.listen(placeProvider, (previous, next) {
-      _updatePlacesSource(next.value);
+      _updatePlaces(next.value);
     });
 
     ref.listen(markersVisibleProvider, (previous, next) {
-      _updatePlacesSource(ref.read(placeProvider).value);
+      _updatePlaces(ref.read(placeProvider).value);
     });
 
     return Scaffold(
