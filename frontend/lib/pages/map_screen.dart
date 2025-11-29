@@ -3,13 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
-import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/providers/category_provider.dart';
 import 'package:serpa_maps/providers/markers_visible_provider.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
-import 'package:serpa_maps/utils/create_marker_image.dart';
-import 'package:serpa_maps/utils/icon_color_utils.dart';
+import 'package:serpa_maps/utils/map_marker_utils.dart';
 import 'package:serpa_maps/widgets/map/layer_button.dart';
 import 'package:serpa_maps/widgets/map/serpa_fab.dart';
 import 'package:serpa_maps/widgets/sheets/add_place_bottom_sheet.dart';
@@ -47,22 +45,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     showSerpaStaticSheet(context: context, child: LayerBottomSheet());
   }
 
-  Future addMarkerImage(List<Category> categories) async {
-    for (var category in categories) {
-      final bytes = await createMarkerImage(
-        iconFromString(category.icon),
-        colorFromHex(category.color),
-      );
-      await _controller.addImage(category.id.toString(), bytes);
-    }
-
-    final defaultBytes = await createMarkerImage(
-      Icons.location_pin,
-      Colors.red,
-    );
-    await _controller.addImage("default-marker", defaultBytes);
-  }
-
   Future<void> _updatePlacesSource(List<Place>? places) async {
     if (!_mapReady) return;
 
@@ -97,25 +79,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     }
   }
 
-  Future<void> _addPlaceLayer(List<Category> categories) async {
-    final matchExpression = [
-      'match',
-      ['get', 'categoryId'],
-    ];
-    for (var category in categories) {
-      matchExpression.add(category.id);
-      matchExpression.add(category.id.toString());
-    }
-    matchExpression.add('default-marker');
-
-    await _controller.addSymbolLayer(
-      "places", // source id
-      "places-layer", // layer id
-      SymbolLayerProperties(iconImage: matchExpression, iconSize: 0.5),
-      enableInteraction: true,
-    );
-  }
-
   Future<void> _onMapCreated(MapLibreMapController controller) async {
     _controller = controller;
     setState(() {
@@ -123,11 +86,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     });
 
     final categories = await ref.read(categoryProvider.future);
-    await addMarkerImage(categories);
+    await addMarkerImage(categories: categories, mapController: _controller);
 
     await _updatePlacesSource(ref.read(placeProvider).value);
 
-    await _addPlaceLayer(categories);
+    await addPlaceLayer(categories: categories, mapController: _controller);
 
     controller.onFeatureTapped.add(onFeatureTap);
   }
