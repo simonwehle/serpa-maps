@@ -11,6 +11,7 @@ import 'package:serpa_maps/providers/location_permission_provider.dart';
 import 'package:serpa_maps/providers/markers_visible_provider.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/utils/create_marker_image.dart';
+import 'package:serpa_maps/utils/icon_color_utils.dart';
 import 'package:serpa_maps/widgets/map/layer_button.dart';
 import 'package:serpa_maps/widgets/map/serpa_fab.dart';
 import 'package:serpa_maps/widgets/sheets/add_place_bottom_sheet.dart';
@@ -48,14 +49,20 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     showSerpaStaticSheet(context: context, child: LayerBottomSheet());
   }
 
-  Future addMarkerImage() async {
-    final defaultIcon = createMarkerImage(Icons.gps_fixed, Colors.red);
-    final sightIcon = createMarkerImage(Icons.camera_alt, Colors.purple);
-    final fortIcon = createMarkerImage(Icons.fort, Colors.yellowAccent);
+  Future addMarkerImage(List<Category> categories) async {
+    for (var category in categories) {
+      final bytes = await createMarkerImage(
+        iconFromString(category.icon),
+        colorFromHex(category.color),
+      );
+      await _controller.addImage(category.id.toString(), bytes);
+    }
 
-    await _controller.addImage("default-marker", await defaultIcon);
-    await _controller.addImage("1", await sightIcon);
-    await _controller.addImage("2", await fortIcon);
+    final defaultBytes = await createMarkerImage(
+      Icons.location_pin,
+      Colors.red,
+    );
+    await _controller.addImage("default-marker", defaultBytes);
   }
 
   Future<void> _updatePlacesSource(List<Place>? places) async {
@@ -115,7 +122,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       _mapReady = true;
     });
 
-    await addMarkerImage();
+    final categories = await ref.read(categoryProvider.future);
+    await addMarkerImage(categories);
 
     await _updatePlacesSource(ref.read(placeProvider).value);
 

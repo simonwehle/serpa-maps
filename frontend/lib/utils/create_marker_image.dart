@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 Future<Uint8List> createMarkerImage(
   IconData icon,
   Color color, {
-  double size = 180,
-  double iconSize = 110,
+  double size = 160,
+  double iconSize = 100,
 }) async {
   final recorder = ui.PictureRecorder();
   final canvas = Canvas(recorder);
@@ -19,7 +19,7 @@ Future<Uint8List> createMarkerImage(
   final borderPaint = Paint()
     ..color = Colors.white
     ..style = PaintingStyle.stroke
-    ..strokeWidth = 7.0;
+    ..strokeWidth = 6.0;
   canvas.drawCircle(center, radius - borderPaint.strokeWidth / 2, borderPaint);
 
   final textPainter = TextPainter(textDirection: TextDirection.ltr);
