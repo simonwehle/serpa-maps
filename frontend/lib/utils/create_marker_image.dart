@@ -28,6 +28,7 @@ Future<Uint8List> createMarkerImage(
     style: TextStyle(
       fontSize: iconSize,
       fontFamily: icon.fontFamily,
+      package: icon.fontPackage,
       color: Colors.white,
     ),
   );
