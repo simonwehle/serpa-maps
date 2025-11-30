@@ -127,8 +127,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             myLocationEnabled: true,
             //trackCameraPosition: true,
             initialCameraPosition: const CameraPosition(
-              target: LatLng(43.7383, 7.4248),
-              zoom: 13,
+              target: LatLng(0, 0),
+              zoom: 2,
             ),
             onStyleLoadedCallback: _onStyleLoaded,
             onMapLongClick: (point, latLng) {
