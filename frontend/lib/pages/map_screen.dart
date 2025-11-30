@@ -5,6 +5,7 @@ import 'package:maplibre_gl/maplibre_gl.dart';
 
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/providers/category_provider.dart';
+import 'package:serpa_maps/providers/map_layer_provider.dart';
 import 'package:serpa_maps/providers/markers_visible_provider.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/utils/map_marker_utils.dart';
@@ -26,6 +27,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   late MapLibreMapController _controller;
   bool _mapReady = false;
   bool _sourceAdded = false;
+  bool _listenerAdded = false;
 
   void openAddPlaceBottomSheet({double? latitude, double? longitude}) {
     showSerpaDraggableSheet(
@@ -65,15 +67,19 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     setState(() {
       _mapReady = true;
     });
+  }
 
+  Future<void> _onStyleLoaded() async {
+    _sourceAdded = false;
     final categories = await ref.read(categoryProvider.future);
     await addMarkerImage(categories: categories, mapController: _controller);
-
     await _updatePlaces(ref.read(placeProvider).value);
-
     await addPlaceLayer(categories: categories, mapController: _controller);
 
-    controller.onFeatureTapped.add(onFeatureTap);
+    if (!_listenerAdded) {
+      _controller.onFeatureTapped.add(onFeatureTap);
+      _listenerAdded = true;
+    }
   }
 
   void onFeatureTap(
@@ -96,11 +102,20 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       _updatePlaces(ref.read(placeProvider).value);
     });
 
+    ref.listen(activeLayerProvider, (previous, next) async {
+      if (_mapReady) {
+        _sourceAdded = false;
+        await _controller.setStyle(next.styleUrl);
+      }
+    });
+
+    final activeLayer = ref.watch(activeLayerProvider);
+
     return Scaffold(
       body: Stack(
         children: [
           MapLibreMap(
-            styleString: 'http://localhost:3465/styles/liberty.json',
+            styleString: activeLayer.styleUrl,
             onMapCreated: _onMapCreated,
             myLocationEnabled: true,
             //trackCameraPosition: true,
@@ -108,6 +123,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               target: LatLng(43.7383, 7.4248),
               zoom: 13,
             ),
+            onStyleLoadedCallback: _onStyleLoaded,
             onMapLongClick: (point, latLng) {
               openAddPlaceBottomSheet(
                 latitude: latLng.latitude,

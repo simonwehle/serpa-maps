@@ -10,15 +10,26 @@ Future addMarkerImage({
   required MapLibreMapController mapController,
 }) async {
   for (var category in categories) {
-    final bytes = await createMarkerImage(
-      iconFromString(category.icon),
-      colorFromHex(category.color),
-    );
-    await mapController.addImage(category.id.toString(), bytes);
+    try {
+      final bytes = await createMarkerImage(
+        iconFromString(category.icon),
+        colorFromHex(category.color),
+      );
+      await mapController.addImage(category.id.toString(), bytes);
+    } catch (e) {
+      // Image already exists, skip
+    }
   }
 
-  final defaultBytes = await createMarkerImage(Icons.location_pin, Colors.red);
-  await mapController.addImage("default-marker", defaultBytes);
+  try {
+    final defaultBytes = await createMarkerImage(
+      Icons.location_pin,
+      Colors.red,
+    );
+    await mapController.addImage("default-marker", defaultBytes);
+  } catch (e) {
+    // Image already exists, skip
+  }
 }
 
 Future<void> addPlaceLayer({
@@ -35,12 +46,16 @@ Future<void> addPlaceLayer({
   }
   matchExpression.add('default-marker');
 
-  await mapController.addSymbolLayer(
-    "places", // source id
-    "places-layer", // layer id
-    SymbolLayerProperties(iconImage: matchExpression, iconSize: 0.5),
-    enableInteraction: true,
-  );
+  try {
+    await mapController.addSymbolLayer(
+      "places", // source id
+      "places-layer", // layer id
+      SymbolLayerProperties(iconImage: matchExpression, iconSize: 0.5),
+      enableInteraction: true,
+    );
+  } catch (e) {
+    // Layer already exists, skip
+  }
 }
 
 Future<void> updatePlacesSource({
