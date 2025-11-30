@@ -7,8 +7,10 @@ import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/providers/category_provider.dart';
 import 'package:serpa_maps/providers/map_layer_provider.dart';
 import 'package:serpa_maps/providers/markers_visible_provider.dart';
+import 'package:serpa_maps/providers/overlay_active_prvoider.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/utils/map_marker_utils.dart';
+import 'package:serpa_maps/utils/overlay_helpers.dart';
 import 'package:serpa_maps/widgets/map/layer_button.dart';
 import 'package:serpa_maps/widgets/map/serpa_fab.dart';
 import 'package:serpa_maps/widgets/sheets/add_place_bottom_sheet.dart';
@@ -73,6 +75,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       _controller.onFeatureTapped.add(onFeatureTap);
       _listenerAdded = true;
     }
+
+    if (ref.read(overlayActiveProvider)) {
+      await addOverlay(mapController: _controller);
+    }
   }
 
   void onFeatureTap(
@@ -98,6 +104,15 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     ref.listen(activeLayerProvider, (previous, next) async {
       if (_mapReady) {
         await _controller.setStyle(next.styleUrl);
+      }
+    });
+
+    ref.listen<bool>(overlayActiveProvider, (_, isActive) async {
+      if (!_mapReady) return;
+      if (isActive) {
+        await addOverlay(mapController: _controller);
+      } else {
+        await removeOverlay(mapController: _controller);
       }
     });
 
