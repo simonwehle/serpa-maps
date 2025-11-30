@@ -1,24 +1,23 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_map_compass/flutter_map_compass.dart';
-import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:serpa_maps/providers/location_permission_provider.dart';
+import 'package:maplibre_gl/maplibre_gl.dart';
+
+import 'package:serpa_maps/models/place.dart';
+import 'package:serpa_maps/providers/category_provider.dart';
+import 'package:serpa_maps/providers/map_layer_provider.dart';
 import 'package:serpa_maps/providers/markers_visible_provider.dart';
-import 'package:serpa_maps/utils/adaptive_max_zoom.dart';
+import 'package:serpa_maps/providers/overlay_active_prvoider.dart';
+import 'package:serpa_maps/providers/place_provider.dart';
+import 'package:serpa_maps/utils/map_marker_utils.dart';
+import 'package:serpa_maps/utils/overlay_helpers.dart';
 import 'package:serpa_maps/widgets/map/layer_button.dart';
 import 'package:serpa_maps/widgets/map/serpa_fab.dart';
-import 'package:serpa_maps/widgets/map/attribution_widget.dart';
-import 'package:serpa_maps/widgets/map/map_layers.dart';
-import 'package:serpa_maps/widgets/map/place_markers_layer.dart';
-import 'package:serpa_maps/widgets/map/overlay_layer.dart';
 import 'package:serpa_maps/widgets/sheets/add_place_bottom_sheet.dart';
+import 'package:serpa_maps/widgets/sheets/place_bottom_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_draggable_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/layer_bottom_sheet.dart';
-import 'package:vector_map_tiles/vector_map_tiles.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
@@ -27,19 +26,9 @@ class MapScreen extends ConsumerStatefulWidget {
 }
 
 class _MapScreenState extends ConsumerState<MapScreen> {
-  final _mapController = MapController();
-  late Future<Style> styleFuture;
-
-  @override
-  void initState() {
-    super.initState();
-
-    styleFuture = StyleReader(
-      uri:
-          dotenv.env['STYLE_URL'] ??
-          'http://localhost:3465/styles/liberty.json',
-    ).read();
-  }
+  late MapLibreMapController _controller;
+  bool _mapReady = false;
+  bool _listenerAdded = false;
 
   void openAddPlaceBottomSheet({double? latitude, double? longitude}) {
     showSerpaDraggableSheet(
@@ -48,75 +37,117 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     );
   }
 
+  void openPlaceBottomSheet({required int placeId}) {
+    showSerpaDraggableSheet(
+      context: context,
+      child: PlaceBottomSheet(placeId: placeId),
+    );
+  }
+
   void openLayerBottomSheet() {
     showSerpaStaticSheet(context: context, child: LayerBottomSheet());
   }
 
+  Future<void> _updatePlaces(List<Place>? places) async {
+    if (!_mapReady) return;
+
+    await updatePlacesSource(
+      mapController: _controller,
+      places: places,
+      markersVisible: ref.read(markersVisibleProvider),
+    );
+  }
+
+  Future<void> _onMapCreated(MapLibreMapController controller) async {
+    _controller = controller;
+    setState(() {
+      _mapReady = true;
+    });
+  }
+
+  Future<void> _onStyleLoaded() async {
+    final categories = await ref.read(categoryProvider.future);
+    await addMarkerImage(categories: categories, mapController: _controller);
+    await _updatePlaces(ref.read(placeProvider).value);
+    await addPlaceLayer(categories: categories, mapController: _controller);
+
+    if (!_listenerAdded) {
+      _controller.onFeatureTapped.add(onFeatureTap);
+      _listenerAdded = true;
+    }
+
+    if (ref.read(overlayActiveProvider)) {
+      await addOverlay(mapController: _controller);
+    }
+  }
+
+  void onFeatureTap(
+    Point<double> point,
+    LatLng latLng,
+    String id,
+    String layerId,
+    Annotation? annotation,
+  ) {
+    openPlaceBottomSheet(placeId: int.parse(id));
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: FlutterMap(
-        mapController: _mapController,
-        options: MapOptions(
-          initialCenter: LatLng(0, 0),
-          initialZoom: 2,
-          minZoom: 1,
-          maxZoom: adaptiveMaxZoom(ref: ref, mapController: _mapController),
-          backgroundColor: Theme.of(context).colorScheme.surface,
-          onMapReady: () async {
-            await ref
-                .read(locationPermissionProvider.notifier)
-                .checkPermissionOrZoomMap(_mapController);
-          },
-          interactionOptions: const InteractionOptions(
-            /// The following option reduces rotation on pinch zoom
-            enableMultiFingerGestureRace: true,
-          ),
-          cameraConstraint: const CameraConstraint.containLatitude(),
-          onLongPress: (_, point) {
-            openAddPlaceBottomSheet(
-              latitude: point.latitude,
-              longitude: point.longitude,
-            );
-          },
-        ),
+    ref.listen(placeProvider, (previous, next) {
+      _updatePlaces(next.value);
+    });
 
+    ref.listen(markersVisibleProvider, (previous, next) {
+      _updatePlaces(ref.read(placeProvider).value);
+    });
+
+    ref.listen(activeLayerProvider, (previous, next) async {
+      if (_mapReady) {
+        await _controller.setStyle(next.styleUrl);
+      }
+    });
+
+    ref.listen<bool>(overlayActiveProvider, (_, isActive) async {
+      if (!_mapReady) return;
+      if (isActive) {
+        await addOverlay(mapController: _controller);
+      } else {
+        await removeOverlay(mapController: _controller);
+      }
+    });
+
+    final activeLayer = ref.watch(activeLayerProvider);
+
+    return Scaffold(
+      body: Stack(
         children: [
-          FutureBuilder<Style>(
-            future: styleFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              } else if (snapshot.hasData) {
-                final style = snapshot.data!;
-                return Stack(
-                  children: [
-                    MapBaseLayer(style: style),
-                    OverlayLayer(),
-                    if (ref.watch(markersVisibleProvider)) PlaceMarkersLayer(),
-                    if (ref.watch(locationPermissionProvider))
-                      CurrentLocationLayer(),
-                    const MapCompass.cupertino(
-                      hideIfRotatedNorth: true,
-                      padding: EdgeInsets.fromLTRB(0, 50, 10, 0),
-                    ),
-                    LayerButton(onPressed: openLayerBottomSheet),
-                    SerpaFab(
-                      mapController: _mapController,
-                      openAddPlaceBottomSheet: openAddPlaceBottomSheet,
-                    ),
-                    AttributionWidget(),
-                  ],
-                );
-              } else {
-                return const SizedBox.shrink();
-              }
+          MapLibreMap(
+            styleString: activeLayer.styleUrl,
+            onMapCreated: _onMapCreated,
+            myLocationEnabled: true,
+            //trackCameraPosition: true,
+            initialCameraPosition: const CameraPosition(
+              target: LatLng(0, 0),
+              zoom: 2,
+            ),
+            onStyleLoadedCallback: _onStyleLoaded,
+            onMapLongClick: (point, latLng) {
+              openAddPlaceBottomSheet(
+                latitude: latLng.latitude,
+                longitude: latLng.longitude,
+              );
             },
+            attributionButtonPosition: AttributionButtonPosition.bottomLeft,
           ),
+          LayerButton(onPressed: openLayerBottomSheet),
         ],
       ),
+      floatingActionButton: !_mapReady
+          ? null
+          : SerpaFab(
+              mapController: _controller,
+              openAddPlaceBottomSheet: openAddPlaceBottomSheet,
+            ),
     );
   }
 }
