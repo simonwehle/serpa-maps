@@ -51,7 +51,7 @@ dev_dependencies:
 flutter:
   assets:
     - .env
-    - assets/layer/
+    - assets/layers/
     - assets/styles/
   generate: true
 

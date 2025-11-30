@@ -62,7 +62,6 @@ Future<void> updatePlacesSource({
   required MapLibreMapController mapController,
   required List<Place>? places,
   required bool markersVisible,
-  required bool sourceAdded,
 }) async {
   final placesGeoJson = {
     "type": "FeatureCollection",
@@ -82,12 +81,13 @@ Future<void> updatePlacesSource({
         : [],
   };
 
-  if (!sourceAdded) {
+  try {
+    await mapController.setGeoJsonSource("places", placesGeoJson);
+  } catch (e) {
+    // Source doesn't exist yet, add it
     await mapController.addSource(
       "places",
       GeojsonSourceProperties(data: placesGeoJson),
     );
-  } else {
-    await mapController.setGeoJsonSource("places", placesGeoJson);
   }
 }

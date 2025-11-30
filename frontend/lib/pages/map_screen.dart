@@ -26,7 +26,6 @@ class MapScreen extends ConsumerStatefulWidget {
 class _MapScreenState extends ConsumerState<MapScreen> {
   late MapLibreMapController _controller;
   bool _mapReady = false;
-  bool _sourceAdded = false;
   bool _listenerAdded = false;
 
   void openAddPlaceBottomSheet({double? latitude, double? longitude}) {
@@ -54,12 +53,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       mapController: _controller,
       places: places,
       markersVisible: ref.read(markersVisibleProvider),
-      sourceAdded: _sourceAdded,
     );
-
-    if (!_sourceAdded) {
-      _sourceAdded = true;
-    }
   }
 
   Future<void> _onMapCreated(MapLibreMapController controller) async {
@@ -70,7 +64,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   Future<void> _onStyleLoaded() async {
-    _sourceAdded = false;
     final categories = await ref.read(categoryProvider.future);
     await addMarkerImage(categories: categories, mapController: _controller);
     await _updatePlaces(ref.read(placeProvider).value);
@@ -104,7 +97,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
     ref.listen(activeLayerProvider, (previous, next) async {
       if (_mapReady) {
-        _sourceAdded = false;
         await _controller.setStyle(next.styleUrl);
       }
     });
