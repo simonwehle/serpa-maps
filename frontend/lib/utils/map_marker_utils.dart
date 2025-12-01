@@ -16,9 +16,7 @@ Future addMarkerImage({
         colorFromHex(category.color),
       );
       await mapController.addImage(category.id.toString(), bytes);
-    } catch (e) {
-      // Image already exists, skip
-    }
+    } catch (_) {}
   }
 
   try {
@@ -27,9 +25,7 @@ Future addMarkerImage({
       Colors.red,
     );
     await mapController.addImage("default-marker", defaultBytes);
-  } catch (e) {
-    // Image already exists, skip
-  }
+  } catch (_) {}
 }
 
 Future<void> addPlaceLayer({
@@ -47,7 +43,6 @@ Future<void> addPlaceLayer({
   matchExpression.add('default-marker');
 
   try {
-    // Circle layer for clusters only
     await mapController.addCircleLayer(
       "places",
       "places-clusters",
@@ -55,20 +50,20 @@ Future<void> addPlaceLayer({
         circleColor: [
           Expressions.step,
           ['get', 'point_count'],
-          '#8BC34A', // Light Green for < 20 points
+          '#8BC34A',
           20,
-          '#FF9800', // Orange for >= 20 points
+          '#FF9800',
           50,
-          '#51bbd6', // Cyan for >= 50 points
+          '#51bbd6',
         ],
         circleRadius: [
           Expressions.step,
           ['get', 'point_count'],
-          15, // Default radius for < 20 points
+          15,
           20,
-          17.5, // Radius for >= 20 points
+          17.5,
           50,
-          20, // Radius for >= 50 points
+          20,
         ],
         circleStrokeWidth: 2,
         circleStrokeColor: '#ffffff',
@@ -77,7 +72,6 @@ Future<void> addPlaceLayer({
       enableInteraction: true,
     );
 
-    // Add a layer for cluster counts
     await mapController.addSymbolLayer(
       "places",
       "places-cluster-count",
@@ -86,13 +80,12 @@ Future<void> addPlaceLayer({
         textFont: ['Noto Sans Regular'],
         textSize: 12,
         textColor: '#ffffff',
-        textAllowOverlap: true, // Add this line
+        textAllowOverlap: true,
       ),
       filter: ['has', 'point_count'],
       enableInteraction: true,
     );
 
-    // Symbol layer for individual markers
     await mapController.addSymbolLayer(
       "places",
       "places-layer",
@@ -103,9 +96,7 @@ Future<void> addPlaceLayer({
       ],
       enableInteraction: true,
     );
-  } catch (e) {
-    // Layer already exists, skip
-  }
+  } catch (_) {}
 }
 
 Future<void> updatePlacesSource({
@@ -136,11 +127,9 @@ Future<void> updatePlacesSource({
       GeojsonSourceProperties(
         data: placesGeoJson,
         cluster: true,
-        clusterMaxZoom: 18, // Cluster at all zoom levels up to 18
-        clusterRadius: 50, // Cluster points within 50px radius
+        clusterMaxZoom: 18,
+        clusterRadius: 50,
       ),
     );
-  } catch (e) {
-    // Source already exists, ignore
-  }
+  } catch (_) {}
 }
