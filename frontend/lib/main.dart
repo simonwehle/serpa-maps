@@ -3,7 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:serpa_maps/l10n/app_localizations.dart';
-import 'package:serpa_maps/pages/map_screen.dart';
+import 'package:serpa_maps/pages/cluster.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,7 +46,7 @@ class SerpaMaps extends StatelessWidget {
         ),
       ),
       themeMode: ThemeMode.system,
-      home: const MapScreen(),
+      home: const ClusterMap(),
     );
   }
 }
