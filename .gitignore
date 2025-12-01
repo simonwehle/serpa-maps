@@ -53,3 +53,8 @@ frontend/android/app/release
 # Backend builds
 /backend/serpa-maps
 /backend/uploads/
+
+# Fonts
+/docker/fonts/Noto Sans Bold
+/docker/fonts/Noto Sans Italic
+/docker/fonts/Noto Sans Regular

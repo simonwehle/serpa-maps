@@ -35,6 +35,27 @@ services:
       timeout: 5s
       retries: 5
 
+  nginx:
+    image: nginx:alpine
+    container_name: serpa-maps-nginx
+    ports:
+      - "3465:80"
+    volumes:
+      - ./sprites:/usr/share/nginx/html/sprites
+      - ./styles:/usr/share/nginx/html/styles
+      - ./fonts:/usr/share/nginx/html/fonts
+    depends_on:
+      - mbtileserver
+  mbtileserver:
+    image: consbio/mbtileserver:0.9.0
+    container_name: serpa-mbtileserver
+    environment:
+      VERBOSE: "true"
+    volumes:
+      - ./tiles:/tilesets
+    ports:
+      - "7135:8000"
+
 volumes:
   pg-data:
   serpa-assets:
