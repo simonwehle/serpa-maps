@@ -52,8 +52,24 @@ Future<void> addPlaceLayer({
       "places",
       "places-clusters",
       const CircleLayerProperties(
-        circleColor: '#51bbd6',
-        circleRadius: 15,
+        circleColor: [
+          Expressions.step,
+          ['get', 'point_count'],
+          '#8BC34A', // Light Green for < 20 points
+          20,
+          '#FF9800', // Orange for >= 20 points
+          50,
+          '#51bbd6', // Cyan for >= 50 points
+        ],
+        circleRadius: [
+          Expressions.step,
+          ['get', 'point_count'],
+          15, // Default radius for < 20 points
+          20,
+          17.5, // Radius for >= 20 points
+          50,
+          20, // Radius for >= 50 points
+        ],
         circleStrokeWidth: 2,
         circleStrokeColor: '#ffffff',
       ),
