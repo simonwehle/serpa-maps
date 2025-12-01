@@ -103,7 +103,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
     ref.listen(activeLayerProvider, (previous, next) async {
       if (_mapReady) {
-        await _controller.setStyle(next.styleUrl);
+        final brightness = MediaQuery.of(context).platformBrightness;
+        await _controller.setStyle(next.getStyleUrl(brightness));
       }
     });
 
@@ -117,12 +118,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     });
 
     final activeLayer = ref.watch(activeLayerProvider);
+    final brightness = MediaQuery.of(context).platformBrightness;
 
     return Scaffold(
       body: Stack(
         children: [
           MapLibreMap(
-            styleString: activeLayer.styleUrl,
+            styleString: activeLayer.getStyleUrl(brightness),
             onMapCreated: _onMapCreated,
             myLocationEnabled: true,
             //trackCameraPosition: true,

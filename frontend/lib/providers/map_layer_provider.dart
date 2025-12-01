@@ -1,12 +1,18 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 enum MapLayer { vector, osm, satellite }
 
 extension MapLayerExtension on MapLayer {
-  String get styleUrl {
+  String getStyleUrl(Brightness brightness) {
     switch (this) {
       case MapLayer.vector:
+        if (brightness == Brightness.dark) {
+          return dotenv.env['STYLE_DARK_URL'] ??
+              dotenv.env['STYLE_URL'] ??
+              'http://localhost:3465/styles/liberty.json';
+        }
         return dotenv.env['STYLE_URL'] ??
             'http://localhost:3465/styles/liberty.json';
       case MapLayer.osm:
@@ -15,6 +21,8 @@ extension MapLayerExtension on MapLayer {
         return 'assets/styles/arcgis.json';
     }
   }
+
+  String get styleUrl => getStyleUrl(Brightness.light);
 }
 
 final activeLayerProvider = NotifierProvider<ActiveLayerNotifier, MapLayer>(
