@@ -50,11 +50,11 @@ Future<void> addPlaceLayer({
         circleColor: [
           Expressions.step,
           ['get', 'point_count'],
-          '#8BC34A',
+          '#51bbd6',
           20,
           '#FF9800',
           50,
-          '#51bbd6',
+          '#8BC34A',
         ],
         circleRadius: [
           Expressions.step,
@@ -128,7 +128,7 @@ Future<void> updatePlacesSource({
         data: placesGeoJson,
         cluster: true,
         clusterMaxZoom: 18,
-        clusterRadius: 50,
+        clusterRadius: 30,
       ),
     );
   } catch (_) {}
