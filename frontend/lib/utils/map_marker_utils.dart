@@ -61,6 +61,21 @@ Future<void> addPlaceLayer({
       enableInteraction: true,
     );
 
+    // Add a layer for cluster counts
+    await mapController.addSymbolLayer(
+      "places",
+      "places-cluster-count",
+      const SymbolLayerProperties(
+        textField: [Expressions.get, 'point_count_abbreviated'],
+        textFont: ['Noto Sans Regular'],
+        textSize: 12,
+        textColor: '#ffffff',
+        textAllowOverlap: true, // Add this line
+      ),
+      filter: ['has', 'point_count'],
+      enableInteraction: true,
+    );
+
     // Symbol layer for individual markers
     await mapController.addSymbolLayer(
       "places",

@@ -99,7 +99,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     String layerId,
     Annotation? annotation,
   ) {
-    if (layerId == 'places-clusters') {
+    if (layerId == 'places-clusters' || layerId == 'places-cluster-count') {
       // Zoom into cluster
       _controller.animateCamera(
         CameraUpdate.newLatLngZoom(
