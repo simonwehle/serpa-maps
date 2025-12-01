@@ -72,7 +72,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         .checkPermissionOrZoomMap(_controller);
     final categories = await ref.read(categoryProvider.future);
     await addMarkerImage(categories: categories, mapController: _controller);
-    await _updatePlaces(ref.read(placeProvider).value);
+
+    final places = await ref.read(placeProvider.future);
+
+    await updatePlacesSource(
+      mapController: _controller,
+      places: places,
+      markersVisible: ref.read(markersVisibleProvider),
+    );
     await addPlaceLayer(categories: categories, mapController: _controller);
 
     if (!_listenerAdded) {
@@ -92,18 +99,30 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     String layerId,
     Annotation? annotation,
   ) {
-    openPlaceBottomSheet(placeId: int.parse(id));
+    if (layerId == 'places-clusters') {
+      // Zoom into cluster
+      _controller.animateCamera(
+        CameraUpdate.newLatLngZoom(
+          latLng,
+          _controller.cameraPosition!.zoom + 2,
+        ),
+      );
+    } else if (layerId == 'places-layer') {
+      // Open place details
+      openPlaceBottomSheet(placeId: int.parse(id));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(placeProvider, (previous, next) {
-      _updatePlaces(next.value);
-    });
+    // Temporarily disable dynamic updates
+    // ref.listen(placeProvider, (previous, next) {
+    //   _updatePlaces(next.value);
+    // });
 
-    ref.listen(markersVisibleProvider, (previous, next) {
-      _updatePlaces(ref.read(placeProvider).value);
-    });
+    // ref.listen(markersVisibleProvider, (previous, next) {
+    //   _updatePlaces(ref.read(placeProvider).value);
+    // });
 
     ref.listen(activeLayerProvider, (previous, next) async {
       if (_mapReady) {
