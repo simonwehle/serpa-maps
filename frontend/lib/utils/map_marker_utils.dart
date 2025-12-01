@@ -47,26 +47,33 @@ Future<void> addPlaceLayer({
   matchExpression.add('default-marker');
 
   try {
-    // Circle layer for clusters - NO FILTER to see ALL features
+    // Circle layer for clusters only
     await mapController.addCircleLayer(
       "places",
-      "places-clusters-test",
+      "places-clusters",
       const CircleLayerProperties(
-        circleColor: '#ff0000', // Bright red
-        circleRadius: 40, // Big
+        circleColor: '#51bbd6',
+        circleRadius: 15,
+        circleStrokeWidth: 2,
+        circleStrokeColor: '#ffffff',
       ),
+      filter: ['has', 'point_count'],
       enableInteraction: true,
     );
 
-    // Symbol layer for unclustered points
+    // Symbol layer for individual markers
     await mapController.addSymbolLayer(
       "places",
       "places-layer",
       SymbolLayerProperties(iconImage: matchExpression, iconSize: 0.5),
+      filter: [
+        '!',
+        ['has', 'point_count'],
+      ],
       enableInteraction: true,
     );
   } catch (e) {
-    print("Error adding layers: $e");
+    // Layer already exists, skip
   }
 }
 
