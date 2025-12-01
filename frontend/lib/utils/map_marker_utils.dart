@@ -16,9 +16,7 @@ Future addMarkerImage({
         colorFromHex(category.color),
       );
       await mapController.addImage(category.id.toString(), bytes);
-    } catch (e) {
-      // Image already exists, skip
-    }
+    } catch (_) {}
   }
 
   try {
@@ -27,9 +25,7 @@ Future addMarkerImage({
       Colors.red,
     );
     await mapController.addImage("default-marker", defaultBytes);
-  } catch (e) {
-    // Image already exists, skip
-  }
+  } catch (_) {}
 }
 
 Future<void> addPlaceLayer({
@@ -47,15 +43,60 @@ Future<void> addPlaceLayer({
   matchExpression.add('default-marker');
 
   try {
-    await mapController.addSymbolLayer(
-      "places", // source id
-      "places-layer", // layer id
-      SymbolLayerProperties(iconImage: matchExpression, iconSize: 0.5),
+    await mapController.addCircleLayer(
+      "places",
+      "places-clusters",
+      const CircleLayerProperties(
+        circleColor: [
+          Expressions.step,
+          ['get', 'point_count'],
+          '#8BC34A',
+          20,
+          '#FF9800',
+          50,
+          '#51bbd6',
+        ],
+        circleRadius: [
+          Expressions.step,
+          ['get', 'point_count'],
+          15,
+          20,
+          17.5,
+          50,
+          20,
+        ],
+        circleStrokeWidth: 2,
+        circleStrokeColor: '#ffffff',
+      ),
+      filter: ['has', 'point_count'],
       enableInteraction: true,
     );
-  } catch (e) {
-    // Layer already exists, skip
-  }
+
+    await mapController.addSymbolLayer(
+      "places",
+      "places-cluster-count",
+      const SymbolLayerProperties(
+        textField: [Expressions.get, 'point_count_abbreviated'],
+        textFont: ['Noto Sans Regular'],
+        textSize: 12,
+        textColor: '#ffffff',
+        textAllowOverlap: true,
+      ),
+      filter: ['has', 'point_count'],
+      enableInteraction: true,
+    );
+
+    await mapController.addSymbolLayer(
+      "places",
+      "places-layer",
+      SymbolLayerProperties(iconImage: matchExpression, iconSize: 0.5),
+      filter: [
+        '!',
+        ['has', 'point_count'],
+      ],
+      enableInteraction: true,
+    );
+  } catch (_) {}
 }
 
 Future<void> updatePlacesSource({
@@ -65,29 +106,30 @@ Future<void> updatePlacesSource({
 }) async {
   final placesGeoJson = {
     "type": "FeatureCollection",
-    "features": markersVisible
-        ? places?.map((place) {
-                return {
-                  "type": "Feature",
-                  "id": place.id,
-                  "properties": {"categoryId": place.categoryId},
-                  "geometry": {
-                    "type": "Point",
-                    "coordinates": [place.longitude, place.latitude],
-                  },
-                };
-              }).toList() ??
-              []
+    "features": markersVisible && places != null
+        ? places.map((place) {
+            return {
+              "type": "Feature",
+              "id": place.id,
+              "properties": {"categoryId": place.categoryId},
+              "geometry": {
+                "type": "Point",
+                "coordinates": [place.longitude, place.latitude],
+              },
+            };
+          }).toList()
         : [],
   };
 
   try {
-    await mapController.setGeoJsonSource("places", placesGeoJson);
-  } catch (e) {
-    // Source doesn't exist yet, add it
     await mapController.addSource(
       "places",
-      GeojsonSourceProperties(data: placesGeoJson),
+      GeojsonSourceProperties(
+        data: placesGeoJson,
+        cluster: true,
+        clusterMaxZoom: 18,
+        clusterRadius: 50,
+      ),
     );
-  }
+  } catch (_) {}
 }

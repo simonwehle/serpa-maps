@@ -11,6 +11,7 @@
       "maxzoom": 18
     }
   },
+  "glyphs": "https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf",
   "layers": [
     {
       "id": "ArcGIS-layer",

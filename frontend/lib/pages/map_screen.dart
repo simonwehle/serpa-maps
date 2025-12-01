@@ -64,15 +64,22 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     setState(() {
       _mapReady = true;
     });
-  }
-
-  Future<void> _onStyleLoaded() async {
     await ref
         .read(locationPermissionProvider.notifier)
         .checkPermissionOrZoomMap(_controller);
+  }
+
+  Future<void> _onStyleLoaded() async {
     final categories = await ref.read(categoryProvider.future);
     await addMarkerImage(categories: categories, mapController: _controller);
-    await _updatePlaces(ref.read(placeProvider).value);
+
+    final places = await ref.read(placeProvider.future);
+
+    await updatePlacesSource(
+      mapController: _controller,
+      places: places,
+      markersVisible: ref.read(markersVisibleProvider),
+    );
     await addPlaceLayer(categories: categories, mapController: _controller);
 
     if (!_listenerAdded) {
@@ -92,7 +99,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     String layerId,
     Annotation? annotation,
   ) {
-    openPlaceBottomSheet(placeId: int.parse(id));
+    if (layerId == 'places-clusters' || layerId == 'places-cluster-count') {
+      _controller.animateCamera(
+        CameraUpdate.zoomBy(2, Offset(point.x, point.y)),
+      );
+    } else if (layerId == 'places-layer') {
+      openPlaceBottomSheet(placeId: int.parse(id));
+    }
   }
 
   @override
