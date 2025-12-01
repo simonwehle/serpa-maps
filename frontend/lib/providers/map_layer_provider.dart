@@ -10,8 +10,7 @@ extension MapLayerExtension on MapLayer {
       case MapLayer.vector:
         if (brightness == Brightness.dark) {
           return dotenv.env['STYLE_DARK_URL'] ??
-              dotenv.env['STYLE_URL'] ??
-              'http://localhost:3465/styles/liberty.json';
+              'http://localhost:3465/styles/liberty-dark.json';
         }
         return dotenv.env['STYLE_URL'] ??
             'http://localhost:3465/styles/liberty.json';
