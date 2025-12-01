@@ -5,6 +5,7 @@ import 'package:maplibre_gl/maplibre_gl.dart';
 
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/providers/category_provider.dart';
+import 'package:serpa_maps/providers/location_permission_provider.dart';
 import 'package:serpa_maps/providers/map_layer_provider.dart';
 import 'package:serpa_maps/providers/markers_visible_provider.dart';
 import 'package:serpa_maps/providers/overlay_active_prvoider.dart';
@@ -66,6 +67,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   Future<void> _onStyleLoaded() async {
+    await ref
+        .read(locationPermissionProvider.notifier)
+        .checkPermissionOrZoomMap(_controller);
     final categories = await ref.read(categoryProvider.future);
     await addMarkerImage(categories: categories, mapController: _controller);
     await _updatePlaces(ref.read(placeProvider).value);
@@ -126,7 +130,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           MapLibreMap(
             styleString: activeLayer.getStyleUrl(brightness),
             onMapCreated: _onMapCreated,
-            myLocationEnabled: true,
+            myLocationEnabled: ref.watch(locationPermissionProvider),
             //trackCameraPosition: true,
             initialCameraPosition: const CameraPosition(
               target: LatLng(0, 0),
