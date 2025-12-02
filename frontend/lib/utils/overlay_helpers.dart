@@ -14,7 +14,7 @@ Future<void> addOverlay({required MapLibreMapController mapController}) async {
       'overlay-source',
       'overlay-layer',
       RasterLayerProperties(rasterOpacity: 1.0),
-      belowLayerId: 'places-layer',
+      belowLayerId: 'places-clusters',
     );
   } catch (_) {}
 }

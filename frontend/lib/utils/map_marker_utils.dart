@@ -124,14 +124,16 @@ Future<void> updatePlacesSource({
   try {
     await mapController.setGeoJsonSource("places", placesGeoJson);
   } catch (_) {
-    await mapController.addSource(
-      "places",
-      GeojsonSourceProperties(
-        data: placesGeoJson,
-        cluster: true,
-        clusterMaxZoom: 18,
-        clusterRadius: 30,
-      ),
-    );
+    try {
+      await mapController.addSource(
+        "places",
+        GeojsonSourceProperties(
+          data: placesGeoJson,
+          cluster: true,
+          clusterMaxZoom: 18,
+          clusterRadius: 30,
+        ),
+      );
+    } catch (_) {}
   }
 }
