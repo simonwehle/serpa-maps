@@ -49,7 +49,7 @@ func UploadPlaceAssets(db *sqlx.DB) gin.HandlerFunc {
 			}
 		}
 
-        uploaded := []string{}
+        uploadedAssets := []models.Asset{}
 
         for _, file := range files {
             ext := strings.ToLower(filepath.Ext(file.Filename))
@@ -94,10 +94,21 @@ func UploadPlaceAssets(db *sqlx.DB) gin.HandlerFunc {
                 return
             }
 
-            uploaded = append(uploaded, buildAssetURL(filename))
+            var newAsset models.Asset
+            err = db.Get(&newAsset, `
+                INSERT INTO assets (place_id, asset_url, asset_type, position)
+                VALUES ($1, $2, $3, $4)
+                RETURNING asset_id, place_id, asset_url, asset_type, position, created_at
+            `, placeID, filename, assetType, nextPos)
+            if err != nil {
+                c.JSON(http.StatusInternalServerError, gin.H{"error": "DB error during insertion", "details": err.Error()})
+                return
+            }
+
+            uploadedAssets = append(uploadedAssets, newAsset)
         }
 
-        c.JSON(http.StatusOK, gin.H{"uploaded": uploaded})
+        c.JSON(http.StatusOK, gin.H{"assets": uploadedAssets})
     }
 }
 
@@ -144,7 +155,7 @@ func UpdateAssetPositions(db *sqlx.DB) gin.HandlerFunc {
     }
 }
 
-func DeletePlaceAsset(db *sqlx.DB) gin.HandlerFunc {
+func DeleteAsset(db *sqlx.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
         assetID := c.Param("id")
 

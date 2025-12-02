@@ -38,7 +38,7 @@ func Execute() {
 	r.Static("/uploads", "./uploads")
 	api.POST("/place/:id/assets", handlers.UploadPlaceAssets(postgres))
 	api.PATCH("/place/:id/assets/positions", handlers.UpdateAssetPositions(postgres))
-	api.DELETE("/place/:id/asset", )
+	api.DELETE("/asset/:id", handlers.DeleteAsset(postgres))
 
 	r.Run(":53164")
 }
