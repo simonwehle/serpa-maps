@@ -10,7 +10,7 @@
       ],
       "tileSize": 256,
       "attribution": "© OpenStreetMap contributors",
-      "maxzoom": 18
+      "maxzoom": 20
     }
   },
   "glyphs": "https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf",
