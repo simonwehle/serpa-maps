@@ -6,8 +6,9 @@ import 'package:serpa_maps/widgets/place/place_image.dart';
 
 class PlaceAssets extends ConsumerWidget {
   final List<Asset> assets;
+  final bool isEditing;
 
-  const PlaceAssets({super.key, required this.assets});
+  const PlaceAssets({super.key, required this.assets, this.isEditing = false});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -25,7 +26,7 @@ class PlaceAssets extends ConsumerWidget {
               final asset = assets[index];
               return ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: PlaceImage(url: asset.assetUrl),
+                child: PlaceImage(url: asset.assetUrl, isEditing: isEditing),
               );
             },
             separatorBuilder: (_, _) => const SizedBox(width: 8),
