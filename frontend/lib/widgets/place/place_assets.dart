@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:serpa_maps/models/asset.dart';
-import 'package:serpa_maps/providers/baseurl_provider.dart';
 import 'package:serpa_maps/widgets/place/place_image.dart';
 
 class PlaceAssets extends ConsumerWidget {
@@ -12,8 +11,6 @@ class PlaceAssets extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final baseUrl = ref.read(baseUrlProvider);
-
     if (assets.isEmpty) return const SizedBox.shrink();
 
     return Column(
@@ -26,10 +23,9 @@ class PlaceAssets extends ConsumerWidget {
             itemCount: assets.length,
             itemBuilder: (context, index) {
               final asset = assets[index];
-              final url = asset.assetUrl;
               return ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: PlaceImage(url: '$baseUrl/$url'),
+                child: PlaceImage(url: asset.assetUrl),
               );
             },
             separatorBuilder: (_, _) => const SizedBox(width: 8),
