@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 
 	"serpa-maps/internal/models"
@@ -10,6 +11,30 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 )
+
+func buildAssetURL(assetURL string) string {
+	baseURL := os.Getenv("BASE_URL")
+	if baseURL == "" {
+		baseURL = "http://localhost:53164"
+	}
+	return fmt.Sprintf("%s/%s", baseURL, assetURL)
+}
+
+func validatePlaceInput(name string, latitude, longitude float64) error {
+	if strings.TrimSpace(name) == "" {
+		return fmt.Errorf("name is required")
+	}
+	if len(name) > 255 {
+		return fmt.Errorf("name too long (max 255 characters)")
+	}
+	if latitude < -90 || latitude > 90 {
+		return fmt.Errorf("invalid latitude (must be between -90 and 90)")
+	}
+	if longitude < -180 || longitude > 180 {
+		return fmt.Errorf("invalid longitude (must be between -180 and 180)")
+	}
+	return nil
+}
 
 func AddPlace(db *sqlx.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
@@ -19,6 +44,11 @@ func AddPlace(db *sqlx.DB) gin.HandlerFunc {
             c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON payload"})
             return
         }
+
+		if err := validatePlaceInput(place.Name, place.Latitude, place.Longitude); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 
         query := `
             INSERT INTO places (name, description, latitude, longitude, category_id)
@@ -44,6 +74,10 @@ func AddPlace(db *sqlx.DB) gin.HandlerFunc {
 
         place.Assets = assets
 
+		for i := range place.Assets {
+			place.Assets[i].AssetURL = buildAssetURL(place.Assets[i].AssetURL)
+		}
+
         c.JSON(http.StatusCreated, place)
     }
 }
@@ -62,6 +96,9 @@ func GetPlaces(db *sqlx.DB) gin.HandlerFunc {
 			err := db.Select(&assets, "SELECT * FROM assets WHERE place_id = $1 ORDER BY position", p.PlaceID)
 			if err != nil || assets == nil {
 				assets = []models.Asset{}
+			}
+			for j := range assets {
+				assets[j].AssetURL = buildAssetURL(assets[j].AssetURL)
 			}
 			places[i].Assets = assets
 		}
@@ -85,6 +122,25 @@ func UpdatePlace(db *sqlx.DB) gin.HandlerFunc {
             c.JSON(http.StatusBadRequest, gin.H{"error": "No fields to update"})
             return
         }
+
+		if name, ok := payload["name"].(string); ok {
+			if strings.TrimSpace(name) == "" {
+				c.JSON(http.StatusBadRequest, gin.H{"error": "name cannot be empty"})
+				return
+			}
+		}
+		if lat, ok := payload["latitude"].(float64); ok {
+			if lat < -90 || lat > 90 {
+				c.JSON(http.StatusBadRequest, gin.H{"error": "invalid latitude"})
+				return
+			}
+		}
+		if lng, ok := payload["longitude"].(float64); ok {
+			if lng < -180 || lng > 180 {
+				c.JSON(http.StatusBadRequest, gin.H{"error": "invalid longitude"})
+				return
+			}
+		}
 
         setClauses := []string{}
         args := []interface{}{}
@@ -117,7 +173,10 @@ func UpdatePlace(db *sqlx.DB) gin.HandlerFunc {
         if assets == nil {
             assets = []models.Asset{}
         }
-        place.Assets = assets
+		for i := range assets {
+			assets[i].AssetURL = buildAssetURL(assets[i].AssetURL)
+		}
+		place.Assets = assets
 
         c.JSON(http.StatusOK, place)
     }

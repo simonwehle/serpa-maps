@@ -22,6 +22,13 @@ func UploadPlaceAssets(db *sqlx.DB) gin.HandlerFunc {
             return
         }
 
+		var exists bool
+		err = db.Get(&exists, "SELECT EXISTS(SELECT 1 FROM places WHERE place_id = $1)", placeID)
+		if err != nil || !exists {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Place not found"})
+			return
+		}
+
         form, err := c.MultipartForm()
         if err != nil {
             c.JSON(http.StatusBadRequest, gin.H{"error": "Error reading uploaded files"})
@@ -34,10 +41,28 @@ func UploadPlaceAssets(db *sqlx.DB) gin.HandlerFunc {
             return
         }
 
+		const maxFileSize = 10 * 1024 * 1024
+		for _, file := range files {
+			if file.Size > maxFileSize {
+				c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("File %s exceeds 10MB limit", file.Filename)})
+				return
+			}
+		}
+
         uploaded := []string{}
 
         for _, file := range files {
             ext := strings.ToLower(filepath.Ext(file.Filename))
+			
+			validExtensions := map[string]bool{
+				".jpg": true, ".jpeg": true, ".png": true, ".gif": true,
+				".mp4": true, ".mov": true, ".webp": true,
+			}
+			if !validExtensions[ext] {
+				c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Invalid file type: %s", ext)})
+				return
+			}
+
             assetType := "image"
             if ext == ".mp4" || ext == ".mov" {
                 assetType = "video"
@@ -69,7 +94,7 @@ func UploadPlaceAssets(db *sqlx.DB) gin.HandlerFunc {
                 return
             }
 
-            uploaded = append(uploaded, filename)
+            uploaded = append(uploaded, buildAssetURL(filename))
         }
 
         c.JSON(http.StatusOK, gin.H{"uploaded": uploaded})
