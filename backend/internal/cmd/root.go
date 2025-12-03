@@ -7,6 +7,7 @@ import (
 
 	"serpa-maps/internal/db"
 	"serpa-maps/internal/handlers"
+	"serpa-maps/internal/middleware"
 )
 
 func Execute() {
@@ -22,6 +23,7 @@ func Execute() {
 	log.Println("Database initialized")
 
 	r := gin.Default()
+	r.Use(middleware.CorsMiddleware())
 
 	api := r.Group("/api/v1")
 
