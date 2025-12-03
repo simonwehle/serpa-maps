@@ -16,7 +16,6 @@ services:
     depends_on:
       database:
         condition: service_healthy
-
   database:
     image: postgres:bookworm
     container_name: serpa-maps-db
@@ -34,27 +33,19 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-
-  nginx:
-    image: nginx:alpine
-    container_name: serpa-maps-nginx
+  martin:
+    image: ghcr.io/maplibre/martin:latest
+    container_name: serpa-maps-martin
+    restart: unless-stopped
     ports:
-      - "3465:80"
+      - "7135:3000"
     volumes:
-      - ./sprites:/usr/share/nginx/html/sprites
-      - ./styles:/usr/share/nginx/html/styles
-      - ./fonts:/usr/share/nginx/html/fonts
-    depends_on:
-      - mbtileserver
-  mbtileserver:
-    image: consbio/mbtileserver:0.9.0
-    container_name: serpa-mbtileserver
-    environment:
-      VERBOSE: "true"
-    volumes:
-      - ./tiles:/tilesets
-    ports:
-      - "7135:8000"
+      - ./sprites:/sprites:ro
+      - ./styles:/styles:ro
+      - ./fonts:/fonts:ro
+      - ./config.yaml:/config.yaml:ro
+      - ./tiles:/tiles:ro
+    command: --config /config.yaml
 
 volumes:
   pg-data:
