@@ -14,6 +14,7 @@ import 'package:serpa_maps/utils/map_marker_utils.dart';
 import 'package:serpa_maps/utils/overlay_helpers.dart';
 import 'package:serpa_maps/widgets/map/layer_button.dart';
 import 'package:serpa_maps/widgets/map/serpa_fab.dart';
+import 'package:serpa_maps/widgets/map/serpa_search_bar.dart';
 import 'package:serpa_maps/widgets/sheets/add_place_bottom_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/place_bottom_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_draggable_sheet.dart';
@@ -158,6 +159,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             },
             attributionButtonPosition: AttributionButtonPosition.bottomLeft,
           ),
+          SerpaSearchBar(),
           LayerButton(onPressed: openLayerBottomSheet),
         ],
       ),
