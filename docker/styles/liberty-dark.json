@@ -2,6 +2,12 @@
   "version": 8,
   "name": "OSM Liberty Dark",
   "sources": {
+    "ne2_shaded": {
+      "maxzoom": 6,
+      "tileSize": 256,
+      "tiles": ["http://localhost:7135/ne2sr/{z}/{x}/{y}"],
+      "type": "raster"
+    },
     "openmaptiles": {
       "type": "vector",
       "url": "http://localhost:7135/monaco"
@@ -14,6 +20,23 @@
       "id": "background",
       "type": "background",
       "paint": {"background-color": "rgb(34,34,34)"}
+    },
+    {
+      "id": "natural_earth",
+      "type": "raster",
+      "source": "ne2_shaded",
+      "maxzoom": 7,
+      "paint": {
+        "raster-opacity": [
+          "interpolate",
+          ["exponential", 1.5],
+          ["zoom"],
+          0,
+          0.6,
+          6,
+          0.1
+        ]
+      }
     },
     {
       "id": "park",

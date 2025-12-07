@@ -53,3 +53,6 @@ frontend/android/app/release
 # Backend builds
 /backend/serpa-maps
 /backend/uploads/
+
+# Tiles
+/docker/tiles/ne2sr.mbtiles
