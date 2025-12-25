@@ -32,6 +32,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   late MapLibreMapController _controller;
   bool _mapReady = false;
   bool _listenerAdded = false;
+  double _currentBearing = 0.0;
 
   void openAddPlaceBottomSheet({double? latitude, double? longitude}) {
     showSerpaDraggableSheet(
@@ -66,9 +67,21 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     setState(() {
       _mapReady = true;
     });
+
+    _controller.addListener(_onCameraMove);
+
     await ref
         .read(locationPermissionProvider.notifier)
         .checkPermissionOrZoomMap(_controller);
+  }
+
+  void _onCameraMove() {
+    final position = _controller.cameraPosition;
+    if (position != null && position.bearing != _currentBearing) {
+      setState(() {
+        _currentBearing = position.bearing;
+      });
+    }
   }
 
   Future<void> _onStyleLoaded() async {
@@ -108,6 +121,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     } else if (layerId == 'places-layer') {
       openPlaceBottomSheet(placeId: int.parse(id));
     }
+  }
+
+  @override
+  void dispose() {
+    if (_mapReady) {
+      _controller.removeListener(_onCameraMove);
+    }
+    super.dispose();
   }
 
   @override
@@ -172,11 +193,12 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             },
           ),
           LayerButton(onPressed: openLayerBottomSheet),
-          CompassButton(
-            onPressed: () {
-              _controller.animateCamera(CameraUpdate.bearingTo(0));
-            },
-          ),
+          if (_currentBearing.abs() > 0.1)
+            CompassButton(
+              onPressed: () {
+                _controller.animateCamera(CameraUpdate.bearingTo(0));
+              },
+            ),
         ],
       ),
       floatingActionButton: !_mapReady
