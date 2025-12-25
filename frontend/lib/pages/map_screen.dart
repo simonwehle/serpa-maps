@@ -159,7 +159,17 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             },
             attributionButtonPosition: AttributionButtonPosition.bottomLeft,
           ),
-          SerpaSearchBar(),
+          SerpaSearchBar(
+            onPlaceSelected: (place) {
+              // Animate map to place.latitude, place.longitude
+              _controller.animateCamera(
+                CameraUpdate.newLatLngZoom(
+                  LatLng(place.latitude, place.longitude),
+                  14,
+                ),
+              );
+            },
+          ),
           LayerButton(onPressed: openLayerBottomSheet),
         ],
       ),
