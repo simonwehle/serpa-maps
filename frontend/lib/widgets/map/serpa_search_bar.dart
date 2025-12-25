@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:serpa_maps/providers/place_provider.dart';
+import 'package:serpa_maps/providers/category_provider.dart';
 import 'package:serpa_maps/models/place.dart';
+import 'package:serpa_maps/widgets/category/category_icon.dart';
 
 class SerpaSearchBar extends ConsumerStatefulWidget {
   final Function(Place)? onPlaceSelected;
@@ -22,6 +24,7 @@ class _SerpaSearchBarState extends ConsumerState<SerpaSearchBar> {
   @override
   Widget build(BuildContext context) {
     final placesAsync = ref.watch(placeProvider);
+    final categoriesAsync = ref.watch(categoryProvider);
 
     return Column(
       children: [
@@ -31,7 +34,7 @@ class _SerpaSearchBarState extends ConsumerState<SerpaSearchBar> {
           child: SearchAnchor(
             viewBackgroundColor: Theme.of(context).colorScheme.surface,
             isFullScreen: false,
-            viewConstraints: const BoxConstraints(maxHeight: 250),
+            viewConstraints: const BoxConstraints(maxHeight: 275),
             builder: (BuildContext context, SearchController controller) {
               return SearchBar(
                 controller: controller,
@@ -72,12 +75,19 @@ class _SerpaSearchBarState extends ConsumerState<SerpaSearchBar> {
                       }
 
                       return filteredPlaces.map((place) {
+                        final category = categoriesAsync.value?.firstWhere(
+                          (cat) => cat.id == place.categoryId,
+                          orElse: () => null as dynamic,
+                        );
+
                         return ListTile(
-                          leading: const Icon(Icons.place),
+                          leading: category != null
+                              ? CategoryIcon(category: category)
+                              : const Icon(Icons.place),
                           title: Text(place.name),
-                          subtitle: place.description != null
-                              ? Text(place.description!)
-                              : null,
+                          // subtitle: place.description != ""
+                          //     ? Text(place.description!)
+                          //     : null,
                           onTap: () {
                             controller.closeView(place.name);
                             widget.onPlaceSelected?.call(place);
