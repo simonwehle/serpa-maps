@@ -59,7 +59,7 @@ class _PlaceAssetsFullscreenState extends State<PlaceAssetsFullscreen> {
             child: Align(
               alignment: Alignment.topRight,
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(16.0),
                 child: SheetButton(
                   icon: Icons.close,
                   onPressed: () => Navigator.of(context).pop(),

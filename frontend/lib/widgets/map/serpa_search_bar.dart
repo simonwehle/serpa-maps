@@ -21,6 +21,13 @@ class SerpaSearchBar extends ConsumerStatefulWidget {
 class _SerpaSearchBarState extends ConsumerState<SerpaSearchBar> {
   bool isAndroid = Platform.isAndroid;
   bool isIOS = Platform.isIOS;
+  final FocusNode _searchFocusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _searchFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +47,7 @@ class _SerpaSearchBarState extends ConsumerState<SerpaSearchBar> {
             builder: (BuildContext context, SearchController controller) {
               return SearchBar(
                 controller: controller,
+                focusNode: _searchFocusNode,
                 backgroundColor: WidgetStateProperty.all(
                   Theme.of(context).colorScheme.surface,
                 ),
@@ -92,8 +100,11 @@ class _SerpaSearchBarState extends ConsumerState<SerpaSearchBar> {
                           //     ? Text(place.description!)
                           //     : null,
                           onTap: () {
+                            _searchFocusNode.unfocus();
                             controller.closeView(place.name);
-                            widget.onPlaceSelected?.call(place);
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              widget.onPlaceSelected?.call(place);
+                            });
                           },
                         );
                       }).toList();

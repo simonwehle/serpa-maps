@@ -184,12 +184,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           ),
           SerpaSearchBar(
             onPlaceSelected: (place) {
+              FocusManager.instance.primaryFocus?.unfocus();
               _controller.animateCamera(
                 CameraUpdate.newLatLngZoom(
                   LatLng(place.latitude, place.longitude),
                   15,
                 ),
               );
+              openPlaceBottomSheet(placeId: place.id);
             },
           ),
           LayerButton(onPressed: openLayerBottomSheet),
