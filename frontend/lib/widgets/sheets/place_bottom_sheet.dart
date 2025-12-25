@@ -126,6 +126,7 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
         initializeControllers(place, categories, category);
 
         return SerpaDraggableSheet(
+          initialChildSize: 0.39,
           bottomActions: isEditing
               ? PlaceFormActions(
                   onSave: () => _saveChanges(place.id),

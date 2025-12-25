@@ -4,11 +4,13 @@ import 'package:serpa_maps/widgets/sheets/serpa_bottom_sheet.dart';
 class SerpaDraggableSheet extends StatelessWidget {
   final Widget child;
   final Widget? bottomActions;
+  final double initialChildSize;
 
   const SerpaDraggableSheet({
     super.key,
     required this.child,
     this.bottomActions,
+    this.initialChildSize = 0.575,
   });
 
   @override
@@ -16,7 +18,7 @@ class SerpaDraggableSheet extends StatelessWidget {
     return Stack(
       children: [
         DraggableScrollableSheet(
-          initialChildSize: 0.6,
+          initialChildSize: initialChildSize,
           maxChildSize: 0.9,
           builder: (context, scrollController) {
             return SerpaBottomSheet(
