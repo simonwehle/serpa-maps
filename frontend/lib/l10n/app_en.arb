@@ -10,6 +10,7 @@
   "explore": "Explore",
   "latitude": "Latitude",
   "longitude": "Longitude",
+  "mapLayer": "Map Layer",
   "name": "Name",
   "noCategories": "No categories available",
   "noDescription": "No description available",

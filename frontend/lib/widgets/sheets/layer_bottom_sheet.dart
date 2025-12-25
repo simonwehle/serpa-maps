@@ -14,16 +14,17 @@ class LayerBottomSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final activeLayer = ref.watch(activeLayerProvider);
+    final i10n = AppLocalizations.of(context)!;
 
     return SerpaStaticSheet(
-      title: 'Map Layer',
+      title: i10n.mapLayer,
       child: Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               LayerImage(
-                name: AppLocalizations.of(context)!.defaultMap,
+                name: i10n.defaultMap,
                 assetImage: AssetImage('assets/layers/default.jpg'),
                 isActive: activeLayer == MapLayer.vector,
                 onTap: () => ref
@@ -31,7 +32,7 @@ class LayerBottomSheet extends ConsumerWidget {
                     .setActiveLayer(MapLayer.vector),
               ),
               LayerImage(
-                name: AppLocalizations.of(context)!.satellite,
+                name: i10n.satellite,
                 assetImage: AssetImage('assets/layers/satellite.jpg'),
                 isActive: activeLayer == MapLayer.satellite,
                 onTap: () => ref
@@ -39,7 +40,7 @@ class LayerBottomSheet extends ConsumerWidget {
                     .setActiveLayer(MapLayer.satellite),
               ),
               LayerImage(
-                name: AppLocalizations.of(context)!.explore,
+                name: i10n.explore,
                 assetImage: AssetImage('assets/layers/explore.jpg'),
                 isActive: activeLayer == MapLayer.osm,
                 onTap: () => ref
@@ -52,7 +53,7 @@ class LayerBottomSheet extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(AppLocalizations.of(context)!.showMarkers),
+              Text(i10n.showMarkers),
               Switch(
                 value: ref.watch(markersVisibleProvider),
                 onChanged: ref
@@ -65,7 +66,7 @@ class LayerBottomSheet extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(AppLocalizations.of(context)!.showOverlay),
+                Text(i10n.showOverlay),
                 Switch(
                   value: ref.watch(overlayActiveProvider),
                   onChanged: ref

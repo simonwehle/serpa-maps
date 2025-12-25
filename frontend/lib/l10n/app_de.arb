@@ -9,6 +9,7 @@
   "description": "Beschreibung",
   "latitude": "Breitengrad",
   "longitude": "Längengrad",
+  "mapLayer": "Kartentyp",
   "name": "Name",
   "noCategories": "Keine Kategorien verfügbar",
   "noDescription": "Keine Beschreibung verfügbar",
