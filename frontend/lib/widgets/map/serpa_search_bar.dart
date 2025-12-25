@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serpa_maps/l10n/app_localizations.dart';
 
 import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/providers/category_provider.dart';
@@ -25,6 +26,7 @@ class _SerpaSearchBarState extends ConsumerState<SerpaSearchBar> {
   Widget build(BuildContext context) {
     final placesAsync = ref.watch(placeProvider);
     final categoriesAsync = ref.watch(categoryProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return Column(
       children: [
@@ -44,6 +46,7 @@ class _SerpaSearchBarState extends ConsumerState<SerpaSearchBar> {
                 padding: const WidgetStatePropertyAll<EdgeInsets>(
                   EdgeInsets.symmetric(horizontal: 16.0),
                 ),
+                hintText: l10n.searchPlaces,
                 onTap: () {
                   controller.openView();
                 },

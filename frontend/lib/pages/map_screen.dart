@@ -12,6 +12,7 @@ import 'package:serpa_maps/providers/overlay_active_prvoider.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/utils/map_marker_utils.dart';
 import 'package:serpa_maps/utils/overlay_helpers.dart';
+import 'package:serpa_maps/widgets/map/compass_button.dart';
 import 'package:serpa_maps/widgets/map/layer_button.dart';
 import 'package:serpa_maps/widgets/map/serpa_fab.dart';
 import 'package:serpa_maps/widgets/map/serpa_search_bar.dart';
@@ -145,7 +146,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             styleString: activeLayer.getStyleUrl(brightness),
             onMapCreated: _onMapCreated,
             myLocationEnabled: ref.watch(locationPermissionProvider),
-            //trackCameraPosition: true,
+            trackCameraPosition: true,
             initialCameraPosition: const CameraPosition(
               target: LatLng(0, 0),
               zoom: 2,
@@ -157,20 +158,25 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 longitude: latLng.longitude,
               );
             },
+            compassEnabled: false,
             attributionButtonPosition: AttributionButtonPosition.bottomLeft,
           ),
           SerpaSearchBar(
             onPlaceSelected: (place) {
-              // Animate map to place.latitude, place.longitude
               _controller.animateCamera(
                 CameraUpdate.newLatLngZoom(
                   LatLng(place.latitude, place.longitude),
-                  14,
+                  15,
                 ),
               );
             },
           ),
           LayerButton(onPressed: openLayerBottomSheet),
+          CompassButton(
+            onPressed: () {
+              _controller.animateCamera(CameraUpdate.bearingTo(0));
+            },
+          ),
         ],
       ),
       floatingActionButton: !_mapReady
