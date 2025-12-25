@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
-import 'package:serpa_maps/utils/icon_color_utils.dart';
+import 'package:serpa_maps/widgets/category/category_icon.dart';
 import 'package:serpa_maps/widgets/place/place_assets.dart';
 import 'package:serpa_maps/widgets/sheets/sheet_header.dart';
 
@@ -30,15 +30,7 @@ class PlaceDisplay extends ConsumerWidget {
           const SizedBox(height: 8),
           Row(
             children: [
-              CircleAvatar(
-                backgroundColor: colorFromHex(category.color),
-                maxRadius: 12.5,
-                child: Icon(
-                  iconFromString(category.icon),
-                  color: Colors.white,
-                  size: 15,
-                ),
-              ),
+              CategoryIcon(category: category),
               const SizedBox(width: 8),
               Text(
                 category.name,

@@ -4,11 +4,11 @@
   "sources": {
     "openmaptiles": {
       "type": "vector",
-      "url": "http://localhost:7135/services/monaco"
+      "url": "http://localhost:7135/monaco"
     }
   },
-  "sprite": "http://localhost:3465/sprites/liberty/osm-liberty",
-  "glyphs": "http://localhost:3465/fonts/{fontstack}/{range}.pbf",
+  "sprite": "http://localhost:7135/sprite/liberty",
+  "glyphs": "http://localhost:7135/font/{fontstack}/{range}",
   "layers": [
     {
       "id": "background",
@@ -177,7 +177,7 @@
         ["==", ["get", "class"], "river"],
         ["!=", ["get", "brunnel"], "tunnel"]
       ],
-      "layout": {"line-cap": "round"},
+      "layout": { "line-cap": "round" },
       "paint": {
         "line-color": "#4682b4",
         "line-width": [
@@ -822,20 +822,6 @@
           8
         ]
       }
-    },
-    {
-      "id": "road_area_pattern",
-      "type": "fill",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "filter": [
-        "match",
-        ["geometry-type"],
-        ["MultiPolygon", "Polygon"],
-        true,
-        false
-      ],
-      "paint": {"fill-pattern": "pedestrian_polygon"}
     },
     {
       "id": "road_motorway_link_casing",

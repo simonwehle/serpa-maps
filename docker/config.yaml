@@ -1,0 +1,22 @@
+# cors:
+#   origin:
+#     - https://example.com
+
+mbtiles:
+  paths:
+    - /tiles
+
+# pmtiles:
+#   paths:
+#     - /tiles
+
+sprites:
+  paths:
+    - /sprites/liberty
+
+fonts:
+  - /fonts
+
+styles:
+   paths:
+     - /styles

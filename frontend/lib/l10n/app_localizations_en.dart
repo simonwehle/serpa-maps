@@ -39,6 +39,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get longitude => 'Longitude';
 
   @override
+  String get mapLayer => 'Map Layer';
+
+  @override
   String get name => 'Name';
 
   @override
@@ -55,6 +58,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get save => 'Save';
+
+  @override
+  String get searchPlaces => 'Search places';
 
   @override
   String get showMarkers => 'Show markers';

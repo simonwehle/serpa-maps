@@ -12,8 +12,10 @@ import 'package:serpa_maps/providers/overlay_active_prvoider.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/utils/map_marker_utils.dart';
 import 'package:serpa_maps/utils/overlay_helpers.dart';
+import 'package:serpa_maps/widgets/map/compass_button.dart';
 import 'package:serpa_maps/widgets/map/layer_button.dart';
 import 'package:serpa_maps/widgets/map/serpa_fab.dart';
+import 'package:serpa_maps/widgets/map/serpa_search_bar.dart';
 import 'package:serpa_maps/widgets/sheets/add_place_bottom_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/place_bottom_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_draggable_sheet.dart';
@@ -30,6 +32,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   late MapLibreMapController _controller;
   bool _mapReady = false;
   bool _listenerAdded = false;
+  double _currentBearing = 0.0;
 
   void openAddPlaceBottomSheet({double? latitude, double? longitude}) {
     showSerpaDraggableSheet(
@@ -64,9 +67,21 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     setState(() {
       _mapReady = true;
     });
+
+    _controller.addListener(_onCameraMove);
+
     await ref
         .read(locationPermissionProvider.notifier)
         .checkPermissionOrZoomMap(_controller);
+  }
+
+  void _onCameraMove() {
+    final position = _controller.cameraPosition;
+    if (position != null && position.bearing != _currentBearing) {
+      setState(() {
+        _currentBearing = position.bearing;
+      });
+    }
   }
 
   Future<void> _onStyleLoaded() async {
@@ -109,6 +124,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   @override
+  void dispose() {
+    if (_mapReady) {
+      _controller.removeListener(_onCameraMove);
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     ref.listen(placeProvider, (previous, next) {
       _updatePlaces(next.value);
@@ -144,7 +167,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             styleString: activeLayer.getStyleUrl(brightness),
             onMapCreated: _onMapCreated,
             myLocationEnabled: ref.watch(locationPermissionProvider),
-            //trackCameraPosition: true,
+            trackCameraPosition: true,
             initialCameraPosition: const CameraPosition(
               target: LatLng(0, 0),
               zoom: 2,
@@ -156,9 +179,28 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 longitude: latLng.longitude,
               );
             },
+            compassEnabled: false,
             attributionButtonPosition: AttributionButtonPosition.bottomLeft,
           ),
+          SerpaSearchBar(
+            onPlaceSelected: (place) {
+              FocusManager.instance.primaryFocus?.unfocus();
+              _controller.animateCamera(
+                CameraUpdate.newLatLngZoom(
+                  LatLng(place.latitude, place.longitude),
+                  15,
+                ),
+              );
+              openPlaceBottomSheet(placeId: place.id);
+            },
+          ),
           LayerButton(onPressed: openLayerBottomSheet),
+          if (_currentBearing.abs() > 0.1)
+            CompassButton(
+              onPressed: () {
+                _controller.animateCamera(CameraUpdate.bearingTo(0));
+              },
+            ),
         ],
       ),
       floatingActionButton: !_mapReady

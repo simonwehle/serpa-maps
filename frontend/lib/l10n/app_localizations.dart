@@ -158,6 +158,12 @@ abstract class AppLocalizations {
   /// **'Longitude'**
   String get longitude;
 
+  /// No description provided for @mapLayer.
+  ///
+  /// In en, this message translates to:
+  /// **'Map Layer'**
+  String get mapLayer;
+
   /// No description provided for @name.
   ///
   /// In en, this message translates to:
@@ -193,6 +199,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save'**
   String get save;
+
+  /// No description provided for @searchPlaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Search places'**
+  String get searchPlaces;
 
   /// No description provided for @showMarkers.
   ///

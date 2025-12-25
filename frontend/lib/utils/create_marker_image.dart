@@ -1,5 +1,5 @@
 import 'dart:ui' as ui;
-import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 Future<Uint8List> createMarkerImage(
@@ -8,9 +8,13 @@ Future<Uint8List> createMarkerImage(
   double size = 160,
   double iconSize = 100,
 }) async {
+  final isWeb = kIsWeb;
+
+  final canvasSize = isWeb ? 56.0 : size;
+  final iconScale = canvasSize / size;
   final recorder = ui.PictureRecorder();
   final canvas = Canvas(recorder);
-  final radius = size / 2;
+  final radius = canvasSize / 2;
   final center = Offset(radius, radius);
 
   final paint = Paint()..color = color;
@@ -19,14 +23,14 @@ Future<Uint8List> createMarkerImage(
   final borderPaint = Paint()
     ..color = Colors.white
     ..style = PaintingStyle.stroke
-    ..strokeWidth = 6.0;
+    ..strokeWidth = isWeb ? 3.0 : 6.0;
   canvas.drawCircle(center, radius - borderPaint.strokeWidth / 2, borderPaint);
 
   final textPainter = TextPainter(textDirection: TextDirection.ltr);
   textPainter.text = TextSpan(
     text: String.fromCharCode(icon.codePoint),
     style: TextStyle(
-      fontSize: iconSize,
+      fontSize: iconSize * iconScale,
       fontFamily: icon.fontFamily,
       package: icon.fontPackage,
       color: Colors.white,
@@ -39,7 +43,7 @@ Future<Uint8List> createMarkerImage(
   );
 
   final picture = recorder.endRecording();
-  final img = await picture.toImage(size.toInt(), size.toInt());
+  final img = await picture.toImage(canvasSize.toInt(), canvasSize.toInt());
   final byteData = await img.toByteData(format: ui.ImageByteFormat.png);
   return byteData!.buffer.asUint8List();
 }

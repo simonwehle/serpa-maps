@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:serpa_maps/widgets/map/map_button.dart';
 
 class LayerButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -7,18 +8,10 @@ class LayerButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.topRight,
-      child: Padding(
-        padding: const EdgeInsets.only(top: 115, right: 5),
-        child: FloatingActionButton(
-          mini: true,
-          backgroundColor: Theme.of(context).colorScheme.surface,
-          onPressed: onPressed,
-          shape: const CircleBorder(),
-          child: const Icon(Icons.layers),
-        ),
-      ),
+    return MapButton(
+      onPressed: onPressed,
+      icon: Icons.layers,
+      edgeInsets: const EdgeInsets.only(top: 125, right: 5),
     );
   }
 }
