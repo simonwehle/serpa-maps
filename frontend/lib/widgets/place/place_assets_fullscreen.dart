@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:serpa_maps/models/asset.dart';
+import 'package:serpa_maps/widgets/sheets/sheet_button.dart';
 
 class PlaceAssetsFullscreen extends StatefulWidget {
   final List<Asset> assets;
@@ -33,7 +34,7 @@ class _PlaceAssetsFullscreenState extends State<PlaceAssetsFullscreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Stack(
         children: [
           PageView.builder(
@@ -42,7 +43,7 @@ class _PlaceAssetsFullscreenState extends State<PlaceAssetsFullscreen> {
             itemBuilder: (context, index) {
               return InteractiveViewer(
                 minScale: 1,
-                maxScale: 4,
+                maxScale: 15,
                 child: Center(
                   child: Image.network(
                     widget.assets[index].assetUrl,
@@ -57,9 +58,12 @@ class _PlaceAssetsFullscreenState extends State<PlaceAssetsFullscreen> {
           SafeArea(
             child: Align(
               alignment: Alignment.topRight,
-              child: IconButton(
-                icon: const Icon(Icons.close, color: Colors.white),
-                onPressed: () => Navigator.of(context).pop(),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SheetButton(
+                  icon: Icons.close,
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
               ),
             ),
           ),
