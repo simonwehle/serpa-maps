@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"math"
 	"net/http"
 	"os"
 	"strings"
@@ -36,6 +37,10 @@ func validatePlaceInput(name string, latitude, longitude float64) error {
 	return nil
 }
 
+func round6(v float64) float64 {
+	return math.Round(v*1e6) / 1e6
+}
+
 func AddPlace(db *sqlx.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
         var place models.Place
@@ -44,6 +49,9 @@ func AddPlace(db *sqlx.DB) gin.HandlerFunc {
             c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON payload"})
             return
         }
+
+        place.Latitude = round6(place.Latitude)
+        place.Longitude = round6(place.Longitude)
 
 		if err := validatePlaceInput(place.Name, place.Latitude, place.Longitude); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -146,6 +154,16 @@ func UpdatePlace(db *sqlx.DB) gin.HandlerFunc {
         args := []interface{}{}
         i := 1
         for k, v := range payload {
+            if k == "latitude" {
+                if f, ok := v.(float64); ok {
+                    v = round6(f)
+                }
+            }
+            if k == "longitude" {
+                if f, ok := v.(float64); ok {
+                    v = round6(f)
+                }
+            }
             setClauses = append(setClauses, fmt.Sprintf("%s = $%d", k, i))
             args = append(args, v)
             i++
