@@ -57,6 +57,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get save => 'Speichern';
 
   @override
+  String get searchPlaces => 'Orte suchen';
+
+  @override
   String get showMarkers => 'Markierungen anzeigen';
 
   @override

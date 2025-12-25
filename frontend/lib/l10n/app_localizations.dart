@@ -194,6 +194,12 @@ abstract class AppLocalizations {
   /// **'Save'**
   String get save;
 
+  /// No description provided for @searchPlaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Search places'**
+  String get searchPlaces;
+
   /// No description provided for @showMarkers.
   ///
   /// In en, this message translates to:
