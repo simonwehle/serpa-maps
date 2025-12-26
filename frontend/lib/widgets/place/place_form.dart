@@ -5,6 +5,7 @@ import 'package:serpa_maps/l10n/app_localizations.dart';
 
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
+import 'package:serpa_maps/utils/dialogs.dart';
 import 'package:serpa_maps/utils/extract_gps.dart';
 import 'package:serpa_maps/widgets/place/place_assets.dart';
 import 'package:serpa_maps/widgets/place/place_form_button.dart';
@@ -81,7 +82,7 @@ class PlaceForm extends StatelessWidget {
               const SizedBox(width: 8),
               PlaceFormButton(
                 icon: Symbols.forms_add_on,
-                onPressed: () => print("Button Pressed"),
+                onPressed: () => print("Category Button Pressed"),
               ),
             ],
           ),
@@ -151,26 +152,17 @@ class PlaceForm extends StatelessWidget {
                 style: ButtonStyle(
                   backgroundColor: WidgetStatePropertyAll<Color>(Colors.red),
                 ),
-                onPressed: () => showDialog<String>(
-                  context: context,
-                  builder: (BuildContext context) => AlertDialog(
-                    title: Text(i10n.deletePlace),
-                    content: Text(i10n.deletePlaceQuestion),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: Text(i10n.cancel),
-                      ),
-                      TextButton(
-                        onPressed: () async {
-                          if (deletePlace != null) await deletePlace!();
-                          if (context.mounted) Navigator.pop(context);
-                        },
-                        child: Text(i10n.yes),
-                      ),
-                    ],
-                  ),
-                ),
+                onPressed: () async {
+                  final confirmed = await showDeleteConfirmationDialog(
+                    context,
+                    title: i10n.deletePlace,
+                    message: i10n.deletePlaceQuestion,
+                  );
+                  if (confirmed && deletePlace != null) {
+                    await deletePlace!();
+                    if (context.mounted) Navigator.pop(context);
+                  }
+                },
                 child: Text(i10n.deletePlace),
               ),
             ),

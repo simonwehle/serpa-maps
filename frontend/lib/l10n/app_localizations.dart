@@ -122,6 +122,18 @@ abstract class AppLocalizations {
   /// **'Default'**
   String get defaultMap;
 
+  /// No description provided for @deleteAsset.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Asset'**
+  String get deleteAsset;
+
+  /// No description provided for @deleteAssetQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to delete this asset?'**
+  String get deleteAssetQuestion;
+
   /// No description provided for @deletePlace.
   ///
   /// In en, this message translates to:

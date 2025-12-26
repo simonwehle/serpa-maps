@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/providers/image_provider.dart';
 import 'package:serpa_maps/widgets/sheets/sheet_button.dart';
+import 'package:serpa_maps/utils/dialogs.dart';
+import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 const double kPlaceAssetWidth = 200;
@@ -14,6 +16,7 @@ class PlaceImage extends ConsumerWidget {
   final BoxFit fit;
   final BorderRadius? borderRadius;
   final bool isEditing;
+  final VoidCallback? onDelete;
 
   const PlaceImage({
     super.key,
@@ -23,11 +26,13 @@ class PlaceImage extends ConsumerWidget {
     this.fit = BoxFit.cover,
     this.borderRadius,
     this.isEditing = false,
+    this.onDelete,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final imageAsync = ref.watch(imageProvider(url));
+    final i10n = AppLocalizations.of(context)!;
 
     return Skeletonizer(
       enabled: imageAsync.isLoading,
@@ -57,7 +62,16 @@ class PlaceImage extends ConsumerWidget {
               right: 6,
               child: SheetButton(
                 icon: Icons.close,
-                onPressed: () => print("Delete button pressed"),
+                onPressed: () async {
+                  final confirmed = await showDeleteConfirmationDialog(
+                    context,
+                    title: i10n.deleteAsset,
+                    message: i10n.deleteAssetQuestion,
+                  );
+                  if (confirmed && onDelete != null) {
+                    onDelete!();
+                  }
+                },
               ),
             ),
         ],
