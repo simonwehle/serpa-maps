@@ -4,6 +4,9 @@ import 'package:serpa_maps/providers/image_provider.dart';
 import 'package:serpa_maps/widgets/sheets/sheet_button.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+const double kPlaceAssetWidth = 200;
+const double kPlaceAssetHeight = 150;
+
 class PlaceImage extends ConsumerWidget {
   final String url;
   final double width;
@@ -15,8 +18,8 @@ class PlaceImage extends ConsumerWidget {
   const PlaceImage({
     super.key,
     required this.url,
-    this.width = 200,
-    this.height = 200,
+    this.width = kPlaceAssetWidth,
+    this.height = kPlaceAssetHeight,
     this.fit = BoxFit.cover,
     this.borderRadius,
     this.isEditing = false,

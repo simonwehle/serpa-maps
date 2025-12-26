@@ -38,9 +38,12 @@ class PlaceDisplay extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          PlaceAssets(assets: place.assets),
-          if (place.assets.isNotEmpty) const SizedBox(height: 16),
+          place.assets.isNotEmpty
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: PlaceAssets(assets: place.assets),
+                )
+              : SizedBox(height: 16),
           Text(
             place.description?.isNotEmpty == true
                 ? place.description!

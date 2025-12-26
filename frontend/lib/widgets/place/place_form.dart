@@ -46,6 +46,7 @@ class PlaceForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i10n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
@@ -55,7 +56,7 @@ class PlaceForm extends StatelessWidget {
             controller: nameController,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: AppLocalizations.of(context)!.name,
+              labelText: i10n.name,
             ),
           ),
           const SizedBox(height: 16),
@@ -84,40 +85,33 @@ class PlaceForm extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          if (place != null) ...[
-            PlaceAssets(assets: place!.assets, isEditing: true),
-            if (place!.assets.isNotEmpty) const SizedBox(height: 16),
-          ],
-          if (place == null)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: Center(
-                child: PlaceFormButton(
-                  icon: Icons.add_a_photo,
-                  onPressed: () async {
-                    final picker = ImagePicker();
-                    final XFile? image = await picker.pickImage(
-                      source: ImageSource.gallery,
-                    );
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: PlaceAssets(
+              assets: place?.assets ?? [],
+              isEditing: true,
+              onAddImage: () async {
+                final picker = ImagePicker();
+                final XFile? image = await picker.pickImage(
+                  source: ImageSource.gallery,
+                );
 
-                    if (image != null) {
-                      final gps = await extractGpsFromImage(image);
-                      if (gps != null) {
-                        latitudeController.text = gps.$1.toString();
-                        longitudeController.text = gps.$2.toString();
-                      }
-                    }
-                  },
-                ),
-              ),
+                if (image != null) {
+                  final gps = await extractGpsFromImage(image);
+                  if (gps != null) {
+                    latitudeController.text = gps.$1.toString();
+                    longitudeController.text = gps.$2.toString();
+                  }
+                }
+              },
             ),
+          ),
           TextField(
             controller: descriptionController,
             maxLines: null,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: AppLocalizations.of(context)!.description,
+              labelText: i10n.description,
             ),
           ),
           const SizedBox(height: 16),
@@ -129,7 +123,7 @@ class PlaceForm extends StatelessWidget {
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: AppLocalizations.of(context)!.latitude,
+                    labelText: i10n.latitude,
                   ),
                   onChanged: (value) =>
                       _normalizeDecimalInput(latitudeController, value),
@@ -142,7 +136,7 @@ class PlaceForm extends StatelessWidget {
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: AppLocalizations.of(context)!.longitude,
+                    labelText: i10n.longitude,
                   ),
                   onChanged: (value) =>
                       _normalizeDecimalInput(longitudeController, value),
@@ -160,26 +154,24 @@ class PlaceForm extends StatelessWidget {
                 onPressed: () => showDialog<String>(
                   context: context,
                   builder: (BuildContext context) => AlertDialog(
-                    title: Text(AppLocalizations.of(context)!.deletePlace),
-                    content: Text(
-                      AppLocalizations.of(context)!.deletePlaceQuestion,
-                    ),
+                    title: Text(i10n.deletePlace),
+                    content: Text(i10n.deletePlaceQuestion),
                     actions: <Widget>[
                       TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child: Text(AppLocalizations.of(context)!.cancel),
+                        child: Text(i10n.cancel),
                       ),
                       TextButton(
                         onPressed: () async {
                           if (deletePlace != null) await deletePlace!();
                           if (context.mounted) Navigator.pop(context);
                         },
-                        child: Text(AppLocalizations.of(context)!.yes),
+                        child: Text(i10n.yes),
                       ),
                     ],
                   ),
                 ),
-                child: Text(AppLocalizations.of(context)!.deletePlace),
+                child: Text(i10n.deletePlace),
               ),
             ),
         ],
