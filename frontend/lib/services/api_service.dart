@@ -109,7 +109,7 @@ class ApiService {
     }
   }
 
-  Future<void> uploadAsset({
+  Future<List<dynamic>> uploadAsset({
     required int placeId,
     required List<int> assetBytes,
     required String filename,
@@ -125,5 +125,9 @@ class ApiService {
     if (res.statusCode != 200) {
       throw Exception('Failed to upload asset. Status code: ${res.statusCode}');
     }
+
+    final responseBody = await res.stream.bytesToString();
+    final data = json.decode(responseBody);
+    return data['assets'];
   }
 }

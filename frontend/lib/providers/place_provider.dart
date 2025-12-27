@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serpa_maps/models/asset.dart';
 
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/providers/api_provider.dart';
@@ -100,19 +101,32 @@ class PlaceNotifier extends AsyncNotifier<List<Place>> {
     required String filename,
   }) async {
     final api = ref.read(apiServiceProvider);
-    await api.uploadAsset(
+    final newAssetsJson = await api.uploadAsset(
       placeId: placeId,
       assetBytes: assetBytes,
       filename: filename,
     );
 
-    final updatedPlace = await api.updatePlace(id: placeId);
     state = state.whenData((places) {
-      final index = places.indexWhere((p) => p.id == updatedPlace.id);
-      if (index == -1) return places;
-      final updatedPlaces = [...places];
-      updatedPlaces[index] = updatedPlace;
-      return updatedPlaces;
+      return places.map((place) {
+        if (place.id == placeId) {
+          final newAssets = newAssetsJson
+              .map((a) => Asset.fromJson(a))
+              .toList();
+          final updatedAssets = [...place.assets, ...newAssets];
+          return Place(
+            id: place.id,
+            name: place.name,
+            description: place.description,
+            latitude: place.latitude,
+            longitude: place.longitude,
+            categoryId: place.categoryId,
+            createdAt: place.createdAt,
+            assets: updatedAssets,
+          );
+        }
+        return place;
+      }).toList();
     });
   }
 }
