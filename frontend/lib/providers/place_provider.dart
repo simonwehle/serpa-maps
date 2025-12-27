@@ -93,4 +93,26 @@ class PlaceNotifier extends AsyncNotifier<List<Place>> {
       }).toList();
     });
   }
+
+  Future<void> addAsset({
+    required int placeId,
+    required List<int> assetBytes,
+    required String filename,
+  }) async {
+    final api = ref.read(apiServiceProvider);
+    await api.uploadAsset(
+      placeId: placeId,
+      assetBytes: assetBytes,
+      filename: filename,
+    );
+
+    final updatedPlace = await api.updatePlace(id: placeId);
+    state = state.whenData((places) {
+      final index = places.indexWhere((p) => p.id == updatedPlace.id);
+      if (index == -1) return places;
+      final updatedPlaces = [...places];
+      updatedPlaces[index] = updatedPlace;
+      return updatedPlaces;
+    });
+  }
 }

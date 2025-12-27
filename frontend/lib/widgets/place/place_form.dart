@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serpa_maps/providers/place_provider.dart';
 
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
@@ -10,7 +12,7 @@ import 'package:serpa_maps/utils/extract_gps.dart';
 import 'package:serpa_maps/widgets/place/place_assets.dart';
 import 'package:serpa_maps/widgets/place/place_form_button.dart';
 
-class PlaceForm extends StatelessWidget {
+class PlaceForm extends ConsumerWidget {
   final Place? place;
   final TextEditingController nameController;
   final TextEditingController descriptionController;
@@ -46,7 +48,7 @@ class PlaceForm extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final i10n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -92,11 +94,36 @@ class PlaceForm extends StatelessWidget {
               assets: place?.assets ?? [],
               isEditing: true,
               onAddImage: () async {
+                if (place == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        "Please save the place before adding images.",
+                      ),
+                    ),
+                  );
+                  return;
+                }
+
                 final picker = ImagePicker();
                 final XFile? image = await picker.pickImage(
                   source: ImageSource.gallery,
                 );
 
+                if (image != null) {
+                  final bytes = await image.readAsBytes();
+                  final filename = image.name;
+
+                  await ref
+                      .read(placeProvider.notifier)
+                      .addAsset(
+                        placeId: place!.id,
+                        assetBytes: bytes,
+                        filename: filename,
+                      );
+                }
+
+                // ...existing GPS extraction logic...
                 if (image != null) {
                   final gps = await extractGpsFromImage(image);
                   if (gps != null &&
