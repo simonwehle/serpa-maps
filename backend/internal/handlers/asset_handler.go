@@ -98,6 +98,7 @@ func UploadPlaceAssets(db *sqlx.DB) gin.HandlerFunc {
                 return
             }
 
+            newAsset.AssetURL = buildAssetURL(newAsset.AssetURL)
             uploadedAssets = append(uploadedAssets, newAsset)
         }
 
