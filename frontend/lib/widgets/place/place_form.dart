@@ -99,7 +99,9 @@ class PlaceForm extends StatelessWidget {
 
                 if (image != null) {
                   final gps = await extractGpsFromImage(image);
-                  if (gps != null) {
+                  if (gps != null &&
+                      latitudeController.text.isEmpty &&
+                      longitudeController.text.isEmpty) {
                     latitudeController.text = gps.$1.toString();
                     longitudeController.text = gps.$2.toString();
                   }
