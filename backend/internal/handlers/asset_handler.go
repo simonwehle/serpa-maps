@@ -87,15 +87,6 @@ func UploadPlaceAssets(db *sqlx.DB) gin.HandlerFunc {
                 return
             }
 
-            _, err = db.Exec(`
-                INSERT INTO assets (place_id, asset_url, asset_type, position)
-                VALUES ($1, $2, $3, $4)
-            `, placeID, filename, assetType, nextPos)
-            if err != nil {
-                c.JSON(http.StatusInternalServerError, gin.H{"error": "DB error during insertion", "details": err.Error()})
-                return
-            }
-
             var newAsset models.Asset
             err = db.Get(&newAsset, `
                 INSERT INTO assets (place_id, asset_url, asset_type, position)
