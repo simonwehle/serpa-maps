@@ -68,4 +68,29 @@ class PlaceNotifier extends AsyncNotifier<List<Place>> {
       (places) => places.where((p) => p.id != id).toList(),
     );
   }
+
+  Future<void> deleteAsset({required int placeId, required int assetId}) async {
+    final api = ref.read(apiServiceProvider);
+    await api.deleteAsset(placeId: placeId, assetId: assetId);
+    state = state.whenData((places) {
+      return places.map((place) {
+        if (place.id == placeId) {
+          final updatedAssets = place.assets
+              .where((a) => a.assetId != assetId)
+              .toList();
+          return Place(
+            id: place.id,
+            name: place.name,
+            description: place.description,
+            latitude: place.latitude,
+            longitude: place.longitude,
+            categoryId: place.categoryId,
+            createdAt: place.createdAt,
+            assets: updatedAssets,
+          );
+        }
+        return place;
+      }).toList();
+    });
+  }
 }

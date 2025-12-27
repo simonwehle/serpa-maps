@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:serpa_maps/models/asset.dart';
+import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/widgets/place/place_assets_fullscreen.dart';
 import 'package:serpa_maps/widgets/place/place_image.dart';
 
@@ -68,6 +69,16 @@ class PlaceAssets extends ConsumerWidget {
                   width: kPlaceAssetWidth,
                   height: kPlaceAssetHeight,
                   isEditing: isEditing,
+                  onDelete: () async {
+                    try {
+                      await ref
+                          .read(placeProvider.notifier)
+                          .deleteAsset(
+                            placeId: asset.placeId,
+                            assetId: asset.assetId,
+                          );
+                    } catch (e) {}
+                  },
                 ),
               );
             },

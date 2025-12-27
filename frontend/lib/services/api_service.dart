@@ -98,4 +98,14 @@ class ApiService {
       throw Exception('Failed to delete place. Status code: ${res.statusCode}');
     }
   }
+
+  Future<void> deleteAsset({required int placeId, required int assetId}) async {
+    final res = await http.delete(
+      Uri.parse(_endpoint('/place/$placeId/asset/$assetId')),
+    );
+
+    if (res.statusCode != 200) {
+      throw Exception('Failed to delete asset. Status code: ${res.statusCode}');
+    }
+  }
 }
