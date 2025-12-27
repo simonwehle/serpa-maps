@@ -75,6 +75,7 @@ class LayerBottomSheet extends ConsumerWidget {
                 ),
               ],
             ),
+          const SizedBox(height: 16),
         ],
       ),
     );

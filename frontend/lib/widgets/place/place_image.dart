@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/providers/image_provider.dart';
+import 'package:serpa_maps/widgets/sheets/sheet_button.dart';
+import 'package:serpa_maps/utils/dialogs.dart';
+import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+
+const double kPlaceAssetWidth = 200;
+const double kPlaceAssetHeight = 150;
 
 class PlaceImage extends ConsumerWidget {
   final String url;
@@ -9,39 +15,66 @@ class PlaceImage extends ConsumerWidget {
   final double height;
   final BoxFit fit;
   final BorderRadius? borderRadius;
+  final bool isEditing;
+  final VoidCallback? onDelete;
 
   const PlaceImage({
     super.key,
     required this.url,
-    this.width = 200,
-    this.height = 200,
+    this.width = kPlaceAssetWidth,
+    this.height = kPlaceAssetHeight,
     this.fit = BoxFit.cover,
     this.borderRadius,
+    this.isEditing = false,
+    this.onDelete,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final imageAsync = ref.watch(imageProvider(url));
+    final i10n = AppLocalizations.of(context)!;
 
     return Skeletonizer(
       enabled: imageAsync.isLoading,
-      child: ClipRRect(
-        borderRadius: borderRadius ?? BorderRadius.circular(8),
-        child: imageAsync.when(
-          loading: () => Container(
-            width: width,
-            height: height,
-            color: Theme.of(context).colorScheme.outlineVariant,
+      child: Stack(
+        children: [
+          ClipRRect(
+            borderRadius: borderRadius ?? BorderRadius.circular(8),
+            child: imageAsync.when(
+              loading: () => Container(
+                width: width,
+                height: height,
+                color: Theme.of(context).colorScheme.outlineVariant,
+              ),
+              error: (_, _) => Container(
+                width: width,
+                height: height,
+                color: Theme.of(context).colorScheme.outlineVariant,
+                child: const Icon(Icons.broken_image),
+              ),
+              data: (bytes) =>
+                  Image.memory(bytes, width: width, height: height, fit: fit),
+            ),
           ),
-          error: (_, _) => Container(
-            width: width,
-            height: height,
-            color: Theme.of(context).colorScheme.outlineVariant,
-            child: const Icon(Icons.broken_image),
-          ),
-          data: (bytes) =>
-              Image.memory(bytes, width: width, height: height, fit: fit),
-        ),
+          if (isEditing)
+            Positioned(
+              top: 6,
+              right: 6,
+              child: SheetButton(
+                icon: Icons.close,
+                onPressed: () async {
+                  final confirmed = await showDeleteConfirmationDialog(
+                    context,
+                    title: i10n.deleteAsset,
+                    message: i10n.deleteAssetQuestion,
+                  );
+                  if (confirmed && onDelete != null) {
+                    onDelete!();
+                  }
+                },
+              ),
+            ),
+        ],
       ),
     );
   }

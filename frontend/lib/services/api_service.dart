@@ -98,4 +98,36 @@ class ApiService {
       throw Exception('Failed to delete place. Status code: ${res.statusCode}');
     }
   }
+
+  Future<void> deleteAsset({required int placeId, required int assetId}) async {
+    final res = await http.delete(
+      Uri.parse(_endpoint('/place/$placeId/asset/$assetId')),
+    );
+
+    if (res.statusCode != 200) {
+      throw Exception('Failed to delete asset. Status code: ${res.statusCode}');
+    }
+  }
+
+  Future<List<dynamic>> uploadAsset({
+    required int placeId,
+    required List<int> assetBytes,
+    required String filename,
+  }) async {
+    final uri = Uri.parse(_endpoint('/place/$placeId/assets'));
+    final request = http.MultipartRequest('POST', uri)
+      ..files.add(
+        http.MultipartFile.fromBytes('assets', assetBytes, filename: filename),
+      );
+
+    final res = await request.send();
+
+    if (res.statusCode != 200) {
+      throw Exception('Failed to upload asset. Status code: ${res.statusCode}');
+    }
+
+    final responseBody = await res.stream.bytesToString();
+    final data = json.decode(responseBody);
+    return data['assets'];
+  }
 }

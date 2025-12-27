@@ -21,6 +21,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get defaultMap => 'Default';
 
   @override
+  String get deleteAsset => 'Delete Asset';
+
+  @override
+  String get deleteAssetQuestion => 'Do you want to delete this asset?';
+
+  @override
   String get deletePlace => 'Delete Place';
 
   @override

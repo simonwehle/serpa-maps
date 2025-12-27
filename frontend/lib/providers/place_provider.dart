@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serpa_maps/models/asset.dart';
 
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/providers/api_provider.dart';
@@ -67,5 +68,65 @@ class PlaceNotifier extends AsyncNotifier<List<Place>> {
     state = state.whenData(
       (places) => places.where((p) => p.id != id).toList(),
     );
+  }
+
+  Future<void> deleteAsset({required int placeId, required int assetId}) async {
+    final api = ref.read(apiServiceProvider);
+    await api.deleteAsset(placeId: placeId, assetId: assetId);
+    state = state.whenData((places) {
+      return places.map((place) {
+        if (place.id == placeId) {
+          final updatedAssets = place.assets
+              .where((a) => a.assetId != assetId)
+              .toList();
+          return Place(
+            id: place.id,
+            name: place.name,
+            description: place.description,
+            latitude: place.latitude,
+            longitude: place.longitude,
+            categoryId: place.categoryId,
+            createdAt: place.createdAt,
+            assets: updatedAssets,
+          );
+        }
+        return place;
+      }).toList();
+    });
+  }
+
+  Future<void> addAsset({
+    required int placeId,
+    required List<int> assetBytes,
+    required String filename,
+  }) async {
+    final api = ref.read(apiServiceProvider);
+    final newAssetsJson = await api.uploadAsset(
+      placeId: placeId,
+      assetBytes: assetBytes,
+      filename: filename,
+    );
+
+    state = state.whenData((places) {
+      return places.map((place) {
+        if (place.id == placeId) {
+          final newAssets = newAssetsJson
+              .map((a) => Asset.fromJson(a))
+              .toList();
+          final updatedAssets = [...place.assets, ...newAssets];
+          return Place(
+            id: place.id,
+            name: place.name,
+            description: place.description,
+            latitude: place.latitude,
+            longitude: place.longitude,
+            categoryId: place.categoryId,
+            createdAt: place.createdAt,
+            assets: updatedAssets,
+          );
+        }
+        return place;
+      }).toList();
+    });
   }
 }

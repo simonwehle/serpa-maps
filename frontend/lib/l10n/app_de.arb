@@ -4,6 +4,8 @@
   "cancel": "Abbrechen",
   "categoryNotFound": "Kategorie nicht gefunden",
   "defaultMap": "Standard",
+  "deleteAsset": "Inhalt löschen",
+  "deleteAssetQuestion": "Möchten Sie diesen Inhalt löschen?",
   "deletePlace": "Ort löschen",
   "deletePlaceQuestion": "Möchten Sie diesen Ort löschen?",
   "description": "Beschreibung",

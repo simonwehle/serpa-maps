@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serpa_maps/providers/place_provider.dart';
 
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
+import 'package:serpa_maps/utils/dialogs.dart';
 import 'package:serpa_maps/utils/extract_gps.dart';
 import 'package:serpa_maps/widgets/place/place_assets.dart';
 import 'package:serpa_maps/widgets/place/place_form_button.dart';
 
-class PlaceForm extends StatelessWidget {
+class PlaceForm extends ConsumerWidget {
   final Place? place;
   final TextEditingController nameController;
   final TextEditingController descriptionController;
@@ -45,7 +48,8 @@ class PlaceForm extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final i10n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
@@ -55,7 +59,7 @@ class PlaceForm extends StatelessWidget {
             controller: nameController,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: AppLocalizations.of(context)!.name,
+              labelText: i10n.name,
             ),
           ),
           const SizedBox(height: 16),
@@ -80,44 +84,53 @@ class PlaceForm extends StatelessWidget {
               const SizedBox(width: 8),
               PlaceFormButton(
                 icon: Symbols.forms_add_on,
-                onPressed: () => print("Button Pressed"),
+                onPressed: () => print("Category Button Pressed"),
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          if (place != null) ...[
-            PlaceAssets(assets: place!.assets),
-            if (place!.assets.isNotEmpty) const SizedBox(height: 16),
-          ],
-          if (place == null)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: Center(
-                child: PlaceFormButton(
-                  icon: Icons.add_a_photo,
-                  onPressed: () async {
-                    final picker = ImagePicker();
-                    final XFile? image = await picker.pickImage(
-                      source: ImageSource.gallery,
-                    );
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: PlaceAssets(
+              assets: place?.assets ?? [],
+              isEditing: true,
+              onAddImage: () async {
+                final picker = ImagePicker();
+                final XFile? image = await picker.pickImage(
+                  source: ImageSource.gallery,
+                );
 
-                    if (image != null) {
-                      final gps = await extractGpsFromImage(image);
-                      if (gps != null) {
-                        latitudeController.text = gps.$1.toString();
-                        longitudeController.text = gps.$2.toString();
-                      }
-                    }
-                  },
-                ),
-              ),
+                if (image != null) {
+                  final bytes = await image.readAsBytes();
+                  final filename = image.name;
+                  if (place != null) {
+                    await ref
+                        .read(placeProvider.notifier)
+                        .addAsset(
+                          placeId: place!.id,
+                          assetBytes: bytes,
+                          filename: filename,
+                        );
+                  }
+                }
+
+                if (image != null) {
+                  final gps = await extractGpsFromImage(image);
+                  if (gps != null &&
+                      latitudeController.text.isEmpty &&
+                      longitudeController.text.isEmpty) {
+                    latitudeController.text = gps.$1.toString();
+                    longitudeController.text = gps.$2.toString();
+                  }
+                }
+              },
             ),
+          ),
           TextField(
             controller: descriptionController,
             maxLines: null,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: AppLocalizations.of(context)!.description,
+              labelText: i10n.description,
             ),
           ),
           const SizedBox(height: 16),
@@ -129,7 +142,7 @@ class PlaceForm extends StatelessWidget {
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: AppLocalizations.of(context)!.latitude,
+                    labelText: i10n.latitude,
                   ),
                   onChanged: (value) =>
                       _normalizeDecimalInput(latitudeController, value),
@@ -142,7 +155,7 @@ class PlaceForm extends StatelessWidget {
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: AppLocalizations.of(context)!.longitude,
+                    labelText: i10n.longitude,
                   ),
                   onChanged: (value) =>
                       _normalizeDecimalInput(longitudeController, value),
@@ -157,29 +170,18 @@ class PlaceForm extends StatelessWidget {
                 style: ButtonStyle(
                   backgroundColor: WidgetStatePropertyAll<Color>(Colors.red),
                 ),
-                onPressed: () => showDialog<String>(
-                  context: context,
-                  builder: (BuildContext context) => AlertDialog(
-                    title: Text(AppLocalizations.of(context)!.deletePlace),
-                    content: Text(
-                      AppLocalizations.of(context)!.deletePlaceQuestion,
-                    ),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: Text(AppLocalizations.of(context)!.cancel),
-                      ),
-                      TextButton(
-                        onPressed: () async {
-                          if (deletePlace != null) await deletePlace!();
-                          if (context.mounted) Navigator.pop(context);
-                        },
-                        child: Text(AppLocalizations.of(context)!.yes),
-                      ),
-                    ],
-                  ),
-                ),
-                child: Text(AppLocalizations.of(context)!.deletePlace),
+                onPressed: () async {
+                  final confirmed = await showDeleteConfirmationDialog(
+                    context,
+                    title: i10n.deletePlace,
+                    message: i10n.deletePlaceQuestion,
+                  );
+                  if (confirmed && deletePlace != null) {
+                    await deletePlace!();
+                    if (context.mounted) Navigator.pop(context);
+                  }
+                },
+                child: Text(i10n.deletePlace),
               ),
             ),
         ],

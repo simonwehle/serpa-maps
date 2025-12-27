@@ -2,7 +2,9 @@ package handlers
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"serpa-maps/internal/models"
 	"strconv"
@@ -49,7 +51,7 @@ func UploadPlaceAssets(db *sqlx.DB) gin.HandlerFunc {
 			}
 		}
 
-        uploaded := []string{}
+        uploadedAssets := []models.Asset{}
 
         for _, file := range files {
             ext := strings.ToLower(filepath.Ext(file.Filename))
@@ -85,19 +87,22 @@ func UploadPlaceAssets(db *sqlx.DB) gin.HandlerFunc {
                 return
             }
 
-            _, err = db.Exec(`
+            var newAsset models.Asset
+            err = db.Get(&newAsset, `
                 INSERT INTO assets (place_id, asset_url, asset_type, position)
                 VALUES ($1, $2, $3, $4)
+                RETURNING asset_id, place_id, asset_url, asset_type, position, created_at
             `, placeID, filename, assetType, nextPos)
             if err != nil {
                 c.JSON(http.StatusInternalServerError, gin.H{"error": "DB error during insertion", "details": err.Error()})
                 return
             }
 
-            uploaded = append(uploaded, buildAssetURL(filename))
+            newAsset.AssetURL = buildAssetURL(newAsset.AssetURL)
+            uploadedAssets = append(uploadedAssets, newAsset)
         }
 
-        c.JSON(http.StatusOK, gin.H{"uploaded": uploaded})
+        c.JSON(http.StatusOK, gin.H{"assets": uploadedAssets})
     }
 }
 
@@ -146,28 +151,62 @@ func UpdateAssetPositions(db *sqlx.DB) gin.HandlerFunc {
 
 func DeletePlaceAsset(db *sqlx.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
-        assetID := c.Param("id")
+        placeIDStr := c.Param("id")
+        assetIDStr := c.Param("asset_id")
+        
+        placeID, err := strconv.Atoi(placeIDStr)
+        if err != nil {
+            c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid place id"})
+            return
+        }
+        
+        assetID, err := strconv.Atoi(assetIDStr)
+        if err != nil {
+            c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid asset id"})
+            return
+        }
+
+        var exists bool
+        err = db.Get(&exists, "SELECT EXISTS(SELECT 1 FROM places WHERE place_id = $1)", placeID)
+        if err != nil || !exists {
+            c.JSON(http.StatusNotFound, gin.H{"error": "Place not found"})
+            return
+        }
 
         var asset models.Asset
-        err := db.Get(&asset, "SELECT * FROM assets WHERE asset_id = $1", assetID)
+        err = db.Get(&asset, `
+            SELECT asset_url, asset_type 
+            FROM assets 
+            WHERE asset_id = $1 AND place_id = $2
+        `, assetID, placeID)
         if err != nil {
             c.JSON(http.StatusNotFound, gin.H{"error": "Asset not found"})
             return
         }
 
-        _, err = db.Exec("DELETE FROM assets WHERE asset_id = $1", assetID)
+        _, err = db.Exec(`
+            DELETE FROM assets 
+            WHERE asset_id = $1 AND place_id = $2
+        `, assetID, placeID)
         if err != nil {
-            c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete asset", "details": err.Error()})
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "DB error during deletion"})
             return
         }
 
-        _, err = db.Exec(
-            "UPDATE assets SET position = position - 1 WHERE place_id = $1 AND position > $2",
-            asset.PlaceID, asset.Position,
-        )
+        filePath := asset.AssetURL
+        if err := os.Remove(filePath); err != nil {
+            log.Printf("Failed to delete file %s: %v", filePath, err)
+        }
+
+        _, err = db.Exec(`
+            UPDATE assets 
+            SET position = position - 1 
+            WHERE place_id = $1 AND position > (
+                SELECT position FROM assets WHERE asset_id = $2
+            )
+        `, placeID, assetID)
         if err != nil {
-            c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update asset positions", "details": err.Error()})
-            return
+            log.Printf("Failed to reorder assets: %v", err)
         }
 
         c.JSON(http.StatusOK, gin.H{"message": "Asset deleted successfully"})
