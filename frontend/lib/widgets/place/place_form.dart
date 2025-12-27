@@ -94,17 +94,6 @@ class PlaceForm extends ConsumerWidget {
               assets: place?.assets ?? [],
               isEditing: true,
               onAddImage: () async {
-                if (place == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        "Please save the place before adding images.",
-                      ),
-                    ),
-                  );
-                  return;
-                }
-
                 final picker = ImagePicker();
                 final XFile? image = await picker.pickImage(
                   source: ImageSource.gallery,
@@ -113,17 +102,17 @@ class PlaceForm extends ConsumerWidget {
                 if (image != null) {
                   final bytes = await image.readAsBytes();
                   final filename = image.name;
-
-                  await ref
-                      .read(placeProvider.notifier)
-                      .addAsset(
-                        placeId: place!.id,
-                        assetBytes: bytes,
-                        filename: filename,
-                      );
+                  if (place != null) {
+                    await ref
+                        .read(placeProvider.notifier)
+                        .addAsset(
+                          placeId: place!.id,
+                          assetBytes: bytes,
+                          filename: filename,
+                        );
+                  }
                 }
 
-                // ...existing GPS extraction logic...
                 if (image != null) {
                   final gps = await extractGpsFromImage(image);
                   if (gps != null &&
