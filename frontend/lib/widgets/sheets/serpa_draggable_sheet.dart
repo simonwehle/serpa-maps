@@ -10,7 +10,7 @@ class SerpaDraggableSheet extends StatelessWidget {
     super.key,
     required this.child,
     this.bottomActions,
-    this.initialChildSize = 0.575,
+    this.initialChildSize = 0.6,
   });
 
   @override
@@ -19,7 +19,7 @@ class SerpaDraggableSheet extends StatelessWidget {
       children: [
         DraggableScrollableSheet(
           initialChildSize: initialChildSize,
-          maxChildSize: 0.9,
+          maxChildSize: 1,
           builder: (context, scrollController) {
             return SerpaBottomSheet(
               child: ListView(

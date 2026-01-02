@@ -110,6 +110,12 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get cancel;
 
+  /// No description provided for @categories.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get categories;
+
   /// No description provided for @categoryNotFound.
   ///
   /// In en, this message translates to:
@@ -194,6 +200,12 @@ abstract class AppLocalizations {
   /// **'No description available'**
   String get noDescription;
 
+  /// No description provided for @user.
+  ///
+  /// In en, this message translates to:
+  /// **'Anonymous User'**
+  String get user;
+
   /// No description provided for @placeNotFound.
   ///
   /// In en, this message translates to:
@@ -217,6 +229,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Search places'**
   String get searchPlaces;
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
 
   /// No description provided for @showMarkers.
   ///

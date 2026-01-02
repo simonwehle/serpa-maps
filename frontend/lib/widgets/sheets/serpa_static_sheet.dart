@@ -18,8 +18,10 @@ class SerpaStaticSheet extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               SheetHeader(title: title),
-              const SizedBox(height: 16),
-              child,
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: child,
+              ),
             ],
           ),
         ),

@@ -15,6 +15,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancel => 'Cancel';
 
   @override
+  String get categories => 'Categories';
+
+  @override
   String get categoryNotFound => 'Category not found';
 
   @override
@@ -57,6 +60,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noDescription => 'No description available';
 
   @override
+  String get user => 'Anonymous User';
+
+  @override
   String get placeNotFound => 'Place not found';
 
   @override
@@ -67,6 +73,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get searchPlaces => 'Search places';
+
+  @override
+  String get settings => 'Settings';
 
   @override
   String get showMarkers => 'Show markers';
