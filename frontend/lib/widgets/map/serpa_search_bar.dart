@@ -12,8 +12,14 @@ import 'package:serpa_maps/widgets/category/category_icon.dart';
 class SerpaSearchBar extends ConsumerStatefulWidget {
   final Function(Place)? onPlaceSelected;
   final Function()? openUserSheet;
+  final Function()? openCategorySheet;
 
-  const SerpaSearchBar({super.key, this.onPlaceSelected, this.openUserSheet});
+  const SerpaSearchBar({
+    super.key,
+    this.onPlaceSelected,
+    this.openUserSheet,
+    this.openCategorySheet,
+  });
 
   @override
   ConsumerState<SerpaSearchBar> createState() => _SerpaSearchBarState();

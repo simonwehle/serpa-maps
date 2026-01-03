@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/models/user.dart';
+import 'package:serpa_maps/widgets/sheets/category_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
 
 class SettingsSheet extends StatelessWidget {
@@ -18,7 +19,7 @@ class SettingsSheet extends StatelessWidget {
         children: [
           ElevatedButton(
             onPressed: () {
-              print('Categories pressed');
+              showSerpaStaticSheet(context: context, child: CategorySheet());
             },
             child: Text(i10n.categories),
           ),
