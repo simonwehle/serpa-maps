@@ -188,6 +188,12 @@ abstract class AppLocalizations {
   /// **'Name'**
   String get name;
 
+  /// No description provided for @newCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'New Category'**
+  String get newCategory;
+
   /// No description provided for @noCategories.
   ///
   /// In en, this message translates to:

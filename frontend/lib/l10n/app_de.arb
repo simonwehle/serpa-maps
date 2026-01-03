@@ -15,6 +15,7 @@
   "longitude": "Längengrad",
   "mapLayer": "Kartentyp",
   "name": "Name",
+  "newCategory": "Neue Kategorie",
   "noCategories": "Keine Kategorien verfügbar",
   "noDescription": "Keine Beschreibung verfügbar",
   "user": "Anonymer Benutzer",

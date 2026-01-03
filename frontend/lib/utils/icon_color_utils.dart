@@ -2,6 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
+String _channelToHex(num channel) => ((channel * 255.0).round() & 0xff)
+    .toRadixString(16)
+    .padLeft(2, '0')
+    .toUpperCase();
+
+String colorToHex(Color color) {
+  return '#'
+      '${_channelToHex(color.a)}'
+      '${_channelToHex(color.r)}'
+      '${_channelToHex(color.g)}'
+      '${_channelToHex(color.b)}';
+}
+
 Color colorFromHex(String hex) {
   hex = hex.replaceAll("#", "");
   if (hex.length == 6) hex = "FF$hex";
@@ -23,6 +36,7 @@ IconData iconFromString(String iconName) {
     "local_florist": Symbols.local_florist,
     "table_picnic": MdiIcons.tablePicnic,
     "tower_fire": MdiIcons.towerFire,
+    "add": Icons.add,
   };
   return map[iconName] ?? Icons.location_on;
 }

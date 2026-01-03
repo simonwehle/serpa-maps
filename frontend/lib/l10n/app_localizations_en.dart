@@ -54,6 +54,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get name => 'Name';
 
   @override
+  String get newCategory => 'New Category';
+
+  @override
   String get noCategories => 'No categories available';
 
   @override
