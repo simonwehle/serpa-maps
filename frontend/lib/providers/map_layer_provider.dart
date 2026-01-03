@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serpa_maps/providers/style_dark_provider.dart';
+import 'package:serpa_maps/providers/style_provider.dart';
 
 enum MapLayer { vector, osm, satellite }
 
-extension MapLayerExtension on MapLayer {
-  String getStyleUrl(Brightness brightness) {
-    switch (this) {
-      case MapLayer.vector:
-        if (brightness == Brightness.dark) {
-          return dotenv.env['STYLE_DARK_URL'] ??
-              'http://localhost:7135/style/liberty-dark';
-        }
-        return dotenv.env['STYLE_URL'] ?? 'http://localhost:7135/style/liberty';
-      case MapLayer.osm:
-        return 'assets/styles/osm.json';
-      case MapLayer.satellite:
-        return 'assets/styles/arcgis.json';
-    }
+String getMapLayerStyleUrl(
+  MapLayer layer,
+  Brightness brightness,
+  WidgetRef ref,
+) {
+  switch (layer) {
+    case MapLayer.vector:
+      if (brightness == Brightness.dark) {
+        return ref.watch(styleDarkUrlProvider);
+      }
+      return ref.watch(styleUrlProvider);
+    case MapLayer.osm:
+      return 'assets/styles/osm.json';
+    case MapLayer.satellite:
+      return 'assets/styles/arcgis.json';
   }
-
-  String get styleUrl => getStyleUrl(Brightness.light);
 }
 
 final activeLayerProvider = NotifierProvider<ActiveLayerNotifier, MapLayer>(
