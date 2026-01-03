@@ -5,6 +5,7 @@ import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/providers/category_provider.dart';
 import 'package:serpa_maps/utils/icon_color_utils.dart';
 import 'package:serpa_maps/widgets/category/category_sheet_icon.dart';
+import 'package:serpa_maps/widgets/sheets/category_menu_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
 
 class CategorySheet extends ConsumerWidget {
@@ -31,9 +32,19 @@ class CategorySheet extends ConsumerWidget {
             spacing: 16.0,
             runSpacing: 16.0,
             children: allCategories
-                .map((category) => CategorySheetIcon(category: category))
+                .map(
+                  (category) => GestureDetector(
+                    onTap: () {
+                      // Extract category id to edit; if id==0 create new category
+                      showSerpaStaticSheet(
+                        context: context,
+                        child: CategoryMenuSheet(category: category),
+                      );
+                    },
+                    child: CategorySheetIcon(category: category),
+                  ),
+                )
                 .toList(),
-            // Gesture detector extract category id to edit; if id==0 create new category
           ),
         );
       },
