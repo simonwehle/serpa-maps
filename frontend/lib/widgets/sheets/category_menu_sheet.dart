@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/widgets/form/serpa_divider.dart';
+import 'package:serpa_maps/widgets/layer/serpa_selector.dart';
 import 'package:serpa_maps/widgets/place/place_form_actions.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
 import 'package:serpa_maps/utils/icon_color_utils.dart';
@@ -16,8 +17,8 @@ class CategoryMenuSheet extends StatefulWidget {
 
 class _CategoryMenuSheetState extends State<CategoryMenuSheet> {
   late TextEditingController nameController;
-  IconData selectedIcon = Icons.location_pin;
-  Color selectedColor = Colors.red;
+  IconData _selectedIcon = Icons.location_pin;
+  Color _selectedColor = Colors.red;
 
   @override
   void initState() {
@@ -48,17 +49,28 @@ class _CategoryMenuSheetState extends State<CategoryMenuSheet> {
           ),
           const SizedBox(height: 16),
           Wrap(
-            spacing: 16.0,
-            runSpacing: 16.0,
+            spacing: 8.0,
+            runSpacing: 8.0,
             children: icons
                 .map(
-                  (icon) => Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: selectedColor,
+                  (icon) => SerpaSelector(
+                    isActive: icon == _selectedIcon,
+                    isCircle: true,
+                    onTap: () {
+                      setState(() {
+                        _selectedIcon = icon;
+                      });
+                    },
+                    borderWidth: 4,
+                    innerPadding: 3,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: _selectedColor,
+                      ),
+                      padding: const EdgeInsets.all(12),
+                      child: Icon(icon, size: 32, color: Colors.white),
                     ),
-                    padding: const EdgeInsets.all(12),
-                    child: Icon(icon, size: 32, color: Colors.white),
                   ),
                 )
                 .toList(),
@@ -72,13 +84,25 @@ class _CategoryMenuSheetState extends State<CategoryMenuSheet> {
             child: Row(
               children: availableColors
                   .map(
-                    (color) => Container(
-                      width: 32,
-                      height: 32,
-                      margin: const EdgeInsets.symmetric(horizontal: 8),
-                      decoration: BoxDecoration(
-                        color: color,
-                        shape: BoxShape.circle,
+                    (color) => SerpaSelector(
+                      isActive: color == _selectedColor,
+                      isCircle: true,
+                      onTap: () {
+                        setState(() {
+                          _selectedColor = color;
+                        });
+                      },
+                      borderWidth: 3,
+                      outerPadding: 0,
+                      innerPadding: 2,
+                      child: Container(
+                        width: 32,
+                        height: 32,
+                        margin: const EdgeInsets.symmetric(horizontal: 8),
+                        decoration: BoxDecoration(
+                          color: color,
+                          shape: BoxShape.circle,
+                        ),
                       ),
                     ),
                   )
