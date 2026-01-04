@@ -19,14 +19,18 @@ class _CategoryMenuSheetState extends State<CategoryMenuSheet> {
   late TextEditingController _nameController;
   late IconData _selectedIcon = Icons.location_pin;
   late Color _selectedColor = Colors.red;
+  late bool _isNew = false;
 
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: widget.category.name);
     if (widget.category.id != 0) {
+      _nameController = TextEditingController(text: widget.category.name);
       _selectedIcon = iconFromString(widget.category.icon);
       _selectedColor = colorFromHex(widget.category.color);
+    } else {
+      _nameController = TextEditingController();
+      _isNew = true;
     }
   }
 
@@ -116,6 +120,7 @@ class _CategoryMenuSheetState extends State<CategoryMenuSheet> {
           ),
           const SizedBox(height: 16),
           PlaceFormActions(
+            isNew: _isNew,
             onCancel: () => Navigator.pop(context),
             onSave: () {},
           ),

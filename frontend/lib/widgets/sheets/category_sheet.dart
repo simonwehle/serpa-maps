@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/providers/category_provider.dart';
-import 'package:serpa_maps/utils/icon_color_utils.dart';
 import 'package:serpa_maps/widgets/category/category_sheet_icon.dart';
 import 'package:serpa_maps/widgets/sheets/category_menu_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
@@ -17,15 +16,7 @@ class CategorySheet extends ConsumerWidget {
     final i10n = AppLocalizations.of(context)!;
     return categoriesAsync.when(
       data: (categories) {
-        final allCategories = [
-          ...categories,
-          Category(
-            id: 0,
-            name: i10n.newCategory,
-            icon: 'add',
-            color: colorToHex(Theme.of(context).colorScheme.primary),
-          ),
-        ];
+        final allCategories = [...categories, Category.dummyCategory(context)];
         return SerpaStaticSheet(
           title: i10n.categories,
           child: Wrap(
