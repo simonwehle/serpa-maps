@@ -16,19 +16,23 @@ class CategoryMenuSheet extends StatefulWidget {
 }
 
 class _CategoryMenuSheetState extends State<CategoryMenuSheet> {
-  late TextEditingController nameController;
-  IconData _selectedIcon = Icons.location_pin;
-  Color _selectedColor = Colors.red;
+  late TextEditingController _nameController;
+  late IconData _selectedIcon = Icons.location_pin;
+  late Color _selectedColor = Colors.red;
 
   @override
   void initState() {
     super.initState();
-    nameController = TextEditingController(text: widget.category.name);
+    _nameController = TextEditingController(text: widget.category.name);
+    if (widget.category.id != 0) {
+      _selectedIcon = iconFromString(widget.category.icon);
+      _selectedColor = colorFromHex(widget.category.color);
+    }
   }
 
   @override
   void dispose() {
-    nameController.dispose();
+    _nameController.dispose();
     super.dispose();
   }
 
@@ -41,7 +45,7 @@ class _CategoryMenuSheetState extends State<CategoryMenuSheet> {
       child: Column(
         children: [
           TextField(
-            controller: nameController,
+            controller: _nameController,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
               labelText: i10n.name,
@@ -82,6 +86,7 @@ class _CategoryMenuSheetState extends State<CategoryMenuSheet> {
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
+              // put a color picker at the start and select it if no color matches
               children: availableColors
                   .map(
                     (color) => SerpaSelector(
