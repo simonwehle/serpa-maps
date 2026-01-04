@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:serpa_maps/widgets/form/serpa_divider.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_bottom_sheet.dart';
 
 class SerpaDraggableSheet extends StatelessWidget {
@@ -49,22 +50,13 @@ class SerpaDraggableSheet extends StatelessWidget {
             right: 0,
             child: Column(
               children: [
+                SerpaDivider(),
                 Container(
-                  //height: 1,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
-                  ),
-                  child: Divider(
-                    color: Theme.of(context).dividerColor,
-                    indent: 16,
-                    endIndent: 16,
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.only(bottom: 16.0),
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                   color: Theme.of(context).colorScheme.surface,
                   child: bottomActions,
                 ),
+                const SizedBox(height: 16),
               ],
             ),
           ),

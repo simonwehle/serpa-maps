@@ -33,7 +33,7 @@ class SerpaStaticSheet extends StatelessWidget {
 void showSerpaStaticSheet({
   required BuildContext context,
   required Widget child,
-  bool isScrollControlled = false,
+  bool isScrollControlled = true,
   Color backgroundColor = Colors.transparent,
   Color barrierColor = Colors.transparent,
   bool isDismissible = true,
