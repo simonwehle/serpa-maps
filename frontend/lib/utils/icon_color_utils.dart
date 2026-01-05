@@ -42,6 +42,15 @@ IconData iconFromString(String iconName) {
   return iconMap[iconName] ?? Icons.location_pin;
 }
 
+String stringFromIcon(IconData icon) {
+  return iconMap.entries
+      .firstWhere(
+        (entry) => entry.value == icon,
+        orElse: () => const MapEntry("location_pin", Icons.location_pin),
+      )
+      .key;
+}
+
 final List<Color> availableColors = [
   Colors.red,
   Colors.orange,

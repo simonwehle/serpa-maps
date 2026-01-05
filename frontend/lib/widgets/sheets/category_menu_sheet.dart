@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/models/category.dart';
+import 'package:serpa_maps/providers/category_provider.dart';
 import 'package:serpa_maps/widgets/form/serpa_divider.dart';
 import 'package:serpa_maps/widgets/layer/serpa_selector.dart';
 import 'package:serpa_maps/widgets/place/place_form_actions.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
 import 'package:serpa_maps/utils/icon_color_utils.dart';
 
-class CategoryMenuSheet extends StatefulWidget {
+class CategoryMenuSheet extends ConsumerStatefulWidget {
   final Category category;
   const CategoryMenuSheet({super.key, required this.category});
 
   @override
-  State<CategoryMenuSheet> createState() => _CategoryMenuSheetState();
+  ConsumerState<CategoryMenuSheet> createState() => _CategoryMenuSheetState();
 }
 
-class _CategoryMenuSheetState extends State<CategoryMenuSheet> {
+class _CategoryMenuSheetState extends ConsumerState<CategoryMenuSheet> {
   late TextEditingController _nameController;
   late IconData _selectedIcon = Icons.location_pin;
   late Color _selectedColor = Colors.red;
@@ -38,6 +40,39 @@ class _CategoryMenuSheetState extends State<CategoryMenuSheet> {
   void dispose() {
     _nameController.dispose();
     super.dispose();
+  }
+
+  Future<void> _updateCategory(int categoryId) async {
+    try {
+      await ref
+          .read(categoryProvider.notifier)
+          .updateCategory(
+            id: categoryId,
+            name: _nameController.text,
+            icon: stringFromIcon(_selectedIcon),
+            color: colorToHex(_selectedColor),
+          );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Update failed: $e')));
+      }
+    }
+  }
+
+  Future<void> _addCategory() async {
+    try {
+      await ref
+          .read(categoryProvider.notifier)
+          .addCategory(
+            name: _nameController.text,
+            icon: stringFromIcon(_selectedIcon),
+            color: colorToHex(_selectedColor),
+          );
+    } catch (e) {
+      //
+    }
   }
 
   @override
@@ -122,7 +157,10 @@ class _CategoryMenuSheetState extends State<CategoryMenuSheet> {
           PlaceFormActions(
             isNew: _isNew,
             onCancel: () => Navigator.pop(context),
-            onSave: () {},
+            onSave: () {
+              _isNew ? _addCategory() : _updateCategory(widget.category.id);
+              Navigator.pop(context);
+            },
           ),
         ],
       ),
