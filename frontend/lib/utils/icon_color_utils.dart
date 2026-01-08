@@ -9,7 +9,7 @@ String _channelToHex(num channel) => ((channel * 255.0).round() & 0xff)
 
 String colorToHex(Color color) {
   return '#'
-      '${_channelToHex(color.a)}'
+      //'${_channelToHex(color.a)}'
       '${_channelToHex(color.r)}'
       '${_channelToHex(color.g)}'
       '${_channelToHex(color.b)}';
