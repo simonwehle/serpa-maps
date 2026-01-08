@@ -146,6 +146,23 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       _updatePlaces(ref.read(placeProvider).value);
     });
 
+    ref.listen(categoryProvider, (previous, next) async {
+      if (_mapReady) {
+        final categories = next.value;
+        if (categories != null) {
+          await addMarkerImage(
+            categories: categories,
+            mapController: _controller,
+          );
+          await addPlaceLayer(
+            categories: categories,
+            mapController: _controller,
+          );
+          await _updatePlaces(ref.read(placeProvider).value);
+        }
+      }
+    });
+
     ref.listen(activeLayerProvider, (previous, next) async {
       if (_mapReady) {
         final brightness = MediaQuery.of(context).platformBrightness;
