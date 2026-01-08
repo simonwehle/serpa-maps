@@ -103,7 +103,6 @@ Future<void> addPlaceLayer({
     );
   } catch (_) {}
 
-  // Always re-add places-layer with updated matchExpression
   try {
     await mapController.addSymbolLayer(
       "places",
