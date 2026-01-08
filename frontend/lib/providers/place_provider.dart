@@ -28,6 +28,7 @@ class PlaceNotifier extends AsyncNotifier<List<Place>> {
       latitude: latitude,
       longitude: longitude,
       categoryId: categoryId,
+      description: description,
     );
     state = state.whenData(
       (places) => [...places, if (addedPlace != null) addedPlace],

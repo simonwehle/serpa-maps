@@ -21,6 +21,7 @@ import 'package:serpa_maps/widgets/sheets/place_bottom_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_draggable_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/layer_bottom_sheet.dart';
+import 'package:serpa_maps/widgets/sheets/settings_sheet.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
@@ -50,6 +51,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   void openLayerBottomSheet() {
     showSerpaStaticSheet(context: context, child: LayerBottomSheet());
+  }
+
+  void openUserSheet() {
+    showSerpaStaticSheet(context: context, child: SettingsSheet());
   }
 
   Future<void> _updatePlaces(List<Place>? places) async {
@@ -141,6 +146,23 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       _updatePlaces(ref.read(placeProvider).value);
     });
 
+    ref.listen(categoryProvider, (previous, next) async {
+      if (_mapReady) {
+        final categories = next.value;
+        if (categories != null) {
+          await addMarkerImage(
+            categories: categories,
+            mapController: _controller,
+          );
+          await addPlaceLayer(
+            categories: categories,
+            mapController: _controller,
+          );
+          await _updatePlaces(ref.read(placeProvider).value);
+        }
+      }
+    });
+
     ref.listen(activeLayerProvider, (previous, next) async {
       if (_mapReady) {
         final brightness = MediaQuery.of(context).platformBrightness;
@@ -183,6 +205,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             attributionButtonPosition: AttributionButtonPosition.bottomLeft,
           ),
           SerpaSearchBar(
+            openUserSheet: openUserSheet,
             onPlaceSelected: (place) {
               FocusManager.instance.primaryFocus?.unfocus();
               _controller.animateCamera(

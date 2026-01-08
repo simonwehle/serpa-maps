@@ -54,7 +54,6 @@ class _PlaceAssetsFullscreenState extends State<PlaceAssetsFullscreen> {
             },
           ),
 
-          // Close button
           SafeArea(
             child: Align(
               alignment: Alignment.topRight,

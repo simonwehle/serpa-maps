@@ -130,4 +130,69 @@ class ApiService {
     final data = json.decode(responseBody);
     return data['assets'];
   }
+
+  Future<Category?> addCategory({
+    required String name,
+    required String icon,
+    required String color,
+  }) async {
+    final Map<String, dynamic> newCategory = {
+      'name': name,
+      'icon': icon,
+      'color': color,
+    };
+
+    final res = await http.post(
+      Uri.parse(_endpoint('/category')),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(newCategory),
+    );
+
+    if (res.statusCode == 201) {
+      final Map<String, dynamic> data = json.decode(res.body);
+      return Category.fromJson(data);
+    } else {
+      throw Exception('Failed to add category. Status code: ${res.statusCode}');
+    }
+  }
+
+  Future<Category> updateCategory({
+    required int id,
+    String? name,
+    String? icon,
+    String? color,
+  }) async {
+    final Map<String, dynamic> updates = {};
+
+    if (name != null) updates['name'] = name;
+    if (icon != null) updates['icon'] = icon;
+    if (color != null) updates['color'] = color;
+
+    if (updates.isEmpty) {
+      throw Exception('No fields to update');
+    }
+
+    final res = await http.patch(
+      Uri.parse(_endpoint('/category/$id')),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(updates),
+    );
+
+    if (res.statusCode != 200) {
+      throw Exception('Failed to update category: ${res.body}');
+    }
+
+    final data = json.decode(res.body);
+    return Category.fromJson(data);
+  }
+
+  Future<void> deleteCategory({required int id}) async {
+    final res = await http.delete(Uri.parse(_endpoint('/category/$id')));
+
+    if (res.statusCode != 200) {
+      throw Exception(
+        'Failed to delete category. Status code: ${res.statusCode}',
+      );
+    }
+  }
 }

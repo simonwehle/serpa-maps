@@ -1,0 +1,169 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serpa_maps/l10n/app_localizations.dart';
+import 'package:serpa_maps/models/category.dart';
+import 'package:serpa_maps/providers/category_provider.dart';
+import 'package:serpa_maps/widgets/form/serpa_divider.dart';
+import 'package:serpa_maps/widgets/layer/serpa_selector.dart';
+import 'package:serpa_maps/widgets/place/place_form_actions.dart';
+import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
+import 'package:serpa_maps/utils/icon_color_utils.dart';
+
+class CategoryMenuSheet extends ConsumerStatefulWidget {
+  final Category category;
+  const CategoryMenuSheet({super.key, required this.category});
+
+  @override
+  ConsumerState<CategoryMenuSheet> createState() => _CategoryMenuSheetState();
+}
+
+class _CategoryMenuSheetState extends ConsumerState<CategoryMenuSheet> {
+  late TextEditingController _nameController;
+  late IconData _selectedIcon = Icons.location_pin;
+  late Color _selectedColor = Colors.red;
+  late bool _isNew = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.category.id != 0) {
+      _nameController = TextEditingController(text: widget.category.name);
+      _selectedIcon = iconFromString(widget.category.icon);
+      _selectedColor = colorFromHex(widget.category.color);
+    } else {
+      _nameController = TextEditingController();
+      _isNew = true;
+    }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _updateCategory(int categoryId) async {
+    try {
+      await ref
+          .read(categoryProvider.notifier)
+          .updateCategory(
+            id: categoryId,
+            name: _nameController.text,
+            icon: stringFromIcon(_selectedIcon),
+            color: colorToHex(_selectedColor),
+          );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Update failed: $e')));
+      }
+    }
+  }
+
+  Future<void> _addCategory() async {
+    try {
+      await ref
+          .read(categoryProvider.notifier)
+          .addCategory(
+            name: _nameController.text,
+            icon: stringFromIcon(_selectedIcon),
+            color: colorToHex(_selectedColor),
+          );
+    } catch (e) {
+      //
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final i10n = AppLocalizations.of(context)!;
+    final icons = iconMap.values.toList();
+    return SerpaStaticSheet(
+      title: "Category Menu",
+      child: Column(
+        children: [
+          TextField(
+            controller: _nameController,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: i10n.name,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Wrap(
+            spacing: 8.0,
+            runSpacing: 8.0,
+            children: icons
+                .map(
+                  (icon) => SerpaSelector(
+                    isActive: icon == _selectedIcon,
+                    isCircle: true,
+                    onTap: () {
+                      setState(() {
+                        _selectedIcon = icon;
+                      });
+                    },
+                    borderWidth: 4,
+                    innerPadding: 3,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: _selectedColor,
+                      ),
+                      padding: const EdgeInsets.all(12),
+                      child: Icon(icon, size: 32, color: Colors.white),
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 12),
+            child: SerpaDivider(indent: 4, endIndent: 4),
+          ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              // put a color picker at the start and select it if no color matches
+              children: availableColors
+                  .map(
+                    (color) => SerpaSelector(
+                      isActive: color == _selectedColor,
+                      isCircle: true,
+                      onTap: () {
+                        setState(() {
+                          _selectedColor = color;
+                        });
+                      },
+                      borderWidth: 3,
+                      outerPadding: 0,
+                      innerPadding: 2,
+                      child: Container(
+                        width: 32,
+                        height: 32,
+                        margin: const EdgeInsets.symmetric(horizontal: 8),
+                        decoration: BoxDecoration(
+                          color: color,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
+          ),
+          const SizedBox(height: 16),
+          PlaceFormActions(
+            isNew: _isNew,
+            onCancel: () => Navigator.pop(context),
+            onSave: () {
+              _isNew ? _addCategory() : _updateCategory(widget.category.id);
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
