@@ -156,7 +156,6 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
                     await ref
                         .read(placeProvider.notifier)
                         .deletePlace(id: place.id);
-                    if (context.mounted) Navigator.pop(context);
                   },
                 ),
         );
