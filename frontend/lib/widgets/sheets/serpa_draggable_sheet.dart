@@ -56,7 +56,10 @@ class SerpaDraggableSheet extends StatelessWidget {
                   color: Theme.of(context).colorScheme.surface,
                   child: bottomActions,
                 ),
-                const SizedBox(height: 16),
+                Container(
+                  height: 16,
+                  color: Theme.of(context).colorScheme.surface,
+                ),
               ],
             ),
           ),
