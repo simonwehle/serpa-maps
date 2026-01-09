@@ -17,6 +17,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   late TextEditingController baseUrlController;
   late TextEditingController styleUrlController;
   late TextEditingController styleDarkUrlController;
+  late TextEditingController overlayUrlController;
 
   @override
   void initState() {
@@ -24,6 +25,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
     baseUrlController = TextEditingController();
     styleUrlController = TextEditingController();
     styleDarkUrlController = TextEditingController();
+    overlayUrlController = TextEditingController();
   }
 
   @override
@@ -31,7 +33,17 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
     baseUrlController.dispose();
     styleUrlController.dispose();
     styleDarkUrlController.dispose();
+    overlayUrlController.dispose();
     super.dispose();
+  }
+
+  void setStyleUrlIfEmpty(
+    TextEditingController styleUrlController,
+    String styleUrl,
+  ) {
+    if (styleUrlController.text.isEmpty && styleUrl.isNotEmpty) {
+      styleUrlController.text = styleUrl;
+    }
   }
 
   @override
@@ -39,12 +51,8 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
     //final i10n = AppLocalizations.of(context)!;
     final styleUrl = ref.read(styleUrlProvider);
     final styleDarkUrl = ref.read(styleDarkUrlProvider);
-    if (styleUrlController.text.isEmpty && styleUrl.isNotEmpty) {
-      styleUrlController.text = styleUrl;
-    }
-    if (styleDarkUrlController.text.isEmpty && styleDarkUrl.isNotEmpty) {
-      styleDarkUrlController.text = styleDarkUrl;
-    }
+    setStyleUrlIfEmpty(styleUrlController, styleUrl);
+    setStyleUrlIfEmpty(styleDarkUrlController, styleDarkUrl);
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -79,6 +87,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
               ),
               const SizedBox(height: 8),
               TextField(
+                controller: overlayUrlController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Overlay URL (optional)',
@@ -106,6 +115,10 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => print("Pressed"),
+        child: Icon(Icons.check),
       ),
     );
   }
