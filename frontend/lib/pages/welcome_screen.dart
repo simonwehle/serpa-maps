@@ -46,6 +46,17 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
     }
   }
 
+  void persistUrl(
+    String sharedPreferenceString,
+    TextEditingController urlController,
+    void Function(String url) updateUrl,
+  ) {
+    var controllerText = urlController.text;
+    if (controllerText.isNotEmpty) {
+      updateUrl(controllerText);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     //final i10n = AppLocalizations.of(context)!;

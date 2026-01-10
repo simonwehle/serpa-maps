@@ -4,6 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/pages/map_screen.dart';
+import 'package:serpa_maps/providers/base_url_provider.dart';
+import 'package:serpa_maps/providers/overlay_url_provider.dart';
+import 'package:serpa_maps/providers/style_dark_provider.dart';
+import 'package:serpa_maps/providers/style_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,11 +20,35 @@ void main() async {
   runApp(const ProviderScope(child: SerpaMaps()));
 }
 
-class SerpaMaps extends StatelessWidget {
+class SerpaMaps extends ConsumerWidget {
   const SerpaMaps({super.key});
 
+  Future<void> _loadUrlString(
+    String sharedPreferenceString,
+    void Function(String url) updateUrl,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    final String url = prefs.getString(sharedPreferenceString) ?? "";
+    if (url.isNotEmpty) {
+      updateUrl(url);
+    }
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    _loadUrlString('baseUrl', ref.read(baseUrlProvider.notifier).updateBaseUrl);
+    _loadUrlString(
+      'styleUrl',
+      ref.read(styleUrlProvider.notifier).updateStyleUrl,
+    );
+    _loadUrlString(
+      'styleDarkUrl',
+      ref.read(styleDarkUrlProvider.notifier).updateStyleDarkUrl,
+    );
+    _loadUrlString(
+      'overlayUrl',
+      ref.read(overlayUrlProvider.notifier).updateOverlayUrl,
+    );
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Serpa Maps',
