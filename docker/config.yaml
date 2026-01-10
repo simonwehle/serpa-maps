@@ -13,6 +13,7 @@ mbtiles:
 sprites:
   paths:
     - /sprites/liberty
+    - /sprites/dark
 
 fonts:
   - /fonts
