@@ -2,38 +2,26 @@ package db
 
 import (
 	"fmt"
-	"log"
-	"os"
+	"net/url"
+	"serpa-maps/internal/models"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
-func getEnv(key, fallback string) string {
-	if value := os.Getenv(key); value != "" {
-		return value
+func generateDatabaseConnectionString(config models.DatabaseConfiguration) string {
+	u := &url.URL{
+		Scheme: "postgres",
+		User:   url.UserPassword(config.Username, config.Password),
+		Host:   fmt.Sprintf("%s:%d", config.Host, config.Port),
+		Path:   "/" + config.Database,
+		RawQuery: "sslmode=disable",
 	}
-	return fallback
+	return u.String()
 }
 
-func LoadEnv() string {
-	if err := godotenv.Load(); err != nil {
-		log.Println("No .env file found, using environment variables")
-	}
-
-	return fmt.Sprintf(
-		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
-		getEnv("DB_USERNAME", "postgres"),
-		getEnv("DB_PASSWORD", "postgres"),
-		getEnv("DB_HOST", "database"),
-		getEnv("DB_PORT", "5432"),
-		getEnv("DB_DATABASE_NAME", "serpa-maps"),
-	)
-}
-
-func Connect() (*sqlx.DB, error) {
-	dsn := LoadEnv()
+func Connect(config models.DatabaseConfiguration) (*sqlx.DB, error) {
+	dsn := generateDatabaseConnectionString(config)
 	db, err := sqlx.Connect("postgres", dsn)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to postgres: %w", err)

@@ -6,12 +6,14 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"serpa-maps/internal/db"
+	"serpa-maps/internal/environment"
 	"serpa-maps/internal/handlers"
 	"serpa-maps/internal/middleware"
 )
 
 func Execute() {
-	postgres, err := db.Connect()
+	dbConfig := environment.LoadEnv()
+	postgres, err := db.Connect(dbConfig)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -19,7 +21,6 @@ func Execute() {
 	if err := db.InitDB(postgres); err != nil {
 		log.Fatalln(err)
 	}
-
 	log.Println("Database initialized")
 
 	r := gin.Default()
