@@ -12,7 +12,7 @@ import (
 )
 
 func Execute() {
-	dbConfig := environment.LoadEnv()
+	keyString, dbConfig := environment.LoadEnv()
 	postgres, err := db.Connect(dbConfig)
 	if err != nil {
 		log.Fatalln(err)
@@ -23,25 +23,32 @@ func Execute() {
 	}
 	log.Println("Database initialized")
 
+	jwtKey := []byte(keyString)
+
 	r := gin.Default()
 	r.Use(middleware.CorsMiddleware())
 
 	api := r.Group("/api/v1")
 
-	api.GET("/categories", handlers.GetCategories(postgres))
-	api.POST("/category", handlers.AddCategory(postgres))
-	api.PATCH("/category/:id", handlers.UpdateCategory(postgres))
-	api.DELETE("/category/:id", handlers.DeleteCategory(postgres))
+	api.POST("/register", handlers.Register(postgres, jwtKey))
+	api.POST("/login", handlers.Login(postgres, jwtKey))
 
-	api.GET("/places", handlers.GetPlaces(postgres))
-	api.POST("/place", handlers.AddPlace(postgres))
-	api.PATCH("/place/:id", handlers.UpdatePlace(postgres))
-	api.DELETE("/place/:id", handlers.DeletePlace(postgres))
+	protected := api.Group("/").Use(middleware.AuthMiddleware(jwtKey))
+
+	protected.GET("/categories", handlers.GetCategories(postgres))
+	protected.POST("/category", handlers.AddCategory(postgres))
+	protected.PATCH("/category/:id", handlers.UpdateCategory(postgres))
+	protected.DELETE("/category/:id", handlers.DeleteCategory(postgres))
+
+	protected.GET("/places", handlers.GetPlaces(postgres))
+	protected.POST("/place", handlers.AddPlace(postgres))
+	protected.PATCH("/place/:id", handlers.UpdatePlace(postgres))
+	protected.DELETE("/place/:id", handlers.DeletePlace(postgres))
 
 	r.Static("/uploads", "./uploads")
-	api.POST("/place/:id/assets", handlers.UploadPlaceAssets(postgres))
-	api.PATCH("/place/:id/assets/positions", handlers.UpdateAssetPositions(postgres))
-	api.DELETE("/place/:id/asset/:asset_id", handlers.DeletePlaceAsset(postgres))
+	protected.POST("/place/:id/assets", handlers.UploadPlaceAssets(postgres))
+	protected.PATCH("/place/:id/assets/positions", handlers.UpdateAssetPositions(postgres))
+	protected.DELETE("/place/:id/asset/:asset_id", handlers.DeletePlaceAsset(postgres))
 
 	r.Run(":53164")
 }
