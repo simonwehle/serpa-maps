@@ -103,7 +103,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     }
 
     if (ref.read(overlayActiveProvider)) {
-      await addOverlay(mapController: _controller);
+      await addOverlay(mapController: _controller, ref: ref);
     }
   }
 
@@ -151,7 +151,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     ref.listen<bool>(overlayActiveProvider, (_, isActive) async {
       if (!_mapReady) return;
       if (isActive) {
-        await addOverlay(mapController: _controller);
+        await addOverlay(mapController: _controller, ref: ref);
       } else {
         await removeOverlay(mapController: _controller);
       }

@@ -1,4 +1,3 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final overlayUrlProvider = NotifierProvider<OverlayUrlNotifier, String>(
@@ -8,7 +7,7 @@ final overlayUrlProvider = NotifierProvider<OverlayUrlNotifier, String>(
 class OverlayUrlNotifier extends Notifier<String> {
   @override
   String build() {
-    return dotenv.env['OVERLAY_URL'] ?? '';
+    return '';
   }
 
   void updateOverlayUrl(String newUrl) {
