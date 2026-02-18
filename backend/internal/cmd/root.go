@@ -30,6 +30,8 @@ func Execute() {
 
 	api := r.Group("/api/v1")
 
+	api.GET("/health", handlers.Health())
+
 	api.POST("/register", handlers.Register(postgres, jwtKey))
 	api.POST("/login", handlers.Login(postgres, jwtKey))
 
