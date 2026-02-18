@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:serpa_maps/l10n/app_localizations.dart';
-//import 'package:serpa_maps/providers/base_url_provider.dart';
+import 'package:serpa_maps/pages/map_screen.dart';
+import 'package:serpa_maps/providers/base_url_provider.dart';
+import 'package:serpa_maps/providers/overlay_url_provider.dart';
 import 'package:serpa_maps/providers/style_dark_provider.dart';
 import 'package:serpa_maps/providers/style_provider.dart';
 
@@ -46,13 +49,15 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
     }
   }
 
-  void persistUrl(
+  Future<void> persistUrl(
+    SharedPreferences prefs,
     String sharedPreferenceString,
     TextEditingController urlController,
     void Function(String url) updateUrl,
-  ) {
+  ) async {
     var controllerText = urlController.text;
     if (controllerText.isNotEmpty) {
+      await prefs.setString(sharedPreferenceString, controllerText);
       updateUrl(controllerText);
     }
   }
@@ -128,8 +133,41 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => print("Pressed"),
-        child: Icon(Icons.check),
+        onPressed: () async {
+          final prefs = await SharedPreferences.getInstance();
+
+          final urlConfigs = {
+            'baseUrl': (
+              baseUrlController,
+              ref.read(baseUrlProvider.notifier).updateBaseUrl,
+            ),
+            'styleUrl': (
+              styleUrlController,
+              ref.read(styleUrlProvider.notifier).updateStyleUrl,
+            ),
+            'styleDarkUrl': (
+              styleDarkUrlController,
+              ref.read(styleDarkUrlProvider.notifier).updateStyleDarkUrl,
+            ),
+            'overlayUrl': (
+              overlayUrlController,
+              ref.read(overlayUrlProvider.notifier).updateOverlayUrl,
+            ),
+          };
+
+          for (final entry in urlConfigs.entries) {
+            await persistUrl(prefs, entry.key, entry.value.$1, entry.value.$2);
+          }
+
+          if (!mounted) {
+            return;
+          } else if (context.mounted) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => const MapScreen()),
+            );
+          }
+        },
+        child: const Icon(Icons.check),
       ),
     );
   }

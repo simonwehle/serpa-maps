@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/pages/map_screen.dart';
+import 'package:serpa_maps/pages/welcome_screen.dart';
 import 'package:serpa_maps/providers/base_url_provider.dart';
 import 'package:serpa_maps/providers/overlay_url_provider.dart';
 import 'package:serpa_maps/providers/style_dark_provider.dart';
@@ -17,38 +18,51 @@ void main() async {
   } catch (e) {
     throw Exception('Error loading .env file: $e');
   }
-  runApp(const ProviderScope(child: SerpaMaps()));
+
+  final prefs = await SharedPreferences.getInstance();
+  final container = ProviderContainer();
+
+  final urlConfigs = {
+    'baseUrl': container.read(baseUrlProvider.notifier).updateBaseUrl,
+    'styleUrl': container.read(styleUrlProvider.notifier).updateStyleUrl,
+    'styleDarkUrl': container
+        .read(styleDarkUrlProvider.notifier)
+        .updateStyleDarkUrl,
+    'overlayUrl': container.read(overlayUrlProvider.notifier).updateOverlayUrl,
+  };
+
+  for (final entry in urlConfigs.entries) {
+    _loadUrlString(prefs, entry.key, entry.value);
+  }
+
+  final hasBaseUrl = (prefs.getString('baseUrl') ?? '').isNotEmpty;
+
+  runApp(
+    UncontrolledProviderScope(
+      container: container,
+      child: SerpaMaps(showWelcome: !hasBaseUrl),
+    ),
+  );
+}
+
+void _loadUrlString(
+  SharedPreferences prefs,
+  String key,
+  void Function(String url) updateUrl,
+) {
+  final url = prefs.getString(key) ?? '';
+  if (url.isNotEmpty) {
+    updateUrl(url);
+  }
 }
 
 class SerpaMaps extends ConsumerWidget {
-  const SerpaMaps({super.key});
+  final bool showWelcome;
 
-  Future<void> _loadUrlString(
-    String sharedPreferenceString,
-    void Function(String url) updateUrl,
-  ) async {
-    final prefs = await SharedPreferences.getInstance();
-    final String url = prefs.getString(sharedPreferenceString) ?? "";
-    if (url.isNotEmpty) {
-      updateUrl(url);
-    }
-  }
+  const SerpaMaps({super.key, required this.showWelcome});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    _loadUrlString('baseUrl', ref.read(baseUrlProvider.notifier).updateBaseUrl);
-    _loadUrlString(
-      'styleUrl',
-      ref.read(styleUrlProvider.notifier).updateStyleUrl,
-    );
-    _loadUrlString(
-      'styleDarkUrl',
-      ref.read(styleDarkUrlProvider.notifier).updateStyleDarkUrl,
-    );
-    _loadUrlString(
-      'overlayUrl',
-      ref.read(overlayUrlProvider.notifier).updateOverlayUrl,
-    );
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Serpa Maps',
@@ -75,7 +89,7 @@ class SerpaMaps extends ConsumerWidget {
         ),
       ),
       themeMode: ThemeMode.system,
-      home: const MapScreen(),
+      home: showWelcome ? const WelcomeScreen() : const MapScreen(),
     );
   }
 }
