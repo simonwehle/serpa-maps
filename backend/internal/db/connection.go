@@ -2,27 +2,26 @@ package db
 
 import (
 	"fmt"
-	"net/url"
 	"serpa-maps/internal/models"
 
-	"github.com/jmoiron/sqlx"
-	_ "github.com/lib/pq"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 func generateDatabaseConnectionString(config models.DatabaseConfiguration) string {
-	u := &url.URL{
-		Scheme: "postgres",
-		User:   url.UserPassword(config.Username, config.Password),
-		Host:   fmt.Sprintf("%s:%d", config.Host, config.Port),
-		Path:   "/" + config.Database,
-		RawQuery: "sslmode=disable",
-	}
-	return u.String()
+	return fmt.Sprintf(
+		"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+		config.Host,
+		config.Port,
+		config.Username,
+		config.Password,
+		config.Database,
+	)
 }
 
-func Connect(config models.DatabaseConfiguration) (*sqlx.DB, error) {
+func Connect(config models.DatabaseConfiguration) (*gorm.DB, error) {
 	dsn := generateDatabaseConnectionString(config)
-	db, err := sqlx.Connect("postgres", dsn)
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to postgres: %w", err)
 	}
