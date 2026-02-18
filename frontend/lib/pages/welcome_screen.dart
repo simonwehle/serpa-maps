@@ -17,10 +17,24 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: UrlTextFields(
-        persistChanges: (callback) {
-          _persistUrlsCallback = callback;
-        },
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "Welcome to Serpa Maps",
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              const SizedBox(height: 24),
+              UrlTextFields(
+                persistChanges: (callback) {
+                  _persistUrlsCallback = callback;
+                },
+              ),
+            ],
+          ),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {

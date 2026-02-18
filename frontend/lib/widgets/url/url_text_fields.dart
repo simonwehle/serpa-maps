@@ -92,10 +92,15 @@ class _UrlTextFieldsState extends ConsumerState<UrlTextFields> {
   @override
   Widget build(BuildContext context) {
     //final i10n = AppLocalizations.of(context)!;
+    final baseUrl = ref.read(baseUrlProvider);
     final styleUrl = ref.read(styleUrlProvider);
     final styleDarkUrl = ref.read(styleDarkUrlProvider);
+    final overlayUrl = ref.read(overlayUrlProvider);
+
+    setStyleUrlIfEmpty(baseUrlController, baseUrl);
     setStyleUrlIfEmpty(styleUrlController, styleUrl);
     setStyleUrlIfEmpty(styleDarkUrlController, styleDarkUrl);
+    setStyleUrlIfEmpty(overlayUrlController, overlayUrl);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.persistChanges?.call(persistAllUrls);
@@ -105,8 +110,6 @@ class _UrlTextFieldsState extends ConsumerState<UrlTextFields> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Welcome to Serpa Maps"),
-          const SizedBox(height: 24),
           TextField(
             controller: baseUrlController,
             decoration: InputDecoration(

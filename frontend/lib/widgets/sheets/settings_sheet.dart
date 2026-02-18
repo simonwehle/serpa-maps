@@ -3,6 +3,7 @@ import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/models/user.dart';
 import 'package:serpa_maps/widgets/sheets/category_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
+import 'package:serpa_maps/widgets/sheets/url_sheet.dart';
 
 class SettingsSheet extends StatelessWidget {
   final User? user;
@@ -22,6 +23,12 @@ class SettingsSheet extends StatelessWidget {
               showSerpaStaticSheet(context: context, child: CategorySheet());
             },
             child: Text(i10n.categories),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              showSerpaStaticSheet(context: context, child: UrlSheet());
+            },
+            child: Text(i10n.settings),
           ),
         ],
       ),
