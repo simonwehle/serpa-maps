@@ -1,9 +1,13 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
+import 'package:serpa_maps/providers/overlay_url_provider.dart';
 
-Future<void> addOverlay({required MapLibreMapController mapController}) async {
-  final overlayUrl = dotenv.env['OVERLAY_URL'];
-  if (overlayUrl == null) return;
+Future<void> addOverlay({
+  required MapLibreMapController mapController,
+  required WidgetRef ref,
+}) async {
+  final overlayUrl = ref.read(overlayUrlProvider);
+  if (overlayUrl == "") return;
 
   try {
     await mapController.addSource(
