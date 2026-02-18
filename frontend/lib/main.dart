@@ -50,13 +50,13 @@ void _loadUrlString(
   }
 }
 
-class SerpaMaps extends ConsumerWidget {
+class SerpaMaps extends StatelessWidget {
   final bool showWelcome;
 
   const SerpaMaps({super.key, required this.showWelcome});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Serpa Maps',
