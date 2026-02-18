@@ -111,52 +111,32 @@ func GetPlaces(db *gorm.DB) gin.HandlerFunc {
 func UpdatePlace(db *gorm.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
         id := c.Param("id")
-        var payload map[string]interface{}
+        var place models.Place
 
-        if err := c.ShouldBindJSON(&payload); err != nil {
+        if err := c.ShouldBindJSON(&place); err != nil {
             c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON payload"})
             return
         }
 
-        if len(payload) == 0 {
-            c.JSON(http.StatusBadRequest, gin.H{"error": "No fields to update"})
-            return
-        }
+        place.Latitude = round6(place.Latitude)
+        place.Longitude = round6(place.Longitude)
 
-		if name, ok := payload["name"].(string); ok {
-			if strings.TrimSpace(name) == "" {
-				c.JSON(http.StatusBadRequest, gin.H{"error": "name cannot be empty"})
-				return
-			}
-		}
-		if lat, ok := payload["latitude"].(float64); ok {
-			if lat < -90 || lat > 90 {
-				c.JSON(http.StatusBadRequest, gin.H{"error": "invalid latitude"})
-				return
-			}
-		}
-		if lng, ok := payload["longitude"].(float64); ok {
-			if lng < -180 || lng > 180 {
-				c.JSON(http.StatusBadRequest, gin.H{"error": "invalid longitude"})
-				return
-			}
+		if err := validatePlaceInput(place.Name, place.Latitude, place.Longitude); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
 		}
 
-        if lat, ok := payload["latitude"].(float64); ok {
-            payload["latitude"] = round6(lat)
-        }
-        if lng, ok := payload["longitude"].(float64); ok {
-            payload["longitude"] = round6(lng)
-        }
-
-        if err := db.Model(&models.Place{}).Where("place_id = ?", id).Updates(payload).Error; err != nil {
-            c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update place", "details": err.Error()})
-            return
-        }
-
-        var place models.Place
-        if err := db.Where("place_id = ?", id).First(&place).Error; err != nil {
+        var exists models.Place
+        if err := db.Where("place_id = ?", id).First(&exists).Error; err != nil {
             c.JSON(http.StatusNotFound, gin.H{"error": "Place not found"})
+            return
+        }
+
+        place.PlaceID = exists.PlaceID
+        place.CreatedAt = exists.CreatedAt
+
+        if err := db.Save(&place).Error; err != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update place", "details": err.Error()})
             return
         }
 

@@ -30,17 +30,17 @@ func Execute() {
 
 	api.GET("/categories", handlers.GetCategories(postgres))
 	api.POST("/category", handlers.AddCategory(postgres))
-	api.PATCH("/category/:id", handlers.UpdateCategory(postgres))
+	api.PUT("/category/:id", handlers.UpdateCategory(postgres))
 	api.DELETE("/category/:id", handlers.DeleteCategory(postgres))
 
 	api.GET("/places", handlers.GetPlaces(postgres))
 	api.POST("/place", handlers.AddPlace(postgres))
-	api.PATCH("/place/:id", handlers.UpdatePlace(postgres))
+	api.PUT("/place/:id", handlers.UpdatePlace(postgres))
 	api.DELETE("/place/:id", handlers.DeletePlace(postgres))
 
 	r.Static("/uploads", "./uploads")
 	api.POST("/place/:id/assets", handlers.UploadPlaceAssets(postgres))
-	api.PATCH("/place/:id/assets/positions", handlers.UpdateAssetPositions(postgres))
+	api.PUT("/place/:id/assets/positions", handlers.UpdateAssetPositions(postgres))
 	api.DELETE("/place/:id/asset/:asset_id", handlers.DeletePlaceAsset(postgres))
 
 	r.Run(":53164")

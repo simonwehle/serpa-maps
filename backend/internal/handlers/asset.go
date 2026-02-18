@@ -116,12 +116,36 @@ func UpdateAssetPositions(db *gorm.DB) gin.HandlerFunc {
             return
         }
 
+        if len(updates) == 0 {
+            c.JSON(http.StatusBadRequest, gin.H{"error": "No positions to update"})
+            return
+        }
+
+        var count int64
+        if err := db.Model(&models.Place{}).Where("place_id = ?", placeID).Count(&count).Error; err != nil || count == 0 {
+            c.JSON(http.StatusNotFound, gin.H{"error": "Place not found"})
+            return
+        }
+
+        for _, u := range updates {
+            if u.Position < 0 {
+                c.JSON(http.StatusBadRequest, gin.H{"error": "Position cannot be negative"})
+                return
+            }
+        }
+
         err := db.Transaction(func(tx *gorm.DB) error {
             for _, u := range updates {
-                if err := tx.Model(&models.Asset{}).
+                result := tx.Model(&models.Asset{}).
                     Where("asset_id = ? AND place_id = ?", u.AssetID, placeID).
-                    Update("position", u.Position).Error; err != nil {
-                    return err
+                    Update("position", u.Position)
+                
+                if result.Error != nil {
+                    return result.Error
+                }
+                
+                if result.RowsAffected == 0 {
+                    return fmt.Errorf("asset %d not found for place %s", u.AssetID, placeID)
                 }
             }
             return nil
