@@ -15,6 +15,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get cancel => 'Abbrechen';
 
   @override
+  String get categories => 'Kategorien';
+
+  @override
   String get categoryNotFound => 'Kategorie nicht gefunden';
 
   @override
@@ -51,10 +54,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get name => 'Name';
 
   @override
+  String get newCategory => 'Neue Kategorie';
+
+  @override
   String get noCategories => 'Keine Kategorien verfügbar';
 
   @override
   String get noDescription => 'Keine Beschreibung verfügbar';
+
+  @override
+  String get user => 'Anonymer Benutzer';
 
   @override
   String get placeNotFound => 'Ort nicht gefunden';
@@ -67,6 +76,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get searchPlaces => 'Orte suchen';
+
+  @override
+  String get settings => 'Einstellungen';
 
   @override
   String get showMarkers => 'Markierungen anzeigen';

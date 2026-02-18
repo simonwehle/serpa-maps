@@ -5,18 +5,30 @@ import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/utils/create_marker_image.dart';
 import 'package:serpa_maps/utils/icon_color_utils.dart';
 
-Future addMarkerImage({
+Future<void> _addSingleMarkerImage({
+  required Category category,
+  required MapLibreMapController mapController,
+}) async {
+  final imageId = category.id.toString();
+
+  try {
+    final bytes = await createMarkerImage(
+      iconFromString(category.icon),
+      colorFromHex(category.color),
+    );
+    await mapController.addImage(imageId, bytes);
+  } catch (_) {}
+}
+
+Future<void> addMarkerImage({
   required List<Category> categories,
   required MapLibreMapController mapController,
 }) async {
   for (var category in categories) {
-    try {
-      final bytes = await createMarkerImage(
-        iconFromString(category.icon),
-        colorFromHex(category.color),
-      );
-      await mapController.addImage(category.id.toString(), bytes);
-    } catch (_) {}
+    await _addSingleMarkerImage(
+      category: category,
+      mapController: mapController,
+    );
   }
 
   try {
@@ -41,6 +53,10 @@ Future<void> addPlaceLayer({
     matchExpression.add(category.id.toString());
   }
   matchExpression.add('default-marker');
+
+  try {
+    await mapController.removeLayer("places-layer");
+  } catch (_) {}
 
   try {
     await mapController.addCircleLayer(
@@ -85,7 +101,9 @@ Future<void> addPlaceLayer({
       filter: ['has', 'point_count'],
       enableInteraction: true,
     );
+  } catch (_) {}
 
+  try {
     await mapController.addSymbolLayer(
       "places",
       "places-layer",

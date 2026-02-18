@@ -10,7 +10,7 @@ import (
 	"serpa-maps/internal/models"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jmoiron/sqlx"
+	"gorm.io/gorm"
 )
 
 func buildAssetURL(assetURL string) string {
@@ -41,7 +41,7 @@ func round6(v float64) float64 {
 	return math.Round(v*1e6) / 1e6
 }
 
-func AddPlace(db *sqlx.DB) gin.HandlerFunc {
+func AddPlace(db *gorm.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
         var place models.Place
 
@@ -58,21 +58,13 @@ func AddPlace(db *sqlx.DB) gin.HandlerFunc {
 			return
 		}
 
-        query := `
-            INSERT INTO places (name, description, latitude, longitude, category_id)
-            VALUES ($1, $2, $3, $4, $5)
-            RETURNING place_id, created_at;
-        `
-
-        err := db.QueryRow(query, place.Name, place.Description, place.Latitude, place.Longitude, place.CategoryID).
-            Scan(&place.PlaceID, &place.CreatedAt)
-        if err != nil {
+        if err := db.Create(&place).Error; err != nil {
             c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to insert place", "details": err.Error()})
             return
         }
 
         var assets []models.Asset
-        if err := db.Select(&assets, "SELECT * FROM assets WHERE place_id = $1 ORDER BY position", place.PlaceID); err != nil {
+        if err := db.Where("place_id = ?", place.PlaceID).Order("position").Find(&assets).Error; err != nil {
             assets = []models.Asset{}
         }
 
@@ -90,18 +82,18 @@ func AddPlace(db *sqlx.DB) gin.HandlerFunc {
     }
 }
 
-func GetPlaces(db *sqlx.DB) gin.HandlerFunc {
+func GetPlaces(db *gorm.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
         var places []models.Place
 
-        if err := db.Select(&places, "SELECT * FROM places ORDER BY place_id"); err != nil {
+        if err := db.Order("place_id").Find(&places).Error; err != nil {
             c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
             return
         }
 
 		for i, p := range places {
 			var assets []models.Asset
-			err := db.Select(&assets, "SELECT * FROM assets WHERE place_id = $1 ORDER BY position", p.PlaceID)
+			err := db.Where("place_id = ?", p.PlaceID).Order("position").Find(&assets).Error
 			if err != nil || assets == nil {
 				assets = []models.Asset{}
 			}
@@ -116,7 +108,7 @@ func GetPlaces(db *sqlx.DB) gin.HandlerFunc {
 }
 
 
-func UpdatePlace(db *sqlx.DB) gin.HandlerFunc {
+func UpdatePlace(db *gorm.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
         id := c.Param("id")
         var payload map[string]interface{}
@@ -150,41 +142,26 @@ func UpdatePlace(db *sqlx.DB) gin.HandlerFunc {
 			}
 		}
 
-        setClauses := []string{}
-        args := []interface{}{}
-        i := 1
-        for k, v := range payload {
-            if k == "latitude" {
-                if f, ok := v.(float64); ok {
-                    v = round6(f)
-                }
-            }
-            if k == "longitude" {
-                if f, ok := v.(float64); ok {
-                    v = round6(f)
-                }
-            }
-            setClauses = append(setClauses, fmt.Sprintf("%s = $%d", k, i))
-            args = append(args, v)
-            i++
+        if lat, ok := payload["latitude"].(float64); ok {
+            payload["latitude"] = round6(lat)
         }
-        args = append(args, id)
+        if lng, ok := payload["longitude"].(float64); ok {
+            payload["longitude"] = round6(lng)
+        }
 
-        query := fmt.Sprintf("UPDATE places SET %s WHERE place_id = $%d", strings.Join(setClauses, ", "), i)
-
-        if _, err := db.Exec(query, args...); err != nil {
+        if err := db.Model(&models.Place{}).Where("place_id = ?", id).Updates(payload).Error; err != nil {
             c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update place", "details": err.Error()})
             return
         }
 
         var place models.Place
-        if err := db.Get(&place, "SELECT * FROM places WHERE place_id = $1", id); err != nil {
+        if err := db.Where("place_id = ?", id).First(&place).Error; err != nil {
             c.JSON(http.StatusNotFound, gin.H{"error": "Place not found"})
             return
         }
 
         var assets []models.Asset
-        if err := db.Select(&assets, "SELECT * FROM assets WHERE place_id = $1 ORDER BY position", id); err != nil {
+        if err := db.Where("place_id = ?", id).Order("position").Find(&assets).Error; err != nil {
             assets = []models.Asset{}
         }
 
@@ -201,25 +178,17 @@ func UpdatePlace(db *sqlx.DB) gin.HandlerFunc {
 }
 
 
-func DeletePlace(db *sqlx.DB) gin.HandlerFunc {
+func DeletePlace(db *gorm.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
         placeID := c.Param("id")
 
-        query := `DELETE FROM places WHERE place_id = $1`
-
-        result, err := db.Exec(query, placeID)
-        if err != nil {
-            c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete place", "details": err.Error()})
+        result := db.Delete(&models.Place{}, "place_id = ?", placeID)
+        if result.Error != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete place", "details": result.Error.Error()})
             return
         }
 
-        rowsAffected, err := result.RowsAffected()
-        if err != nil {
-            c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to check deletion", "details": err.Error()})
-            return
-        }
-
-        if rowsAffected == 0 {
+        if result.RowsAffected == 0 {
             c.JSON(http.StatusNotFound, gin.H{"error": "Place not found"})
             return
         }

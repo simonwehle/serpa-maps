@@ -11,6 +11,8 @@ import 'package:serpa_maps/utils/dialogs.dart';
 import 'package:serpa_maps/utils/extract_gps.dart';
 import 'package:serpa_maps/widgets/place/place_assets.dart';
 import 'package:serpa_maps/widgets/place/place_form_button.dart';
+import 'package:serpa_maps/widgets/sheets/category_menu_sheet.dart';
+import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
 
 class PlaceForm extends ConsumerWidget {
   final Place? place;
@@ -84,7 +86,12 @@ class PlaceForm extends ConsumerWidget {
               const SizedBox(width: 8),
               PlaceFormButton(
                 icon: Symbols.forms_add_on,
-                onPressed: () => print("Category Button Pressed"),
+                onPressed: () => showSerpaStaticSheet(
+                  context: context,
+                  child: CategoryMenuSheet(
+                    category: Category.dummyCategory(context),
+                  ),
+                ),
               ),
             ],
           ),

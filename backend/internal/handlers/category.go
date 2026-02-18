@@ -1,17 +1,15 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
-	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jmoiron/sqlx"
+	"gorm.io/gorm"
 
 	"serpa-maps/internal/models"
 )
 
-func AddCategory(db *sqlx.DB) gin.HandlerFunc {
+func AddCategory(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var category models.Category
 
@@ -20,15 +18,7 @@ func AddCategory(db *sqlx.DB) gin.HandlerFunc {
 			return
 		}
 
-		query := `
-			INSERT INTO categories (name, icon, color)
-			VALUES ($1, $2, $3)
-			RETURNING category_id;
-		`
-
-		err := db.QueryRow(query, category.Name, category.Icon, category.Color).
-			Scan(&category.CategoryID)
-		if err != nil {
+		if err := db.Create(&category).Error; err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to insert category", "details": err.Error()})
 			return
 		}
@@ -37,11 +27,11 @@ func AddCategory(db *sqlx.DB) gin.HandlerFunc {
 	}
 }
 
-func GetCategories(db *sqlx.DB) gin.HandlerFunc {
+func GetCategories(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var categories []models.Category
 
-		if err := db.Select(&categories, "SELECT * FROM categories ORDER BY category_id"); err != nil {
+		if err := db.Order("category_id").Find(&categories).Error; err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
@@ -50,7 +40,7 @@ func GetCategories(db *sqlx.DB) gin.HandlerFunc {
 	}
 }
 
-func UpdateCategory(db *sqlx.DB) gin.HandlerFunc {
+func UpdateCategory(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id := c.Param("id")
 		var payload map[string]interface{}
@@ -65,25 +55,13 @@ func UpdateCategory(db *sqlx.DB) gin.HandlerFunc {
 			return
 		}
 
-		setClauses := []string{}
-		args := []interface{}{}
-		i := 1
-		for k, v := range payload {
-			setClauses = append(setClauses, fmt.Sprintf("%s = $%d", k, i))
-			args = append(args, v)
-			i++
-		}
-		args = append(args, id)
-
-		query := fmt.Sprintf("UPDATE categories SET %s WHERE category_id = $%d", strings.Join(setClauses, ", "), i)
-
-		if _, err := db.Exec(query, args...); err != nil {
+		if err := db.Model(&models.Category{}).Where("category_id = ?", id).Updates(payload).Error; err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update category", "details": err.Error()})
 			return
 		}
 
 		var category models.Category
-		if err := db.Get(&category, "SELECT * FROM categories WHERE category_id = $1", id); err != nil {
+		if err := db.Where("category_id = ?", id).First(&category).Error; err != nil {
 			c.JSON(http.StatusNotFound, gin.H{"error": "Category not found"})
 			return
 		}
@@ -92,31 +70,20 @@ func UpdateCategory(db *sqlx.DB) gin.HandlerFunc {
 	}
 }
 
-func DeleteCategory(db *sqlx.DB) gin.HandlerFunc {
+func DeleteCategory(db *gorm.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
         categoryID := c.Param("id")
 
-        query := `DELETE FROM categories WHERE category_id = $1`
-
-        result, err := db.Exec(query, categoryID)
-        if err != nil {
+        result := db.Delete(&models.Category{}, "category_id = ?", categoryID)
+        if result.Error != nil {
             c.JSON(http.StatusInternalServerError, gin.H{
                 "error":   "Failed to delete category",
-                "details": err.Error(),
+                "details": result.Error.Error(),
             })
             return
         }
 
-        rowsAffected, err := result.RowsAffected()
-        if err != nil {
-            c.JSON(http.StatusInternalServerError, gin.H{
-                "error":   "Failed to check deletion",
-                "details": err.Error(),
-            })
-            return
-        }
-
-        if rowsAffected == 0 {
+        if result.RowsAffected == 0 {
             c.JSON(http.StatusNotFound, gin.H{"error": "Category not found"})
             return
         }

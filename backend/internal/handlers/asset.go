@@ -12,10 +12,10 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jmoiron/sqlx"
+	"gorm.io/gorm"
 )
 
-func UploadPlaceAssets(db *sqlx.DB) gin.HandlerFunc {
+func UploadPlaceAssets(db *gorm.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
         placeIDStr := c.Param("id")
         placeID, err := strconv.Atoi(placeIDStr)
@@ -24,9 +24,8 @@ func UploadPlaceAssets(db *sqlx.DB) gin.HandlerFunc {
             return
         }
 
-		var exists bool
-		err = db.Get(&exists, "SELECT EXISTS(SELECT 1 FROM places WHERE place_id = $1)", placeID)
-		if err != nil || !exists {
+		var count int64
+		if err := db.Model(&models.Place{}).Where("place_id = ?", placeID).Count(&count).Error; err != nil || count == 0 {
 			c.JSON(http.StatusNotFound, gin.H{"error": "Place not found"})
 			return
 		}
@@ -77,23 +76,19 @@ func UploadPlaceAssets(db *sqlx.DB) gin.HandlerFunc {
             }
 
             var nextPos int
-            err = db.Get(&nextPos, `
-                SELECT COALESCE(MAX(position), 0) + 1 
-                FROM assets 
-                WHERE place_id = $1
-            `, placeID)
-            if err != nil {
+            if err := db.Model(&models.Asset{}).Where("place_id = ?", placeID).Select("COALESCE(MAX(position), 0) + 1").Scan(&nextPos).Error; err != nil {
                 c.JSON(http.StatusInternalServerError, gin.H{"error": "DB error during calculation of position"})
                 return
             }
 
-            var newAsset models.Asset
-            err = db.Get(&newAsset, `
-                INSERT INTO assets (place_id, asset_url, asset_type, position)
-                VALUES ($1, $2, $3, $4)
-                RETURNING asset_id, place_id, asset_url, asset_type, position, created_at
-            `, placeID, filename, assetType, nextPos)
-            if err != nil {
+            newAsset := models.Asset{
+                PlaceID:   placeID,
+                AssetURL:  filename,
+                AssetType: assetType,
+                Position:  nextPos,
+            }
+
+            if err := db.Create(&newAsset).Error; err != nil {
                 c.JSON(http.StatusInternalServerError, gin.H{"error": "DB error during insertion", "details": err.Error()})
                 return
             }
@@ -107,7 +102,7 @@ func UploadPlaceAssets(db *sqlx.DB) gin.HandlerFunc {
 }
 
 
-func UpdateAssetPositions(db *sqlx.DB) gin.HandlerFunc {
+func UpdateAssetPositions(db *gorm.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
         placeID := c.Param("id")
 
@@ -121,26 +116,18 @@ func UpdateAssetPositions(db *sqlx.DB) gin.HandlerFunc {
             return
         }
 
-        tx, err := db.Beginx()
-        if err != nil {
-            c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-            return
-        }
-
-        for _, u := range updates {
-            _, err := tx.Exec(`
-                UPDATE assets
-                SET position = $1
-                WHERE asset_id = $2 AND place_id = $3
-            `, u.Position, u.AssetID, placeID)
-            if err != nil {
-                tx.Rollback()
-                c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-                return
+        err := db.Transaction(func(tx *gorm.DB) error {
+            for _, u := range updates {
+                if err := tx.Model(&models.Asset{}).
+                    Where("asset_id = ? AND place_id = ?", u.AssetID, placeID).
+                    Update("position", u.Position).Error; err != nil {
+                    return err
+                }
             }
-        }
+            return nil
+        })
 
-        if err := tx.Commit(); err != nil {
+        if err != nil {
             c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
             return
         }
@@ -149,7 +136,7 @@ func UpdateAssetPositions(db *sqlx.DB) gin.HandlerFunc {
     }
 }
 
-func DeletePlaceAsset(db *sqlx.DB) gin.HandlerFunc {
+func DeletePlaceAsset(db *gorm.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
         placeIDStr := c.Param("id")
         assetIDStr := c.Param("asset_id")
@@ -166,29 +153,21 @@ func DeletePlaceAsset(db *sqlx.DB) gin.HandlerFunc {
             return
         }
 
-        var exists bool
-        err = db.Get(&exists, "SELECT EXISTS(SELECT 1 FROM places WHERE place_id = $1)", placeID)
-        if err != nil || !exists {
+        var count int64
+        if err := db.Model(&models.Place{}).Where("place_id = ?", placeID).Count(&count).Error; err != nil || count == 0 {
             c.JSON(http.StatusNotFound, gin.H{"error": "Place not found"})
             return
         }
 
         var asset models.Asset
-        err = db.Get(&asset, `
-            SELECT asset_url, asset_type 
-            FROM assets 
-            WHERE asset_id = $1 AND place_id = $2
-        `, assetID, placeID)
-        if err != nil {
+        if err := db.Select("asset_url, asset_type, position").
+            Where("asset_id = ? AND place_id = ?", assetID, placeID).
+            First(&asset).Error; err != nil {
             c.JSON(http.StatusNotFound, gin.H{"error": "Asset not found"})
             return
         }
 
-        _, err = db.Exec(`
-            DELETE FROM assets 
-            WHERE asset_id = $1 AND place_id = $2
-        `, assetID, placeID)
-        if err != nil {
+        if err := db.Delete(&models.Asset{}, "asset_id = ? AND place_id = ?", assetID, placeID).Error; err != nil {
             c.JSON(http.StatusInternalServerError, gin.H{"error": "DB error during deletion"})
             return
         }
@@ -198,14 +177,9 @@ func DeletePlaceAsset(db *sqlx.DB) gin.HandlerFunc {
             log.Printf("Failed to delete file %s: %v", filePath, err)
         }
 
-        _, err = db.Exec(`
-            UPDATE assets 
-            SET position = position - 1 
-            WHERE place_id = $1 AND position > (
-                SELECT position FROM assets WHERE asset_id = $2
-            )
-        `, placeID, assetID)
-        if err != nil {
+        if err := db.Model(&models.Asset{}).
+            Where("place_id = ? AND position > ?", placeID, asset.Position).
+            UpdateColumn("position", gorm.Expr("position - 1")).Error; err != nil {
             log.Printf("Failed to reorder assets: %v", err)
         }
 
