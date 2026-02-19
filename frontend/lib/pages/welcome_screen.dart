@@ -27,10 +27,13 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
               const SizedBox(height: 24),
-              UrlTextFields(
-                persistChanges: (callback) {
-                  _persistUrlsCallback = callback;
-                },
+              Padding(
+                padding: EdgeInsetsGeometry.all(16),
+                child: UrlTextFields(
+                  persistChanges: (callback) {
+                    _persistUrlsCallback = callback;
+                  },
+                ),
               ),
             ],
           ),

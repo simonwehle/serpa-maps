@@ -18,10 +18,13 @@ class UrlSheet extends ConsumerWidget {
       title: i10n.settings,
       child: Column(
         children: [
-          UrlTextFields(
-            persistChanges: (callback) {
-              persistUrlsCallback = callback;
-            },
+          Padding(
+            padding: EdgeInsetsGeometry.symmetric(vertical: 16),
+            child: UrlTextFields(
+              persistChanges: (callback) {
+                persistUrlsCallback = callback;
+              },
+            ),
           ),
           PlaceFormActions(
             onCancel: () => Navigator.pop(context),
