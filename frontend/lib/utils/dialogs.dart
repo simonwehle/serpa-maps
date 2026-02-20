@@ -10,14 +10,31 @@ Future<bool> showDeleteConfirmationDialog(
   final result = await showDialog<bool>(
     context: context,
     builder: (BuildContext context) => AlertDialog(
+      backgroundColor: Theme.of(context).colorScheme.surface,
       title: Text(title),
       content: Text(message),
       actions: <Widget>[
-        TextButton(
+        OutlinedButton(
+          style: ButtonStyle(
+            foregroundColor: WidgetStatePropertyAll<Color>(
+              Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
           onPressed: () => Navigator.pop(context, false),
           child: Text(i10n.cancel),
         ),
-        TextButton(
+        OutlinedButton(
+          style: ButtonStyle(
+            backgroundColor: WidgetStatePropertyAll<Color>(
+              Theme.of(context).colorScheme.error,
+            ),
+            foregroundColor: WidgetStatePropertyAll<Color>(
+              Theme.of(context).colorScheme.onError,
+            ),
+            side: WidgetStatePropertyAll<BorderSide>(
+              BorderSide(color: Theme.of(context).colorScheme.error),
+            ),
+          ),
           onPressed: () => Navigator.pop(context, true),
           child: Text(i10n.yes),
         ),

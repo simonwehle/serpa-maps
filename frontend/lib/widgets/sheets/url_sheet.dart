@@ -5,7 +5,7 @@ import 'package:serpa_maps/providers/category_provider.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/widgets/place/place_form_actions.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
-import 'package:serpa_maps/widgets/url/url_text_fields.dart';
+import 'package:serpa_maps/widgets/fields/url_text_fields.dart';
 
 class UrlSheet extends ConsumerWidget {
   const UrlSheet({super.key});
@@ -41,7 +41,6 @@ class UrlSheet extends ConsumerWidget {
               }
             },
           ),
-          // Add bottom padding to account for keyboard
           SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
         ],
       ),

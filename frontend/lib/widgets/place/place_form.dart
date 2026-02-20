@@ -175,7 +175,15 @@ class PlaceForm extends ConsumerWidget {
               padding: const EdgeInsets.only(top: 16),
               child: OutlinedButton(
                 style: ButtonStyle(
-                  backgroundColor: WidgetStatePropertyAll<Color>(Colors.red),
+                  backgroundColor: WidgetStatePropertyAll<Color>(
+                    Theme.of(context).colorScheme.error,
+                  ),
+                  foregroundColor: WidgetStatePropertyAll<Color>(
+                    Theme.of(context).colorScheme.onError,
+                  ),
+                  side: WidgetStatePropertyAll<BorderSide>(
+                    BorderSide(color: Theme.of(context).colorScheme.error),
+                  ),
                 ),
                 onPressed: () async {
                   final confirmed = await showDeleteConfirmationDialog(
