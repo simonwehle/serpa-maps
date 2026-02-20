@@ -19,7 +19,7 @@ class UrlSheet extends ConsumerWidget {
       child: Column(
         children: [
           Padding(
-            padding: EdgeInsetsGeometry.symmetric(vertical: 16),
+            padding: const EdgeInsets.symmetric(vertical: 16),
             child: UrlTextFields(
               persistChanges: (callback) {
                 persistUrlsCallback = callback;
@@ -41,6 +41,8 @@ class UrlSheet extends ConsumerWidget {
               }
             },
           ),
+          // Add bottom padding to account for keyboard
+          SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
         ],
       ),
     );
