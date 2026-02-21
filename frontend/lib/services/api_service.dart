@@ -1,42 +1,24 @@
 import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/models/auth.dart';
 
 class ApiService {
-  final String baseUrl;
-  final String apiVersion;
-  final String? authToken;
+  final Dio _dio;
 
-  ApiService(this.baseUrl, {this.apiVersion = '/api/v1', this.authToken});
-
-  String _endpoint(String path) => '$baseUrl$apiVersion$path';
-
-  Map<String, String> _headers() => {
-    'Content-Type': 'application/json',
-    if (authToken != null) 'Authorization': 'Bearer $authToken',
-  };
+  ApiService(this._dio);
 
   Future<List<Category>> fetchCategories() async {
-    final res = await http.get(
-      Uri.parse(_endpoint('/categories')),
-      headers: _headers(),
-    );
-    if (res.statusCode != 200) throw Exception('Failed to load categories');
-    final List data = json.decode(res.body);
+    final res = await _dio.get('/categories');
+    final List data = res.data;
     return data.map((json) => Category.fromJson(json)).toList();
   }
 
   Future<List<Place>> fetchPlaces() async {
-    final res = await http.get(
-      Uri.parse(_endpoint('/places')),
-      headers: _headers(),
-    );
-    if (res.statusCode != 200) throw Exception('Failed to load places');
-    final List data = json.decode(res.body);
+    final res = await _dio.get('/places');
+    final List data = res.data;
     return data.map((json) => Place.fromJson(json)).toList();
   }
 
@@ -60,18 +42,8 @@ class ApiService {
       throw Exception('No fields to update');
     }
 
-    final res = await http.patch(
-      Uri.parse(_endpoint('/place/$id')),
-      headers: _headers(),
-      body: json.encode(updates),
-    );
-
-    if (res.statusCode != 200) {
-      throw Exception('Failed to update place: ${res.body}');
-    }
-
-    final data = json.decode(res.body);
-    return Place.fromJson(data);
+    final res = await _dio.patch('/place/$id', data: updates);
+    return Place.fromJson(res.data);
   }
 
   Future<Place?> addPlace({
@@ -90,40 +62,16 @@ class ApiService {
 
     if (description != null) newRoom['description'] = description;
 
-    final res = await http.post(
-      Uri.parse(_endpoint('/place')),
-      headers: _headers(),
-      body: json.encode(newRoom),
-    );
-
-    if (res.statusCode == 201) {
-      final Map<String, dynamic> data = json.decode(res.body);
-      return Place.fromJson(data);
-    } else {
-      throw Exception('Failed to add place. Status code: ${res.statusCode}');
-    }
+    final res = await _dio.post('/place', data: newRoom);
+    return Place.fromJson(res.data);
   }
 
   Future<void> deletePlace({required int id}) async {
-    final res = await http.delete(
-      Uri.parse(_endpoint('/place/$id')),
-      headers: _headers(),
-    );
-
-    if (res.statusCode != 200) {
-      throw Exception('Failed to delete place. Status code: ${res.statusCode}');
-    }
+    await _dio.delete('/place/$id');
   }
 
   Future<void> deleteAsset({required int placeId, required int assetId}) async {
-    final res = await http.delete(
-      Uri.parse(_endpoint('/place/$placeId/asset/$assetId')),
-      headers: _headers(),
-    );
-
-    if (res.statusCode != 200) {
-      throw Exception('Failed to delete asset. Status code: ${res.statusCode}');
-    }
+    await _dio.delete('/place/$placeId/asset/$assetId');
   }
 
   Future<List<dynamic>> uploadAsset({
@@ -131,22 +79,12 @@ class ApiService {
     required List<int> assetBytes,
     required String filename,
   }) async {
-    final uri = Uri.parse(_endpoint('/place/$placeId/assets'));
-    final request = http.MultipartRequest('POST', uri)
-      ..headers.addAll(_headers())
-      ..files.add(
-        http.MultipartFile.fromBytes('assets', assetBytes, filename: filename),
-      );
+    final formData = FormData.fromMap({
+      'assets': MultipartFile.fromBytes(assetBytes, filename: filename),
+    });
 
-    final res = await request.send();
-
-    if (res.statusCode != 200) {
-      throw Exception('Failed to upload asset. Status code: ${res.statusCode}');
-    }
-
-    final responseBody = await res.stream.bytesToString();
-    final data = json.decode(responseBody);
-    return data['assets'];
+    final res = await _dio.post('/place/$placeId/assets', data: formData);
+    return res.data['assets'];
   }
 
   Future<Category?> addCategory({
@@ -160,18 +98,8 @@ class ApiService {
       'color': color,
     };
 
-    final res = await http.post(
-      Uri.parse(_endpoint('/category')),
-      headers: _headers(),
-      body: json.encode(newCategory),
-    );
-
-    if (res.statusCode == 201) {
-      final Map<String, dynamic> data = json.decode(res.body);
-      return Category.fromJson(data);
-    } else {
-      throw Exception('Failed to add category. Status code: ${res.statusCode}');
-    }
+    final res = await _dio.post('/category', data: newCategory);
+    return Category.fromJson(res.data);
   }
 
   Future<Category> updateCategory({
@@ -190,31 +118,12 @@ class ApiService {
       throw Exception('No fields to update');
     }
 
-    final res = await http.patch(
-      Uri.parse(_endpoint('/category/$id')),
-      headers: _headers(),
-      body: json.encode(updates),
-    );
-
-    if (res.statusCode != 200) {
-      throw Exception('Failed to update category: ${res.body}');
-    }
-
-    final data = json.decode(res.body);
-    return Category.fromJson(data);
+    final res = await _dio.patch('/category/$id', data: updates);
+    return Category.fromJson(res.data);
   }
 
   Future<void> deleteCategory({required int id}) async {
-    final res = await http.delete(
-      Uri.parse(_endpoint('/category/$id')),
-      headers: _headers(),
-    );
-
-    if (res.statusCode != 200) {
-      throw Exception(
-        'Failed to delete category. Status code: ${res.statusCode}',
-      );
-    }
+    await _dio.delete('/category/$id');
   }
 
   Future<AuthResponse> login({
@@ -226,18 +135,8 @@ class ApiService {
       'password': password,
     };
 
-    final res = await http.post(
-      Uri.parse(_endpoint('/login')),
-      headers: _headers(),
-      body: json.encode(loginRequest),
-    );
-
-    if (res.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(res.body);
-      return AuthResponse.fromJson(data);
-    } else {
-      throw Exception('Failed to login. Status code: ${res.statusCode}');
-    }
+    final res = await _dio.post('/login', data: loginRequest);
+    return AuthResponse.fromJson(res.data);
   }
 
   Future<AuthResponse> register({
@@ -251,17 +150,7 @@ class ApiService {
       'password': password,
     };
 
-    final res = await http.post(
-      Uri.parse(_endpoint('/register')),
-      headers: _headers(),
-      body: json.encode(registerRequest),
-    );
-
-    if (res.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(res.body);
-      return AuthResponse.fromJson(data);
-    } else {
-      throw Exception('Failed to register. Status code: ${res.statusCode}');
-    }
+    final res = await _dio.post('/register', data: registerRequest);
+    return AuthResponse.fromJson(res.data);
   }
 }
