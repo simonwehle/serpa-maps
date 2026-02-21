@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
+import 'package:serpa_maps/models/auth.dart';
 
 class ApiService {
   final String baseUrl;
@@ -193,6 +194,54 @@ class ApiService {
       throw Exception(
         'Failed to delete category. Status code: ${res.statusCode}',
       );
+    }
+  }
+
+  Future<AuthResponse> login({
+    required String email,
+    required String password,
+  }) async {
+    final Map<String, dynamic> loginRequest = {
+      'email': email,
+      'password': password,
+    };
+
+    final res = await http.post(
+      Uri.parse(_endpoint('/login')),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(loginRequest),
+    );
+
+    if (res.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(res.body);
+      return AuthResponse.fromJson(data);
+    } else {
+      throw Exception('Failed to login. Status code: ${res.statusCode}');
+    }
+  }
+
+  Future<AuthResponse> register({
+    required String username,
+    required String email,
+    required String password,
+  }) async {
+    final Map<String, dynamic> registerRequest = {
+      'email': email,
+      'username': username,
+      'password': password,
+    };
+
+    final res = await http.post(
+      Uri.parse(_endpoint('/register')),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(registerRequest),
+    );
+
+    if (res.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(res.body);
+      return AuthResponse.fromJson(data);
+    } else {
+      throw Exception('Failed to register. Status code: ${res.statusCode}');
     }
   }
 }

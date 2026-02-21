@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:serpa_maps/pages/map_screen.dart';
 
 class TextFieldScreen extends ConsumerStatefulWidget {
   final String title;
   final IconData icon;
   final Widget Function(ValueChanged<Future<void> Function()>) childBuilder;
+  final Widget navigationTarget;
 
   const TextFieldScreen({
     super.key,
     required this.title,
     required this.icon,
     required this.childBuilder,
+    required this.navigationTarget,
   });
 
   @override
@@ -56,7 +57,7 @@ class _TextFieldScreenState extends ConsumerState<TextFieldScreen> {
             return;
           } else if (context.mounted) {
             Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => const MapScreen()),
+              MaterialPageRoute(builder: (context) => widget.navigationTarget),
             );
           }
         },
