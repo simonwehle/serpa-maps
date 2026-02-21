@@ -9,20 +9,32 @@ import 'package:serpa_maps/models/auth.dart';
 class ApiService {
   final String baseUrl;
   final String apiVersion;
+  final String? authToken;
 
-  ApiService(this.baseUrl, {this.apiVersion = '/api/v1'});
+  ApiService(this.baseUrl, {this.apiVersion = '/api/v1', this.authToken});
 
   String _endpoint(String path) => '$baseUrl$apiVersion$path';
 
+  Map<String, String> _headers() => {
+    'Content-Type': 'application/json',
+    if (authToken != null) 'Authorization': 'Bearer $authToken',
+  };
+
   Future<List<Category>> fetchCategories() async {
-    final res = await http.get(Uri.parse(_endpoint('/categories')));
+    final res = await http.get(
+      Uri.parse(_endpoint('/categories')),
+      headers: _headers(),
+    );
     if (res.statusCode != 200) throw Exception('Failed to load categories');
     final List data = json.decode(res.body);
     return data.map((json) => Category.fromJson(json)).toList();
   }
 
   Future<List<Place>> fetchPlaces() async {
-    final res = await http.get(Uri.parse(_endpoint('/places')));
+    final res = await http.get(
+      Uri.parse(_endpoint('/places')),
+      headers: _headers(),
+    );
     if (res.statusCode != 200) throw Exception('Failed to load places');
     final List data = json.decode(res.body);
     return data.map((json) => Place.fromJson(json)).toList();
@@ -50,7 +62,7 @@ class ApiService {
 
     final res = await http.patch(
       Uri.parse(_endpoint('/place/$id')),
-      headers: {'Content-Type': 'application/json'},
+      headers: _headers(),
       body: json.encode(updates),
     );
 
@@ -80,7 +92,7 @@ class ApiService {
 
     final res = await http.post(
       Uri.parse(_endpoint('/place')),
-      headers: {'Content-Type': 'application/json'},
+      headers: _headers(),
       body: json.encode(newRoom),
     );
 
@@ -93,7 +105,10 @@ class ApiService {
   }
 
   Future<void> deletePlace({required int id}) async {
-    final res = await http.delete(Uri.parse(_endpoint('/place/$id')));
+    final res = await http.delete(
+      Uri.parse(_endpoint('/place/$id')),
+      headers: _headers(),
+    );
 
     if (res.statusCode != 200) {
       throw Exception('Failed to delete place. Status code: ${res.statusCode}');
@@ -103,6 +118,7 @@ class ApiService {
   Future<void> deleteAsset({required int placeId, required int assetId}) async {
     final res = await http.delete(
       Uri.parse(_endpoint('/place/$placeId/asset/$assetId')),
+      headers: _headers(),
     );
 
     if (res.statusCode != 200) {
@@ -117,6 +133,7 @@ class ApiService {
   }) async {
     final uri = Uri.parse(_endpoint('/place/$placeId/assets'));
     final request = http.MultipartRequest('POST', uri)
+      ..headers.addAll(_headers())
       ..files.add(
         http.MultipartFile.fromBytes('assets', assetBytes, filename: filename),
       );
@@ -145,7 +162,7 @@ class ApiService {
 
     final res = await http.post(
       Uri.parse(_endpoint('/category')),
-      headers: {'Content-Type': 'application/json'},
+      headers: _headers(),
       body: json.encode(newCategory),
     );
 
@@ -175,7 +192,7 @@ class ApiService {
 
     final res = await http.patch(
       Uri.parse(_endpoint('/category/$id')),
-      headers: {'Content-Type': 'application/json'},
+      headers: _headers(),
       body: json.encode(updates),
     );
 
@@ -188,7 +205,10 @@ class ApiService {
   }
 
   Future<void> deleteCategory({required int id}) async {
-    final res = await http.delete(Uri.parse(_endpoint('/category/$id')));
+    final res = await http.delete(
+      Uri.parse(_endpoint('/category/$id')),
+      headers: _headers(),
+    );
 
     if (res.statusCode != 200) {
       throw Exception(
@@ -208,7 +228,7 @@ class ApiService {
 
     final res = await http.post(
       Uri.parse(_endpoint('/login')),
-      headers: {'Content-Type': 'application/json'},
+      headers: _headers(),
       body: json.encode(loginRequest),
     );
 
@@ -233,7 +253,7 @@ class ApiService {
 
     final res = await http.post(
       Uri.parse(_endpoint('/register')),
-      headers: {'Content-Type': 'application/json'},
+      headers: _headers(),
       body: json.encode(registerRequest),
     );
 

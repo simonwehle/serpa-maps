@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/providers/api_provider.dart';
+import 'package:serpa_maps/providers/auth_token_provider.dart';
 import 'package:serpa_maps/widgets/form/form_text_field.dart';
 
 class LoginFields extends ConsumerStatefulWidget {
@@ -36,12 +37,7 @@ class _LoginFieldsState extends ConsumerState<LoginFields> {
       email: emailController.text,
       password: passwordController.text,
     );
-    print(
-      loginResponse.email +
-          loginResponse.token +
-          loginResponse.username +
-          loginResponse.userId.toString(),
-    );
+    ref.read(authTokenProvider.notifier).setToken(loginResponse.token);
   }
 
   @override
