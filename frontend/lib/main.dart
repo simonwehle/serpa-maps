@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:serpa_maps/l10n/app_localizations.dart';
+import 'package:serpa_maps/pages/login_screen.dart';
 import 'package:serpa_maps/pages/map_screen.dart';
 import 'package:serpa_maps/pages/welcome_screen.dart';
+import 'package:serpa_maps/providers/auth_token_provider.dart';
 import 'package:serpa_maps/providers/base_url_provider.dart';
 import 'package:serpa_maps/providers/overlay_url_provider.dart';
 import 'package:serpa_maps/providers/style_dark_provider.dart';
 import 'package:serpa_maps/providers/style_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,14 +54,26 @@ void _loadUrlString(
   }
 }
 
-class SerpaMaps extends StatelessWidget {
+class SerpaMaps extends ConsumerWidget {
   final bool showWelcome;
 
   const SerpaMaps({super.key, required this.showWelcome});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authToken = ref.watch(authTokenProvider);
+
+    Widget home;
+    if (showWelcome) {
+      home = const WelcomeScreen();
+    } else if (authToken == null) {
+      home = const LoginScreen();
+    } else {
+      home = const MapScreen();
+    }
+
     return MaterialApp(
+      navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       title: 'Serpa Maps',
       localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -83,7 +99,7 @@ class SerpaMaps extends StatelessWidget {
         ),
       ),
       themeMode: ThemeMode.system,
-      home: showWelcome ? const WelcomeScreen() : const MapScreen(),
+      home: home,
     );
   }
 }

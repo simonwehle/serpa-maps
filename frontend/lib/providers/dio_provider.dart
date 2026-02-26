@@ -1,5 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serpa_maps/main.dart';
+import 'package:serpa_maps/pages/login_screen.dart';
 import 'package:serpa_maps/providers/auth_token_provider.dart';
 import 'package:serpa_maps/providers/base_url_provider.dart';
 
@@ -18,7 +21,6 @@ final dioProvider = Provider<Dio>((ref) {
     ),
   );
 
-  // Add auth token interceptor
   dio.interceptors.add(
     InterceptorsWrapper(
       onRequest: (options, handler) {
@@ -28,8 +30,20 @@ final dioProvider = Provider<Dio>((ref) {
         return handler.next(options);
       },
       onError: (error, handler) {
-        // You can add global error handling here
-        // e.g., auto-logout on 401, retry logic, etc.
+        if (error.response?.statusCode == 401) {
+          final currentToken = ref.read(authTokenProvider);
+          if (currentToken != null) {
+            ref.read(authTokenProvider.notifier).clearToken();
+
+            final navigator = navigatorKey.currentState;
+            if (navigator != null) {
+              navigator.pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => const LoginScreen()),
+                (route) => false,
+              );
+            }
+          }
+        }
         return handler.next(error);
       },
     ),
