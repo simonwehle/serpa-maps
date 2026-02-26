@@ -10,7 +10,7 @@ class OverlayActiveNotifier extends Notifier<bool> {
     return false;
   }
 
-  void setPmtiles(bool newState) {
+  void setOverlayActive(bool newState) {
     state = newState;
   }
 }

@@ -71,7 +71,7 @@ class LayerBottomSheet extends ConsumerWidget {
                   value: ref.watch(overlayActiveProvider),
                   onChanged: ref
                       .read(overlayActiveProvider.notifier)
-                      .setPmtiles,
+                      .setOverlayActive,
                 ),
               ],
             ),
