@@ -12,6 +12,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get add => 'Hinzufügen';
 
   @override
+  String get anonymousUser => 'Anonymer Benutzer';
+
+  @override
   String get cancel => 'Abbrechen';
 
   @override
@@ -39,10 +42,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String get description => 'Beschreibung';
 
   @override
+  String get email => 'Email';
+
+  @override
   String get explore => 'Erkunden';
 
   @override
   String get latitude => 'Breitengrad';
+
+  @override
+  String get login => 'Einloggen';
+
+  @override
+  String get logout => 'Ausloggen';
 
   @override
   String get longitude => 'Längengrad';
@@ -63,10 +75,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get noDescription => 'Keine Beschreibung verfügbar';
 
   @override
-  String get user => 'Anonymer Benutzer';
+  String get username => 'Nutzername';
+
+  @override
+  String get password => 'Passwort';
 
   @override
   String get placeNotFound => 'Ort nicht gefunden';
+
+  @override
+  String get register => 'Registrieren';
 
   @override
   String get satellite => 'Satellit';

@@ -12,6 +12,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get add => 'Add';
 
   @override
+  String get anonymousUser => 'Anonymous User';
+
+  @override
   String get cancel => 'Cancel';
 
   @override
@@ -39,10 +42,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get description => 'Description';
 
   @override
+  String get email => 'Email';
+
+  @override
   String get explore => 'Explore';
 
   @override
   String get latitude => 'Latitude';
+
+  @override
+  String get login => 'Login';
+
+  @override
+  String get logout => 'Logout';
 
   @override
   String get longitude => 'Longitude';
@@ -63,10 +75,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noDescription => 'No description available';
 
   @override
-  String get user => 'Anonymous User';
+  String get username => 'Username';
+
+  @override
+  String get password => 'Password';
 
   @override
   String get placeNotFound => 'Place not found';
+
+  @override
+  String get register => 'register';
 
   @override
   String get satellite => 'Satellite';

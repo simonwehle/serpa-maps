@@ -15,7 +15,7 @@ class SettingsSheet extends StatelessWidget {
     final i10n = AppLocalizations.of(context)!;
 
     return SerpaStaticSheet(
-      title: user?.name ?? i10n.user,
+      title: user?.name ?? i10n.anonymousUser,
       child: Column(
         children: [
           ElevatedButton(
@@ -30,6 +30,7 @@ class SettingsSheet extends StatelessWidget {
             },
             child: Text(i10n.settings),
           ),
+          //ElevatedButton(onPressed: dialog, child: Text(i10n.logout)),
         ],
       ),
     );

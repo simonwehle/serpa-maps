@@ -5,40 +5,44 @@ import 'package:serpa_maps/providers/api_provider.dart';
 import 'package:serpa_maps/providers/auth_token_provider.dart';
 import 'package:serpa_maps/widgets/form/form_text_field.dart';
 
-class LoginFields extends ConsumerStatefulWidget {
+class RegisterFields extends ConsumerStatefulWidget {
   final ValueChanged<Future<void> Function()>? persistChanges;
 
-  const LoginFields({super.key, this.persistChanges});
+  const RegisterFields({super.key, this.persistChanges});
 
   @override
-  ConsumerState<LoginFields> createState() => _LoginFieldsState();
+  ConsumerState<RegisterFields> createState() => _RegisterFieldsState();
 }
 
-class _LoginFieldsState extends ConsumerState<LoginFields> {
+class _RegisterFieldsState extends ConsumerState<RegisterFields> {
   late TextEditingController emailController;
+  late TextEditingController usernameController;
   late TextEditingController passwordController;
 
   @override
   void initState() {
     super.initState();
     emailController = TextEditingController();
+    usernameController = TextEditingController();
     passwordController = TextEditingController();
   }
 
   @override
   void dispose() {
     emailController.dispose();
+    usernameController.dispose();
     passwordController.dispose();
     super.dispose();
   }
 
   Future<void> performLogin() async {
     final api = ref.read(apiServiceProvider);
-    final loginResponse = await api.login(
+    final registerResponse = await api.register(
       email: emailController.text,
+      username: usernameController.text,
       password: passwordController.text,
     );
-    ref.read(authTokenProvider.notifier).setToken(loginResponse.token);
+    ref.read(authTokenProvider.notifier).setToken(registerResponse.token);
   }
 
   @override
@@ -54,6 +58,8 @@ class _LoginFieldsState extends ConsumerState<LoginFields> {
       children: [
         FormTextField(label: i10n.email, controller: emailController),
         const SizedBox(height: 8),
+        FormTextField(label: i10n.username, controller: usernameController),
+        const SizedBox(height: 8),
         FormTextField(
           label: i10n.password,
           controller: passwordController,
@@ -65,7 +71,7 @@ class _LoginFieldsState extends ConsumerState<LoginFields> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               Text(
-                i10n.register,
+                i10n.login,
                 style: TextStyle(color: Theme.of(context).colorScheme.primary),
               ),
             ],
