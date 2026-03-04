@@ -186,11 +186,7 @@ class PlaceForm extends ConsumerWidget {
                   ),
                 ),
                 onPressed: () async {
-                  final confirmed = await showDeleteConfirmationDialog(
-                    context,
-                    title: i10n.deletePlace,
-                    message: i10n.deletePlaceQuestion,
-                  );
+                  final confirmed = await showDeleteConfirmationDialog(context);
                   if (confirmed && deletePlace != null) {
                     await deletePlace!();
                     if (context.mounted) Navigator.pop(context);

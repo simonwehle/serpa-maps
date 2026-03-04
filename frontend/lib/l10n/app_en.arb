@@ -16,6 +16,7 @@
   "latitude": "Latitude",
   "login": "Login",
   "logout": "Logout",
+  "logoutQuestion": "Do you want to logout?",
   "longitude": "Longitude",
   "mapLayer": "Map Layer",
   "name": "Name",

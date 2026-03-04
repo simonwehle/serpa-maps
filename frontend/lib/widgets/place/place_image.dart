@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/providers/image_provider.dart';
 import 'package:serpa_maps/widgets/sheets/sheet_button.dart';
 import 'package:serpa_maps/utils/dialogs.dart';
-import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 const double kPlaceAssetWidth = 200;
@@ -32,7 +31,6 @@ class PlaceImage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final imageAsync = ref.watch(imageProvider(url));
-    final i10n = AppLocalizations.of(context)!;
 
     return Skeletonizer(
       enabled: imageAsync.isLoading,
@@ -63,11 +61,7 @@ class PlaceImage extends ConsumerWidget {
               child: SheetButton(
                 icon: Icons.close,
                 onPressed: () async {
-                  final confirmed = await showDeleteConfirmationDialog(
-                    context,
-                    title: i10n.deleteAsset,
-                    message: i10n.deleteAssetQuestion,
-                  );
+                  final confirmed = await showDeleteConfirmationDialog(context);
                   if (confirmed && onDelete != null) {
                     onDelete!();
                   }

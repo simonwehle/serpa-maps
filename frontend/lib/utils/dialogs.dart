@@ -1,12 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 
-Future<bool> showDeleteConfirmationDialog(
+Future<bool> showDeleteConfirmationDialog(BuildContext context) async {
+  final i10n = AppLocalizations.of(context)!;
+  final colorScheme = Theme.of(context).colorScheme;
+  return showConfirmationDialog(
+    context,
+    title: i10n.deletePlace,
+    message: i10n.deletePlaceQuestion,
+    backgroundColor: colorScheme.error,
+    foregroundColor: colorScheme.onError,
+  );
+}
+
+Future<bool> showLogoutConfirmationDialog(BuildContext context) async {
+  final i10n = AppLocalizations.of(context)!;
+  return showConfirmationDialog(
+    context,
+    title: i10n.logout,
+    message: i10n.logoutQuestion,
+  );
+}
+
+Future<bool> showConfirmationDialog(
   BuildContext context, {
   required String title,
   required String message,
+  Color? backgroundColor,
+  Color? foregroundColor,
 }) async {
   final i10n = AppLocalizations.of(context)!;
+  final colorScheme = Theme.of(context).colorScheme;
   final result = await showDialog<bool>(
     context: context,
     builder: (BuildContext context) => AlertDialog(
@@ -26,13 +50,13 @@ Future<bool> showDeleteConfirmationDialog(
         OutlinedButton(
           style: ButtonStyle(
             backgroundColor: WidgetStatePropertyAll<Color>(
-              Theme.of(context).colorScheme.error,
+              backgroundColor ?? colorScheme.primary,
             ),
             foregroundColor: WidgetStatePropertyAll<Color>(
-              Theme.of(context).colorScheme.onError,
+              foregroundColor ?? colorScheme.onPrimary,
             ),
             side: WidgetStatePropertyAll<BorderSide>(
-              BorderSide(color: Theme.of(context).colorScheme.error),
+              BorderSide(color: backgroundColor ?? colorScheme.primary),
             ),
           ),
           onPressed: () => Navigator.pop(context, true),

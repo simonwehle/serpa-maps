@@ -1,8 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:serpa_maps/main.dart';
-import 'package:serpa_maps/pages/login_screen.dart';
 import 'package:serpa_maps/providers/auth_token_provider.dart';
 import 'package:serpa_maps/providers/base_url_provider.dart';
 
@@ -33,15 +30,7 @@ final dioProvider = Provider<Dio>((ref) {
         if (error.response?.statusCode == 401) {
           final currentToken = ref.read(authTokenProvider);
           if (currentToken != null) {
-            ref.read(authTokenProvider.notifier).clearToken();
-
-            final navigator = navigatorKey.currentState;
-            if (navigator != null) {
-              navigator.pushAndRemoveUntil(
-                MaterialPageRoute(builder: (_) => const LoginScreen()),
-                (route) => false,
-              );
-            }
+            ref.read(authTokenProvider.notifier).logout();
           }
         }
         return handler.next(error);

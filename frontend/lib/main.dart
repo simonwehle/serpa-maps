@@ -63,7 +63,7 @@ class SerpaMaps extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authToken = ref.read(authTokenProvider);
+    final authToken = ref.watch(authTokenProvider);
 
     Widget home;
     if (showWelcome) {

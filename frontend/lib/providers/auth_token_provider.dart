@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serpa_maps/providers/category_provider.dart';
+import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/providers/secure_storage_provider.dart';
 
 final authTokenProvider = NotifierProvider<AuthTokenNotifier, String?>(
@@ -27,10 +29,12 @@ class AuthTokenNotifier extends Notifier<String?> {
     await secureStorage.write(key: _tokenKey, value: token);
   }
 
-  Future<void> clearToken() async {
+  Future<void> logout() async {
     state = null;
     final secureStorage = ref.read(secureStorageProvider);
     await secureStorage.delete(key: _tokenKey);
+    ref.invalidate(categoryProvider);
+    ref.invalidate(placeProvider);
   }
 
   bool get isAuthenticated => state != null;

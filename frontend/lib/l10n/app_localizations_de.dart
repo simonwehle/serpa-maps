@@ -57,6 +57,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get logout => 'Ausloggen';
 
   @override
+  String get logoutQuestion => 'Möchten Sie sich ausloggen?';
+
+  @override
   String get longitude => 'Längengrad';
 
   @override

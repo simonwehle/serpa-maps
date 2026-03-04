@@ -57,6 +57,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logout => 'Logout';
 
   @override
+  String get logoutQuestion => 'Do you want to logout?';
+
+  @override
   String get longitude => 'Longitude';
 
   @override

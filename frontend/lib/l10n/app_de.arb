@@ -16,6 +16,7 @@
   "latitude": "Breitengrad",
   "login": "Einloggen",
   "logout": "Ausloggen",
+  "logoutQuestion": "Möchten Sie sich ausloggen?",
   "longitude": "Längengrad",
   "mapLayer": "Kartentyp",
   "name": "Name",

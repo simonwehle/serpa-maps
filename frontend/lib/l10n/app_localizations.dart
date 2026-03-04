@@ -194,6 +194,12 @@ abstract class AppLocalizations {
   /// **'Logout'**
   String get logout;
 
+  /// No description provided for @logoutQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to logout?'**
+  String get logoutQuestion;
+
   /// No description provided for @longitude.
   ///
   /// In en, this message translates to:
