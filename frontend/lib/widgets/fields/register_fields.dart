@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
+import 'package:serpa_maps/pages/login_screen.dart';
 import 'package:serpa_maps/providers/api_provider.dart';
 import 'package:serpa_maps/providers/auth_token_provider.dart';
 import 'package:serpa_maps/widgets/form/form_text_field.dart';
@@ -76,7 +77,12 @@ class _RegisterFieldsState extends ConsumerState<RegisterFields> {
               ),
             ],
           ),
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const LoginScreen()),
+            );
+          },
         ),
       ],
     );

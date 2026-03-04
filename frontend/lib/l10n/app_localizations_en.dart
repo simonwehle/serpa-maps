@@ -87,7 +87,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get placeNotFound => 'Place not found';
 
   @override
-  String get register => 'register';
+  String get register => 'Register';
 
   @override
   String get satellite => 'Satellite';
