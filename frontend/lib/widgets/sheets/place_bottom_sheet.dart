@@ -13,7 +13,7 @@ import 'package:serpa_maps/widgets/place/place_form_actions.dart';
 import 'package:serpa_maps/widgets/place/place_form.dart';
 
 class PlaceBottomSheet extends ConsumerStatefulWidget {
-  final int placeId;
+  final String placeId;
 
   const PlaceBottomSheet({super.key, required this.placeId});
 
@@ -73,7 +73,7 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
     super.dispose();
   }
 
-  Future<void> _saveChanges(int placeId) async {
+  Future<void> _saveChanges(String placeId) async {
     try {
       final latitude = double.tryParse(latitudeController!.text);
       final longitude = double.tryParse(longitudeController!.text);

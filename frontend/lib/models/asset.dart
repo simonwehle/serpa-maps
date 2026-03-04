@@ -1,6 +1,6 @@
 class Asset {
-  final int assetId;
-  final int placeId;
+  final String assetId;
+  final String placeId;
   final String assetUrl;
   final String assetType;
   final int position;

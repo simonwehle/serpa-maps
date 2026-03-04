@@ -49,7 +49,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     }
   }
 
-  void openPlaceBottomSheet({required int placeId}) {
+  void openPlaceBottomSheet({required String placeId}) {
     showSerpaDraggableSheet(
       context: context,
       child: PlaceBottomSheet(placeId: placeId),
@@ -139,7 +139,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         CameraUpdate.zoomBy(2, Offset(point.x, point.y)),
       );
     } else if (layerId == 'places-layer') {
-      openPlaceBottomSheet(placeId: int.parse(id));
+      openPlaceBottomSheet(placeId: id);
     }
   }
 

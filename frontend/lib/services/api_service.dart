@@ -23,12 +23,12 @@ class ApiService {
   }
 
   Future<Place> updatePlace({
-    required int id,
+    required String id,
     String? name,
     String? description,
     double? latitude,
     double? longitude,
-    int? categoryId,
+    String? categoryId,
   }) async {
     final Map<String, dynamic> updates = {};
 
@@ -50,7 +50,7 @@ class ApiService {
     required String name,
     required double latitude,
     required double longitude,
-    required int categoryId,
+    required String categoryId,
     String? description,
   }) async {
     final Map<String, dynamic> newRoom = {
@@ -66,16 +66,19 @@ class ApiService {
     return Place.fromJson(res.data);
   }
 
-  Future<void> deletePlace({required int id}) async {
+  Future<void> deletePlace({required String id}) async {
     await _dio.delete('/place/$id');
   }
 
-  Future<void> deleteAsset({required int placeId, required int assetId}) async {
+  Future<void> deleteAsset({
+    required String placeId,
+    required String assetId,
+  }) async {
     await _dio.delete('/place/$placeId/asset/$assetId');
   }
 
   Future<List<dynamic>> uploadAsset({
-    required int placeId,
+    required String placeId,
     required List<int> assetBytes,
     required String filename,
   }) async {
@@ -103,7 +106,7 @@ class ApiService {
   }
 
   Future<Category> updateCategory({
-    required int id,
+    required String id,
     String? name,
     String? icon,
     String? color,
@@ -122,7 +125,7 @@ class ApiService {
     return Category.fromJson(res.data);
   }
 
-  Future<void> deleteCategory({required int id}) async {
+  Future<void> deleteCategory({required String id}) async {
     await _dio.delete('/category/$id');
   }
 

@@ -32,7 +32,7 @@ class CategoryNotifier extends AsyncNotifier<List<Category>> {
   }
 
   Future<Category> updateCategory({
-    required int id,
+    required String id,
     String? name,
     String? icon,
     String? color,
@@ -54,7 +54,7 @@ class CategoryNotifier extends AsyncNotifier<List<Category>> {
     return updatedCategory;
   }
 
-  Future<void> deleteCategory({required int id}) async {
+  Future<void> deleteCategory({required String id}) async {
     final api = ref.read(apiServiceProvider);
     await api.deleteCategory(id: id);
     state = state.whenData(
