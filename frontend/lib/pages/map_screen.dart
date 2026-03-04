@@ -17,6 +17,7 @@ import 'package:serpa_maps/widgets/map/layer_button.dart';
 import 'package:serpa_maps/widgets/map/serpa_fab.dart';
 import 'package:serpa_maps/widgets/map/serpa_search_bar.dart';
 import 'package:serpa_maps/widgets/sheets/add_place_bottom_sheet.dart';
+import 'package:serpa_maps/widgets/sheets/category_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/place_bottom_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_draggable_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
@@ -35,11 +36,17 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   bool _listenerAdded = false;
   double _currentBearing = 0.0;
 
-  void openAddPlaceBottomSheet({double? latitude, double? longitude}) {
-    showSerpaDraggableSheet(
-      context: context,
-      child: AddPlaceBottomSheet(latitude: latitude, longitude: longitude),
-    );
+  void openAddPlaceOrCategorySheet({double? latitude, double? longitude}) {
+    final categories = ref.read(categoryProvider).value ?? [];
+
+    if (categories.isEmpty) {
+      showSerpaStaticSheet(context: context, child: const CategorySheet());
+    } else {
+      showSerpaDraggableSheet(
+        context: context,
+        child: AddPlaceBottomSheet(latitude: latitude, longitude: longitude),
+      );
+    }
   }
 
   void openPlaceBottomSheet({required int placeId}) {
@@ -204,7 +211,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             ),
             onStyleLoadedCallback: _onStyleLoaded,
             onMapLongClick: (point, latLng) {
-              openAddPlaceBottomSheet(
+              openAddPlaceOrCategorySheet(
                 latitude: latLng.latitude,
                 longitude: latLng.longitude,
               );
@@ -238,7 +245,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           ? null
           : SerpaFab(
               mapController: _controller,
-              openAddPlaceBottomSheet: openAddPlaceBottomSheet,
+              openAddPlaceBottomSheet: openAddPlaceOrCategorySheet,
             ),
     );
   }
