@@ -90,25 +90,33 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   Future<void> _onStyleLoaded() async {
-    final categories = await ref.read(categoryProvider.future);
-    await addMarkerImage(categories: categories, mapController: _controller);
+    try {
+      final categories = await ref.read(categoryProvider.future);
+      final places = await ref.read(placeProvider.future);
 
-    final places = await ref.read(placeProvider.future);
+      await addMarkerImage(categories: categories, mapController: _controller);
 
-    await updatePlacesSource(
-      mapController: _controller,
-      places: places,
-      markersVisible: ref.read(markersVisibleProvider),
-    );
-    await addPlaceLayer(categories: categories, mapController: _controller);
+      await updatePlacesSource(
+        mapController: _controller,
+        places: places,
+        markersVisible: ref.read(markersVisibleProvider),
+      );
 
-    if (!_listenerAdded) {
-      _controller.onFeatureTapped.add(onFeatureTap);
-      _listenerAdded = true;
-    }
+      if (categories.isNotEmpty) {
+        await addPlaceLayer(categories: categories, mapController: _controller);
+      }
 
-    if (ref.read(overlayActiveProvider)) {
-      await addOverlay(mapController: _controller, ref: ref);
+      if (!_listenerAdded) {
+        _controller.onFeatureTapped.add(onFeatureTap);
+        _listenerAdded = true;
+      }
+
+      if (ref.read(overlayActiveProvider)) {
+        await addOverlay(mapController: _controller, ref: ref);
+      }
+    } catch (e, stack) {
+      debugPrint('Error loading places/categories: $e');
+      debugPrint('Stack trace: $stack');
     }
   }
 

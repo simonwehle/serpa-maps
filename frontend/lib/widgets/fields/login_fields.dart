@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/providers/api_provider.dart';
 import 'package:serpa_maps/providers/auth_token_provider.dart';
+import 'package:serpa_maps/providers/category_provider.dart';
+import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/widgets/form/form_text_field.dart';
 
 class LoginFields extends ConsumerStatefulWidget {
@@ -38,12 +40,20 @@ class _LoginFieldsState extends ConsumerState<LoginFields> {
   }
 
   Future<void> performLogin() async {
+    if (emailController.text.trim().isEmpty ||
+        passwordController.text.trim().isEmpty) {
+      throw Exception('All fields must be filled');
+    }
+
     final api = ref.read(apiServiceProvider);
     final loginResponse = await api.login(
-      email: emailController.text,
-      password: passwordController.text,
+      email: emailController.text.trim(),
+      password: passwordController.text.trim(),
     );
     await ref.read(authTokenProvider.notifier).setToken(loginResponse.token);
+
+    ref.invalidate(categoryProvider);
+    ref.invalidate(placeProvider);
   }
 
   @override

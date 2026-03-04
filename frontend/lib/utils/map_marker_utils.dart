@@ -141,7 +141,7 @@ Future<void> updatePlacesSource({
 
   try {
     await mapController.setGeoJsonSource("places", placesGeoJson);
-  } catch (_) {
+  } catch (e) {
     try {
       await mapController.addSource(
         "places",
@@ -152,6 +152,9 @@ Future<void> updatePlacesSource({
           clusterRadius: 30,
         ),
       );
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('Failed to add places source: $e');
+      rethrow;
+    }
   }
 }
