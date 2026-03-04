@@ -1,13 +1,25 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+	"gorm.io/gorm"
+)
 
 type User struct {
-	UserID    int       `gorm:"column:user_id;primaryKey;autoIncrement" json:"user_id"`
+	UserID    uuid.UUID `gorm:"type:uuid;primaryKey" json:"user_id"`
 	Email     string    `gorm:"column:email;unique;not null" json:"email"`
 	Username  string    `gorm:"column:username;not null" json:"username"`
 	Password  string    `gorm:"column:password;not null" json:"-"`
 	CreatedAt time.Time `gorm:"column:created_at;autoCreateTime" json:"created_at"`
+}
+
+func (u *User) BeforeCreate(tx *gorm.DB) error {
+    if u.UserID == uuid.Nil {
+        u.UserID = uuid.Must(uuid.NewV7())
+    }
+    return nil
 }
 
 func (User) TableName() string {
