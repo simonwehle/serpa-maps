@@ -21,6 +21,8 @@ class TextFieldScreen extends ConsumerStatefulWidget {
 
 class _TextFieldScreenState extends ConsumerState<TextFieldScreen> {
   Future<void> Function()? _onSubmitCallback;
+  bool _isLoading = false;
+  String? _errorMessage;
 
   void _registerSubmitCallback(Future<void> Function() callback) {
     _onSubmitCallback = callback;
@@ -43,25 +45,65 @@ class _TextFieldScreenState extends ConsumerState<TextFieldScreen> {
                 padding: const EdgeInsets.all(16),
                 child: widget.childBuilder(_registerSubmitCallback),
               ),
+              if (_errorMessage != null) ...[
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    _errorMessage!,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
             ],
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          if (_onSubmitCallback != null) {
-            await _onSubmitCallback!();
-          }
+        onPressed: _isLoading
+            ? null
+            : () async {
+                if (_onSubmitCallback == null) return;
 
-          if (!mounted) {
-            return;
-          } else if (context.mounted) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => widget.navigationTarget),
-            );
-          }
-        },
-        child: Icon(widget.icon),
+                setState(() {
+                  _isLoading = true;
+                  _errorMessage = null;
+                });
+
+                try {
+                  await _onSubmitCallback!();
+
+                  if (!mounted) return;
+
+                  if (context.mounted) {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => widget.navigationTarget,
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  if (!mounted) return;
+
+                  setState(() {
+                    _errorMessage = e.toString().replaceAll('Exception: ', '');
+                    _isLoading = false;
+                  });
+                }
+              },
+        child: _isLoading
+            ? SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+              )
+            : Icon(widget.icon),
       ),
     );
   }

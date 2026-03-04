@@ -38,7 +38,7 @@ class _LoginFieldsState extends ConsumerState<LoginFields> {
       email: emailController.text,
       password: passwordController.text,
     );
-    ref.read(authTokenProvider.notifier).setToken(loginResponse.token);
+    await ref.read(authTokenProvider.notifier).setToken(loginResponse.token);
   }
 
   @override

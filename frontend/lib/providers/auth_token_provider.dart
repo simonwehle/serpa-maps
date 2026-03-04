@@ -1,21 +1,36 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serpa_maps/providers/secure_storage_provider.dart';
 
 final authTokenProvider = NotifierProvider<AuthTokenNotifier, String?>(
   AuthTokenNotifier.new,
 );
 
 class AuthTokenNotifier extends Notifier<String?> {
+  static const String _tokenKey = 'auth_token';
+
   @override
   String? build() {
     return null;
   }
 
-  void setToken(String token) {
-    state = token;
+  Future<void> loadToken() async {
+    final secureStorage = ref.read(secureStorageProvider);
+    final token = await secureStorage.read(key: _tokenKey);
+    if (token != null) {
+      state = token;
+    }
   }
 
-  void clearToken() {
+  Future<void> setToken(String token) async {
+    state = token;
+    final secureStorage = ref.read(secureStorageProvider);
+    await secureStorage.write(key: _tokenKey, value: token);
+  }
+
+  Future<void> clearToken() async {
     state = null;
+    final secureStorage = ref.read(secureStorageProvider);
+    await secureStorage.delete(key: _tokenKey);
   }
 
   bool get isAuthenticated => state != null;

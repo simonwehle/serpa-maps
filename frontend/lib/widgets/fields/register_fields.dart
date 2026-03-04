@@ -42,7 +42,7 @@ class _RegisterFieldsState extends ConsumerState<RegisterFields> {
       username: usernameController.text,
       password: passwordController.text,
     );
-    ref.read(authTokenProvider.notifier).setToken(registerResponse.token);
+    await ref.read(authTokenProvider.notifier).setToken(registerResponse.token);
   }
 
   @override

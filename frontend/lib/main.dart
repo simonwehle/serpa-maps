@@ -33,6 +33,8 @@ void main() async {
     _loadUrlString(prefs, entry.key, entry.value);
   }
 
+  await container.read(authTokenProvider.notifier).loadToken();
+
   final hasBaseUrl = (prefs.getString('baseUrl') ?? '').isNotEmpty;
 
   runApp(
@@ -61,7 +63,7 @@ class SerpaMaps extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authToken = ref.watch(authTokenProvider);
+    final authToken = ref.read(authTokenProvider);
 
     Widget home;
     if (showWelcome) {
