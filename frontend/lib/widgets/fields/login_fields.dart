@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
-import 'package:serpa_maps/pages/register_screen.dart';
 import 'package:serpa_maps/providers/api_provider.dart';
 import 'package:serpa_maps/providers/auth_token_provider.dart';
 import 'package:serpa_maps/widgets/form/form_text_field.dart';
 
 class LoginFields extends ConsumerStatefulWidget {
-  final ValueChanged<Future<void> Function()>? persistChanges;
+  final ValueChanged<Future<void> Function()> persistChanges;
+  final VoidCallback onRegisterTap;
 
-  const LoginFields({super.key, this.persistChanges});
+  const LoginFields({
+    super.key,
+    required this.persistChanges,
+    required this.onRegisterTap,
+  });
 
   @override
   ConsumerState<LoginFields> createState() => _LoginFieldsState();
@@ -47,7 +51,7 @@ class _LoginFieldsState extends ConsumerState<LoginFields> {
     final i10n = AppLocalizations.of(context)!;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      widget.persistChanges?.call(performLogin);
+      widget.persistChanges.call(performLogin);
     });
 
     return Column(
@@ -62,6 +66,7 @@ class _LoginFieldsState extends ConsumerState<LoginFields> {
         ),
         const SizedBox(height: 8),
         InkWell(
+          onTap: widget.onRegisterTap,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
@@ -71,12 +76,6 @@ class _LoginFieldsState extends ConsumerState<LoginFields> {
               ),
             ],
           ),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const RegisterScreen()),
-            );
-          },
         ),
       ],
     );
