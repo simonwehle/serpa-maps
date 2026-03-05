@@ -10,6 +10,7 @@ import (
 	"serpa-maps/internal/models"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -50,6 +51,19 @@ func AddPlace(db *gorm.DB) gin.HandlerFunc {
             return
         }
 
+        userID, exists := c.Get("user_id")
+        if !exists {
+            c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+            return
+        }
+        userIDStr := fmt.Sprintf("%v", userID)
+        parsedUserID, err := uuid.Parse(userIDStr)
+        if err != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID format"})
+            return
+        }
+        place.UserID = parsedUserID
+
         place.Latitude = round6(place.Latitude)
         place.Longitude = round6(place.Longitude)
 
@@ -86,7 +100,19 @@ func GetPlaces(db *gorm.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
         var places []models.Place
 
-        if err := db.Order("place_id").Find(&places).Error; err != nil {
+        userID, exists := c.Get("user_id")
+        if !exists {
+            c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+            return
+        }
+        userIDStr := fmt.Sprintf("%v", userID)
+        parsedUserID, err := uuid.Parse(userIDStr)
+        if err != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID format"})
+            return
+        }
+
+        if err = db.Where("user_id = ?", parsedUserID).Order("place_id").Find(&places).Error; err != nil {
             c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
             return
         }
@@ -123,6 +149,28 @@ func UpdatePlace(db *gorm.DB) gin.HandlerFunc {
             return
         }
 
+        userID, exists := c.Get("user_id")
+        if !exists {
+            c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+            return
+        }
+        userIDStr := fmt.Sprintf("%v", userID)
+        parsedUserID, err := uuid.Parse(userIDStr)
+        if err != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID format"})
+            return
+        }
+
+        var existingPlace models.Place
+        if err = db.Where("place_id = ? AND user_id = ?", id, parsedUserID).First(&existingPlace).Error; err != nil {
+            if err == gorm.ErrRecordNotFound {
+                c.JSON(http.StatusNotFound, gin.H{"error": "Place not found or you don't have permission"})
+            } else {
+                c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
+            }
+            return
+        }
+
 		if name, ok := payload["name"].(string); ok {
 			if strings.TrimSpace(name) == "" {
 				c.JSON(http.StatusBadRequest, gin.H{"error": "name cannot be empty"})
@@ -148,8 +196,7 @@ func UpdatePlace(db *gorm.DB) gin.HandlerFunc {
         if lng, ok := payload["longitude"].(float64); ok {
             payload["longitude"] = round6(lng)
         }
-
-        if err := db.Model(&models.Place{}).Where("place_id = ?", id).Updates(payload).Error; err != nil {
+        if err := db.Model(&models.Place{}).Where("place_id = ? AND user_id = ?", id, parsedUserID).Updates(payload).Error; err != nil {
             c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update place", "details": err.Error()})
             return
         }
@@ -182,14 +229,26 @@ func DeletePlace(db *gorm.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
         placeID := c.Param("id")
 
-        result := db.Delete(&models.Place{}, "place_id = ?", placeID)
+        userID, exists := c.Get("user_id")
+        if !exists {
+            c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+            return
+        }
+        userIDStr := fmt.Sprintf("%v", userID)
+        parsedUserID, err := uuid.Parse(userIDStr)
+        if err != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID format"})
+            return
+        }
+
+        result := db.Delete(&models.Place{}, "place_id = ? AND user_id = ?", placeID, parsedUserID)
         if result.Error != nil {
             c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete place", "details": result.Error.Error()})
             return
         }
 
         if result.RowsAffected == 0 {
-            c.JSON(http.StatusNotFound, gin.H{"error": "Place not found"})
+            c.JSON(http.StatusNotFound, gin.H{"error": "Place not found or you don't have permission"})
             return
         }
 

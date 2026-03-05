@@ -9,7 +9,7 @@ import (
 
 type Place struct {
 	PlaceID     uuid.UUID `gorm:"type:uuid;primaryKey" json:"place_id"`
-	//UserID      uuid.UUID `gorm:"type:uuid;column:user_id" json:"user_id"`
+	UserID      uuid.UUID `gorm:"type:uuid;column:user_id;not null;constraint:OnDelete:CASCADE" json:"-"`
 	Name        string    `gorm:"column:name;not null" json:"name"`
 	Description string    `gorm:"column:description" json:"description"`
 	Latitude    float64   `gorm:"column:latitude;not null" json:"latitude"`
