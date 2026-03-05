@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func Login(db *gorm.DB, jwtKey []byte) gin.HandlerFunc {
+func Login(db *gorm.DB, jwtKeys models.JwtKeys) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req models.UserRequest
 
@@ -35,14 +35,21 @@ func Login(db *gorm.DB, jwtKey []byte) gin.HandlerFunc {
 			return
 		}
 
-		token, err := auth.GenerateToken(jwtKey, user.UserID)
+		accessToken, err := auth.GenerateAccessToken(jwtKeys.AccessKey, user.UserID)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate access token"})
+			return
+		}
+
+		refreshToken, _, err := auth.GenerateRefreshToken(jwtKeys.RefreshKey, user.UserID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate refresh token"})
 			return
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"token":    token,
+			"access_token":    accessToken,
+			"refresh_token": refreshToken,
 			"user_id":  user.UserID,
 			"email":    user.Email,
 			"username": user.Username,
@@ -50,7 +57,7 @@ func Login(db *gorm.DB, jwtKey []byte) gin.HandlerFunc {
 	}
 }
 
-func Register(db *gorm.DB, jwtKey []byte) gin.HandlerFunc {
+func Register(db *gorm.DB, jwtKeys models.JwtKeys) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req models.RegisterRequest
 
@@ -82,7 +89,7 @@ func Register(db *gorm.DB, jwtKey []byte) gin.HandlerFunc {
 			return
 		}
 
-		token, err := auth.GenerateToken(jwtKey, user.UserID)
+		token, err := auth.GenerateAccessToken(jwtKeys.AccessKey, user.UserID)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
 			return

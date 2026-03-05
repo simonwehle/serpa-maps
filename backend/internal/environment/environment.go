@@ -43,10 +43,17 @@ func createDatabaseConfiguration() models.DatabaseConfiguration {
 	}
 }
 
-func LoadEnv() (string, models.DatabaseConfiguration) {
+func loadJwtSecrets() models.JwtSecrets {
+	return models.JwtSecrets{
+		AccessSecret: getRequiredEnv("JWT_ACCESS_SECRET"),
+		RefreshSecret: getRequiredEnv("JWT_REFRESH_SECRET"),
+	}
+}
+
+func LoadEnv() (models.JwtSecrets, models.DatabaseConfiguration) {
 	err := godotenv.Load()
 	if err != nil {
 		log.Println(".env file not found, using environment variables")
 	}
-	return getRequiredEnv("JWT_SECRET"), createDatabaseConfiguration()
+	return loadJwtSecrets(), createDatabaseConfiguration()
 }
