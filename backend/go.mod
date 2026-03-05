@@ -9,6 +9,7 @@ require (
 	golang.org/x/crypto v0.40.0
 	gorm.io/driver/postgres v1.6.0
 	gorm.io/gorm v1.31.1
+	github.com/google/uuid v1.6.0
 )
 
 require (

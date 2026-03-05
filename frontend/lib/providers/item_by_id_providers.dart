@@ -5,7 +5,7 @@ import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/providers/category_provider.dart';
 
-final placeByIdProvider = Provider.family<Place?, int>((ref, placeId) {
+final placeByIdProvider = Provider.family<Place?, String>((ref, placeId) {
   final placesAsync = ref.watch(placeProvider);
   return placesAsync.maybeWhen(
     data: (places) => places.firstWhereOrNull((p) => p.id == placeId),
@@ -13,7 +13,10 @@ final placeByIdProvider = Provider.family<Place?, int>((ref, placeId) {
   );
 });
 
-final categoryByIdProvider = Provider.family<Category?, int>((ref, categoryId) {
+final categoryByIdProvider = Provider.family<Category?, String>((
+  ref,
+  categoryId,
+) {
   final categoryAsync = ref.watch(categoryProvider);
   return categoryAsync.maybeWhen(
     data: (categories) =>

@@ -17,7 +17,7 @@ class PlaceNotifier extends AsyncNotifier<List<Place>> {
 
   Future<Place?> addPlace({
     required String name,
-    required int categoryId,
+    required String categoryId,
     required double latitude,
     required double longitude,
     String? description,
@@ -37,12 +37,12 @@ class PlaceNotifier extends AsyncNotifier<List<Place>> {
   }
 
   Future<Place> updatePlace({
-    required int id,
+    required String id,
     String? name,
     String? description,
     double? latitude,
     double? longitude,
-    int? categoryId,
+    String? categoryId,
   }) async {
     final api = ref.read(apiServiceProvider);
     final updatedPlace = await api.updatePlace(
@@ -63,7 +63,7 @@ class PlaceNotifier extends AsyncNotifier<List<Place>> {
     return updatedPlace;
   }
 
-  Future<void> deletePlace({required int id}) async {
+  Future<void> deletePlace({required String id}) async {
     final api = ref.read(apiServiceProvider);
     await api.deletePlace(id: id);
     state = state.whenData(
@@ -71,7 +71,10 @@ class PlaceNotifier extends AsyncNotifier<List<Place>> {
     );
   }
 
-  Future<void> deleteAsset({required int placeId, required int assetId}) async {
+  Future<void> deleteAsset({
+    required String placeId,
+    required String assetId,
+  }) async {
     final api = ref.read(apiServiceProvider);
     await api.deleteAsset(placeId: placeId, assetId: assetId);
     state = state.whenData((places) {
@@ -97,7 +100,7 @@ class PlaceNotifier extends AsyncNotifier<List<Place>> {
   }
 
   Future<void> addAsset({
-    required int placeId,
+    required String placeId,
     required List<int> assetBytes,
     required String filename,
   }) async {

@@ -26,7 +26,7 @@ class _CategoryMenuSheetState extends ConsumerState<CategoryMenuSheet> {
   @override
   void initState() {
     super.initState();
-    if (widget.category.id != 0) {
+    if (widget.category.id != 'dummy') {
       _nameController = TextEditingController(text: widget.category.name);
       _selectedIcon = iconFromString(widget.category.icon);
       _selectedColor = colorFromHex(widget.category.color);
@@ -42,7 +42,7 @@ class _CategoryMenuSheetState extends ConsumerState<CategoryMenuSheet> {
     super.dispose();
   }
 
-  Future<void> _updateCategory(int categoryId) async {
+  Future<void> _updateCategory(String categoryId) async {
     try {
       await ref
           .read(categoryProvider.notifier)

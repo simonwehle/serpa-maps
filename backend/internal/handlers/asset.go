@@ -7,18 +7,18 @@ import (
 	"os"
 	"path/filepath"
 	"serpa-maps/internal/models"
-	"strconv"
 	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 func UploadPlaceAssets(db *gorm.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
         placeIDStr := c.Param("id")
-        placeID, err := strconv.Atoi(placeIDStr)
+        placeID, err := uuid.Parse(placeIDStr)
         if err != nil {
             c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid place id"})
             return
@@ -107,8 +107,8 @@ func UpdateAssetPositions(db *gorm.DB) gin.HandlerFunc {
         placeID := c.Param("id")
 
         var updates []struct {
-            AssetID  int `json:"asset_id"`
-            Position int `json:"position"`
+            AssetID  uuid.UUID `json:"asset_id"`
+            Position int       `json:"position"`
         }
 
         if err := c.ShouldBindJSON(&updates); err != nil {
@@ -141,13 +141,13 @@ func DeletePlaceAsset(db *gorm.DB) gin.HandlerFunc {
         placeIDStr := c.Param("id")
         assetIDStr := c.Param("asset_id")
         
-        placeID, err := strconv.Atoi(placeIDStr)
+        placeID, err := uuid.Parse(placeIDStr)
         if err != nil {
             c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid place id"})
             return
         }
         
-        assetID, err := strconv.Atoi(assetIDStr)
+        assetID, err := uuid.Parse(assetIDStr)
         if err != nil {
             c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid asset id"})
             return

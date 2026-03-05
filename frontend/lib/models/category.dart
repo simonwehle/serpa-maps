@@ -3,7 +3,7 @@ import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/utils/icon_color_utils.dart';
 
 class Category {
-  final int id;
+  final String id;
   final String name;
   final String icon;
   final String color;
@@ -25,7 +25,7 @@ class Category {
   static Category dummyCategory(BuildContext context) {
     final i10n = Localizations.of(context, AppLocalizations)!;
     return Category(
-      id: 0,
+      id: 'dummy',
       name: i10n.newCategory,
       icon: 'add',
       color: colorToHex(Theme.of(context).colorScheme.primary),

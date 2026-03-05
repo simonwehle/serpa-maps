@@ -1,7 +1,7 @@
 class AuthResponse {
   final String email;
   final String token;
-  final int userId;
+  final String userId;
   final String username;
 
   AuthResponse({

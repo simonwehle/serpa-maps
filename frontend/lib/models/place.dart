@@ -1,12 +1,12 @@
 import 'package:serpa_maps/models/asset.dart';
 
 class Place {
-  final int id;
+  final String id;
   String name;
   String? description;
   double latitude;
   double longitude;
-  int categoryId;
+  String categoryId;
   final DateTime createdAt;
   List<Asset> assets;
 
