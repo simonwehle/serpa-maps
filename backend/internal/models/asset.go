@@ -9,7 +9,7 @@ import (
 
 type Asset struct {
     AssetID   uuid.UUID `gorm:"type:uuid;primaryKey" json:"asset_id"`
-    PlaceID   uuid.UUID `gorm:"column:place_id;not null" json:"place_id"`
+    PlaceID   uuid.UUID `gorm:"type:uuid;column:place_id;not null;constraint:OnDelete:CASCADE" json:"place_id"`
     AssetURL  string    `gorm:"column:asset_url;not null" json:"asset_url"`
     AssetType string    `gorm:"column:asset_type;not null;check:asset_type IN ('image', 'video')" json:"asset_type"`
     Position  int       `gorm:"column:position;default:0" json:"position"`

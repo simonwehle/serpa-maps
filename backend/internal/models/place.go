@@ -14,7 +14,7 @@ type Place struct {
 	Description string    `gorm:"column:description" json:"description"`
 	Latitude    float64   `gorm:"column:latitude;not null" json:"latitude"`
 	Longitude   float64   `gorm:"column:longitude;not null" json:"longitude"`
-	CategoryID  uuid.UUID `gorm:"type:uuid;column:category_id" json:"category_id"`
+	CategoryID  uuid.UUID `gorm:"type:uuid;column:category_id;constraint:OnDelete:RESTRICT" json:"category_id"`
 	CreatedAt   time.Time `gorm:"column:created_at;autoCreateTime" json:"created_at"`
 	Assets      []Asset   `gorm:"foreignKey:PlaceID" json:"assets"`
 }
