@@ -11,14 +11,9 @@ import (
 )
 
 func GenerateAccessToken(jwtKey []byte, userID uuid.UUID) (string, error) {
-	now := time.Now()
-
 	claims := jwt.MapClaims{
 		"sub": userID.String(),
-		"jti": uuid.NewString(),
-		"type": "access",
-		"iat": now.Unix(),
-		"exp": now.Add(time.Minute * 15).Unix(),
+		"exp": time.Now().Add(time.Minute * 15).Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -33,8 +28,6 @@ func generateRefreshToken(refreshKey []byte, userID uuid.UUID) (string, models.R
 	claims := jwt.MapClaims{
 		"sub":  userID.String(),
 		"jti":  jti.String(),
-		"type": "refresh",
-		"iat":  now.Unix(),
 		"exp":  exp.Unix(),
 	}
 
