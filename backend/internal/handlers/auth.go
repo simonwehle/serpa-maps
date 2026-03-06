@@ -110,3 +110,77 @@ func Register(db *gorm.DB, jwtKeys models.JwtKeys) gin.HandlerFunc {
 		})
 	}
 }
+
+func Refresh(db *gorm.DB, jwtKeys models.JwtKeys) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req struct {
+			RefreshToken string `json:"refresh_token" binding:"required"`
+		}
+
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Refresh token is required"})
+			return
+		}
+
+		refreshToken, err := auth.ValidateRefreshToken(jwtKeys.RefreshKey, req.RefreshToken, db)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid or expired refresh token"})
+			return
+		}
+
+		accessToken, err := auth.GenerateAccessToken(jwtKeys.AccessKey, refreshToken.UserID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate access token"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"access_token": accessToken,
+		})
+	}
+}
+
+func Logout(db *gorm.DB, refreshKey []byte) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		userIDValue, exists := c.Get("user_id")
+		if !exists {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+			return
+		}
+
+		userIDStr, ok := userIDValue.(string)
+		if !ok {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID format"})
+			return
+		}
+
+		var req struct {
+			RefreshToken string `json:"refresh_token" binding:"required"`
+		}
+
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Refresh token is required"})
+			return
+		}
+
+		refreshToken, err := auth.ValidateRefreshToken(refreshKey, req.RefreshToken, db)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid or expired refresh token"})
+			return
+		}
+
+		if refreshToken.UserID.String() != userIDStr {
+			c.JSON(http.StatusForbidden, gin.H{"error": "Cannot revoke token belonging to another user"})
+			return
+		}
+
+		if err := auth.RevokeRefreshToken(refreshToken.Jti, db); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to revoke token"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Successfully logged out",
+		})
+	}
+}
