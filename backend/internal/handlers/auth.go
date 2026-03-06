@@ -41,18 +41,18 @@ func Login(db *gorm.DB, jwtKeys models.JwtKeys) gin.HandlerFunc {
 			return
 		}
 
-		refreshToken, _, err := auth.GenerateRefreshToken(jwtKeys.RefreshKey, user.UserID)
+		refreshToken, err := auth.GenerateAndPersistRefreshToken(jwtKeys.RefreshKey, user.UserID, db)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate refresh token"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate and persist refresh token"})
 			return
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"access_token":    accessToken,
+			"access_token":  accessToken,
 			"refresh_token": refreshToken,
-			"user_id":  user.UserID,
-			"email":    user.Email,
-			"username": user.Username,
+			"user_id":       user.UserID,
+			"email":         user.Email,
+			"username":      user.Username,
 		})
 	}
 }
@@ -89,17 +89,24 @@ func Register(db *gorm.DB, jwtKeys models.JwtKeys) gin.HandlerFunc {
 			return
 		}
 
-		token, err := auth.GenerateAccessToken(jwtKeys.AccessKey, user.UserID)
+		accessToken, err := auth.GenerateAccessToken(jwtKeys.AccessKey, user.UserID)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
 			return
 		}
 
+		refreshToken, err := auth.GenerateAndPersistRefreshToken(jwtKeys.RefreshKey, user.UserID, db)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate and persist refresh token"})
+			return
+		}
+
 		c.JSON(http.StatusCreated, gin.H{
-			"token":    token,
-			"user_id":  user.UserID,
-			"email":    user.Email,
-			"username": user.Username,
+			"access_token":  accessToken,
+			"refresh_token": refreshToken,
+			"user_id":       user.UserID,
+			"email":         user.Email,
+			"username":      user.Username,
 		})
 	}
 }

@@ -7,6 +7,7 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 func GenerateAccessToken(jwtKey []byte, userID uuid.UUID) (string, error) {
@@ -24,8 +25,7 @@ func GenerateAccessToken(jwtKey []byte, userID uuid.UUID) (string, error) {
 	return token.SignedString(jwtKey)
 }
 
-func GenerateRefreshToken(refreshKey []byte, userID uuid.UUID) (string, models.Token, error) {
-	persistentToken := models.Token{}
+func generateRefreshToken(refreshKey []byte, userID uuid.UUID) (string, models.RefreshToken, error) {
 	jti := uuid.New()
 	now := time.Now()
 	exp := now.Add(30 * 24 * time.Hour)
@@ -42,10 +42,10 @@ func GenerateRefreshToken(refreshKey []byte, userID uuid.UUID) (string, models.T
 
 	signed, err := token.SignedString(refreshKey)
 	if err != nil {
-		return "", persistentToken, err
+		return "", models.RefreshToken{}, err
 	}
 
-	persistentToken = models.Token{
+	persistentToken := models.RefreshToken{
 		Jti: jti,
 		UserID: userID,
 		CreatedAt: now,
@@ -54,6 +54,24 @@ func GenerateRefreshToken(refreshKey []byte, userID uuid.UUID) (string, models.T
 	}
 
 	return signed, persistentToken, nil
+}
+
+func persistRefreshToken(persistentToken models.RefreshToken, db *gorm.DB) error {
+	result := db.Create(&persistentToken)
+	return result.Error
+}
+
+func GenerateAndPersistRefreshToken(refreshKey []byte, userID uuid.UUID, db *gorm.DB) (string, error) {
+	signedToken, persistentToken, err := generateRefreshToken(refreshKey, userID)
+	if err != nil {
+		return "", err
+	}
+
+	if err := persistRefreshToken(persistentToken, db); err != nil {
+		return "", err
+	}
+
+	return signedToken, nil
 }
 
 func ValidateToken(jwtKey []byte, tokenString string) (*jwt.Token, error) {
