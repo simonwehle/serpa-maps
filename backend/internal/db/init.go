@@ -9,6 +9,7 @@ import (
 func InitDB(db *gorm.DB) error {
 	return db.AutoMigrate(
 		&models.User{},
+		&models.RefreshToken{},
 		&models.Category{},
 		&models.Place{},
 		&models.Asset{},

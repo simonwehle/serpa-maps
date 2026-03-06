@@ -6,12 +6,12 @@ import (
 )
 
 type Category struct {
-	CategoryID  uuid.UUID  `gorm:"type:uuid;primaryKey" json:"category_id"`
-	UserID      uuid.UUID  `gorm:"type:uuid;column:user_id;not null" json:"-"`
-	User        User       `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"-"`
-	Name        string     `gorm:"column:name;not null" json:"name"`
-	Icon        string     `gorm:"column:icon" json:"icon"`
-	Color       string     `gorm:"column:color" json:"color"`
+	CategoryID uuid.UUID `gorm:"type:uuid;primaryKey" json:"category_id"`
+	UserID     uuid.UUID `gorm:"type:uuid;not null;index" json:"-"`
+	User       User      `gorm:"constraint:OnDelete:CASCADE;" json:"-"`
+	Name       string    `gorm:"not null" json:"name"`
+	Icon       string    `json:"icon"`
+	Color      string    `json:"color"`
 }
 
 func (c *Category) BeforeCreate(tx *gorm.DB) error {
