@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:serpa_maps/providers/access_token_provider.dart';
+import 'package:serpa_maps/providers/token/access_token_provider.dart';
 import 'package:serpa_maps/providers/base_url_provider.dart';
 
 final dioProvider = Provider<Dio>((ref) {
