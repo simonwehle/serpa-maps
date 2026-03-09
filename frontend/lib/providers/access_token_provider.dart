@@ -3,12 +3,12 @@ import 'package:serpa_maps/providers/category_provider.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/providers/secure_storage_provider.dart';
 
-final authTokenProvider = NotifierProvider<AuthTokenNotifier, String?>(
-  AuthTokenNotifier.new,
+final accessTokenProvider = NotifierProvider<AccessTokenNotifier, String?>(
+  AccessTokenNotifier.new,
 );
 
-class AuthTokenNotifier extends Notifier<String?> {
-  static const String _tokenKey = 'auth_token';
+class AccessTokenNotifier extends Notifier<String?> {
+  static const String _tokenKey = 'access_token';
 
   @override
   String? build() {
@@ -29,7 +29,7 @@ class AuthTokenNotifier extends Notifier<String?> {
     await secureStorage.write(key: _tokenKey, value: token);
   }
 
-  Future<void> logout() async {
+  Future<void> clearToken() async {
     state = null;
     final secureStorage = ref.read(secureStorageProvider);
     await secureStorage.delete(key: _tokenKey);
