@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/providers/api_provider.dart';
-import 'package:serpa_maps/providers/auth_token_provider.dart';
+import 'package:serpa_maps/providers/token/access_token_provider.dart';
+import 'package:serpa_maps/providers/token/refresh_token_provider.dart';
 import 'package:serpa_maps/providers/category_provider.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/widgets/form/form_text_field.dart';
@@ -50,7 +51,12 @@ class _LoginFieldsState extends ConsumerState<LoginFields> {
       email: emailController.text.trim(),
       password: passwordController.text.trim(),
     );
-    await ref.read(authTokenProvider.notifier).setToken(loginResponse.token);
+    await ref
+        .read(accessTokenProvider.notifier)
+        .setToken(loginResponse.accessToken);
+    await ref
+        .read(refreshTokenProvider.notifier)
+        .setToken(loginResponse.refreshToken);
 
     ref.invalidate(categoryProvider);
     ref.invalidate(placeProvider);

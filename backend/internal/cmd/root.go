@@ -9,10 +9,11 @@ import (
 	"serpa-maps/internal/environment"
 	"serpa-maps/internal/handlers"
 	"serpa-maps/internal/middleware"
+	"serpa-maps/internal/models"
 )
 
 func Execute() {
-	keyString, dbConfig := environment.LoadEnv()
+	jwtSecrets, dbConfig := environment.LoadEnv()
 	postgres, err := db.Connect(dbConfig)
 	if err != nil {
 		log.Fatalln(err)
@@ -23,7 +24,10 @@ func Execute() {
 	}
 	log.Println("Database initialized")
 
-	jwtKey := []byte(keyString)
+	jwtKeys := models.JwtKeys {
+		AccessKey: []byte(jwtSecrets.AccessSecret),
+		RefreshKey: []byte(jwtSecrets.RefreshSecret),
+	}
 
 	r := gin.Default()
 	r.Use(middleware.CorsMiddleware())
@@ -32,10 +36,12 @@ func Execute() {
 
 	api.GET("/health", handlers.Health())
 
-	api.POST("/register", handlers.Register(postgres, jwtKey))
-	api.POST("/login", handlers.Login(postgres, jwtKey))
+	api.POST("/register", handlers.Register(postgres, jwtKeys))
+	api.POST("/login", handlers.Login(postgres, jwtKeys))
+	api.POST("/logout", handlers.Logout(postgres, jwtKeys.RefreshKey))
+	api.POST("/refresh", handlers.Refresh(postgres, jwtKeys))
 
-	protected := api.Group("/").Use(middleware.AuthMiddleware(jwtKey))
+	protected := api.Group("/").Use(middleware.AuthMiddleware(jwtKeys.AccessKey))
 
 	protected.GET("/categories", handlers.GetCategories(postgres))
 	protected.POST("/category", handlers.AddCategory(postgres))

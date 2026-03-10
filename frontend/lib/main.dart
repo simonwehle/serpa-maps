@@ -5,7 +5,8 @@ import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/pages/login_screen.dart';
 import 'package:serpa_maps/pages/map_screen.dart';
 import 'package:serpa_maps/pages/welcome_screen.dart';
-import 'package:serpa_maps/providers/auth_token_provider.dart';
+import 'package:serpa_maps/providers/token/access_token_provider.dart';
+import 'package:serpa_maps/providers/token/refresh_token_provider.dart';
 import 'package:serpa_maps/providers/base_url_provider.dart';
 import 'package:serpa_maps/providers/overlay_url_provider.dart';
 import 'package:serpa_maps/providers/style_dark_provider.dart';
@@ -33,7 +34,8 @@ void main() async {
     _loadUrlString(prefs, entry.key, entry.value);
   }
 
-  await container.read(authTokenProvider.notifier).loadToken();
+  await container.read(accessTokenProvider.notifier).loadToken();
+  await container.read(refreshTokenProvider.notifier).loadToken();
 
   final hasBaseUrl = (prefs.getString('baseUrl') ?? '').isNotEmpty;
 
@@ -63,7 +65,7 @@ class SerpaMaps extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authToken = ref.watch(authTokenProvider);
+    final authToken = ref.watch(accessTokenProvider);
 
     Widget home;
     if (showWelcome) {
