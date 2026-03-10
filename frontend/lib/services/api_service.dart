@@ -156,4 +156,17 @@ class ApiService {
     final res = await _dio.post('/register', data: registerRequest);
     return AuthResponse.fromJson(res.data);
   }
+
+  Future<AccessToken> refreshToken({required String refreshToken}) async {
+    final Map<String, dynamic> refreshRequest = {'refresh_token': refreshToken};
+
+    final res = await _dio.post('/refresh', data: refreshRequest);
+    return AccessToken.fromJson(res.data);
+  }
+
+  Future<void> logout({required String refreshToken}) async {
+    final Map<String, dynamic> logoutRequest = {'refresh_token': refreshToken};
+
+    await _dio.post('/logout', data: logoutRequest);
+  }
 }

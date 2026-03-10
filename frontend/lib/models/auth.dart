@@ -21,3 +21,12 @@ class AuthResponse {
     username: json['username'],
   );
 }
+
+class AccessToken {
+  final String accessToken;
+
+  AccessToken({required this.accessToken});
+
+  factory AccessToken.fromJson(Map<String, dynamic> json) =>
+      AccessToken(accessToken: json['access_token']);
+}

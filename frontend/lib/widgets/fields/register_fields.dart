@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/providers/api_provider.dart';
 import 'package:serpa_maps/providers/token/access_token_provider.dart';
+import 'package:serpa_maps/providers/token/refresh_token_provider.dart';
 import 'package:serpa_maps/providers/category_provider.dart';
 import 'package:serpa_maps/providers/place_provider.dart';
 import 'package:serpa_maps/widgets/form/form_text_field.dart';
@@ -58,6 +59,9 @@ class _RegisterFieldsState extends ConsumerState<RegisterFields> {
     await ref
         .read(accessTokenProvider.notifier)
         .setToken(registerResponse.accessToken);
+    await ref
+        .read(refreshTokenProvider.notifier)
+        .setToken(registerResponse.refreshToken);
 
     ref.invalidate(categoryProvider);
     ref.invalidate(placeProvider);
