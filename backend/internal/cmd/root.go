@@ -38,10 +38,10 @@ func Execute() {
 
 	api.POST("/register", handlers.Register(postgres, jwtKeys))
 	api.POST("/login", handlers.Login(postgres, jwtKeys))
+	api.POST("/logout", handlers.Logout(postgres, jwtKeys.RefreshKey))
 	api.POST("/refresh", handlers.Refresh(postgres, jwtKeys))
 
 	protected := api.Group("/").Use(middleware.AuthMiddleware(jwtKeys.AccessKey))
-	protected.POST("/logout", handlers.Logout(postgres, jwtKeys.RefreshKey))
 
 	protected.GET("/categories", handlers.GetCategories(postgres))
 	protected.POST("/category", handlers.AddCategory(postgres))
