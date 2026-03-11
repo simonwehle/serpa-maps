@@ -11,8 +11,8 @@ class SerpaStaticSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SerpaBottomSheet(
-      child: Flexible(
-        child: SingleChildScrollView(
+      child: SingleChildScrollView(
+        child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,

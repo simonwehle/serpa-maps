@@ -69,15 +69,14 @@ class PlaceAssets extends ConsumerWidget {
                   width: kPlaceAssetWidth,
                   height: kPlaceAssetHeight,
                   isEditing: isEditing,
-                  onDelete: () async {
-                    try {
-                      await ref
-                          .read(placeProvider.notifier)
-                          .deleteAsset(
-                            placeId: asset.placeId,
-                            assetId: asset.assetId,
-                          );
-                    } catch (e) {}
+                  onDelete: () {
+                    ref
+                        .read(placeProvider.notifier)
+                        .deleteAsset(
+                          placeId: asset.placeId,
+                          assetId: asset.assetId,
+                        )
+                        .catchError((_) {});
                   },
                 ),
               );
