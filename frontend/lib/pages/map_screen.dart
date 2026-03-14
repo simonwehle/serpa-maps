@@ -32,9 +32,15 @@ class MapScreen extends ConsumerStatefulWidget {
 
 class _MapScreenState extends ConsumerState<MapScreen> {
   late MapLibreMapController _controller;
-  bool _mapReady = false;
+  bool _mapCreated = false;
+  bool _styleReady = false;
   bool _listenerAdded = false;
+  int _styleRevision = 0;
   double _currentBearing = 0.0;
+
+  bool _isStyleCurrent(int revision) {
+    return mounted && _mapCreated && _styleReady && revision == _styleRevision;
+  }
 
   void openAddPlaceOrCategorySheet({double? latitude, double? longitude}) {
     final categories = ref.read(categoryProvider).value ?? [];
@@ -65,7 +71,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   Future<void> _updatePlaces(List<Place>? places) async {
-    if (!_mapReady) return;
+    if (!_styleReady) return;
 
     await updatePlacesSource(
       mapController: _controller,
@@ -77,7 +83,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   Future<void> _onMapCreated(MapLibreMapController controller) async {
     _controller = controller;
     setState(() {
-      _mapReady = true;
+      _mapCreated = true;
     });
 
     _controller.addListener(_onCameraMove);
@@ -97,11 +103,19 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   Future<void> _onStyleLoaded() async {
+    final styleRevision = _styleRevision;
+
+    _styleReady = true;
+
     try {
       final categories = await ref.read(categoryProvider.future);
       final places = await ref.read(placeProvider.future);
 
+      if (!_isStyleCurrent(styleRevision)) return;
+
       await addMarkerImage(categories: categories, mapController: _controller);
+
+      if (!_isStyleCurrent(styleRevision)) return;
 
       await updatePlacesSource(
         mapController: _controller,
@@ -109,8 +123,12 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         markersVisible: ref.read(markersVisibleProvider),
       );
 
+      if (!_isStyleCurrent(styleRevision)) return;
+
       if (categories.isNotEmpty) {
         await addPlaceLayer(categories: categories, mapController: _controller);
+
+        if (!_isStyleCurrent(styleRevision)) return;
       }
 
       if (!_listenerAdded) {
@@ -118,7 +136,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         _listenerAdded = true;
       }
 
-      if (ref.read(overlayActiveProvider)) {
+      if (_isStyleCurrent(styleRevision) && ref.read(overlayActiveProvider)) {
         await addOverlay(mapController: _controller, ref: ref);
       }
     } catch (e, stack) {
@@ -145,7 +163,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   @override
   void dispose() {
-    if (_mapReady) {
+    if (_mapCreated) {
       _controller.removeListener(_onCameraMove);
     }
     super.dispose();
@@ -162,7 +180,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     });
 
     ref.listen(categoryProvider, (previous, next) async {
-      if (_mapReady) {
+      if (_styleReady) {
         final categories = next.value;
         if (categories != null) {
           await addMarkerImage(
@@ -179,14 +197,16 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     });
 
     ref.listen(activeLayerProvider, (previous, next) async {
-      if (_mapReady) {
+      if (_mapCreated) {
         final brightness = MediaQuery.of(context).platformBrightness;
+        _styleReady = false;
+        _styleRevision++;
         await _controller.setStyle(getMapLayerStyleUrl(next, brightness, ref));
       }
     });
 
     ref.listen<bool>(overlayActiveProvider, (_, isActive) async {
-      if (!_mapReady) return;
+      if (!_styleReady) return;
       if (isActive) {
         await addOverlay(mapController: _controller, ref: ref);
       } else {
@@ -241,7 +261,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             ),
         ],
       ),
-      floatingActionButton: !_mapReady
+      floatingActionButton: !_mapCreated
           ? null
           : SerpaFab(
               mapController: _controller,
