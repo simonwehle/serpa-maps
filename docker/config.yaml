@@ -1,6 +1,6 @@
-# cors:
-#   origin:
-#     - https://example.com
+cors:
+  origin:
+    - http://localhost:8080
 
 mbtiles:
   paths:
@@ -13,6 +13,7 @@ mbtiles:
 sprites:
   paths:
     - /sprites/liberty
+    - /sprites/liberty-dark
     - /sprites/dark
 
 fonts:
