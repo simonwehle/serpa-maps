@@ -146,6 +146,18 @@ abstract class AppLocalizations {
   /// **'Do you want to delete this asset?'**
   String get deleteAssetQuestion;
 
+  /// No description provided for @deleteCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Category'**
+  String get deleteCategory;
+
+  /// No description provided for @deleteCategoryQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to delete this category?'**
+  String get deleteCategoryQuestion;
+
   /// No description provided for @deletePlace.
   ///
   /// In en, this message translates to:

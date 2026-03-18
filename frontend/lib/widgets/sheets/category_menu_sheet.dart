@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/providers/category_provider.dart';
+import 'package:serpa_maps/widgets/form/delete_button.dart';
 import 'package:serpa_maps/widgets/form/serpa_divider.dart';
 import 'package:serpa_maps/widgets/layer/serpa_selector.dart';
 import 'package:serpa_maps/widgets/place/place_form_actions.dart';
@@ -73,6 +74,10 @@ class _CategoryMenuSheetState extends ConsumerState<CategoryMenuSheet> {
     } catch (e) {
       //
     }
+  }
+
+  Future<void> _deleteCategory(String categoryId) async {
+    await ref.read(categoryProvider.notifier).deleteCategory(id: categoryId);
   }
 
   @override
@@ -152,7 +157,22 @@ class _CategoryMenuSheetState extends ConsumerState<CategoryMenuSheet> {
                   .toList(),
             ),
           ),
-          const SizedBox(height: 16),
+          if (!_isNew)
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: DeleteButton(
+                deleteFunction: () async {
+                  await _deleteCategory(widget.category.id);
+                  if (context.mounted) {
+                    await Navigator.maybePop(context);
+                  }
+                },
+                title: i10n.deleteCategory,
+                question: i10n.deleteCategoryQuestion,
+              ),
+            )
+          else
+            const SizedBox(height: 16),
           PlaceFormActions(
             isNew: _isNew,
             onCancel: () => Navigator.pop(context),

@@ -8,6 +8,8 @@
   "defaultMap": "Standard",
   "deleteAsset": "Inhalt löschen",
   "deleteAssetQuestion": "Möchten Sie diesen Inhalt löschen?",
+  "deleteCategory": "Kategorie löschen",
+  "deleteCategoryQuestion": "Möchten Sie diese Kategorie löschen?",
   "deletePlace": "Ort löschen",
   "deletePlaceQuestion": "Möchten Sie diesen Ort löschen?",
   "description": "Beschreibung",

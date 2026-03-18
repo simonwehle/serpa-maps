@@ -33,6 +33,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get deleteAssetQuestion => 'Möchten Sie diesen Inhalt löschen?';
 
   @override
+  String get deleteCategory => 'Kategorie löschen';
+
+  @override
+  String get deleteCategoryQuestion => 'Möchten Sie diese Kategorie löschen?';
+
+  @override
   String get deletePlace => 'Ort löschen';
 
   @override
