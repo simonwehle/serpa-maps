@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/models/user.dart';
-import 'package:serpa_maps/providers/api_provider.dart';
+import 'package:serpa_maps/providers/api/api_provider.dart';
 import 'package:serpa_maps/providers/token/access_token_provider.dart';
 import 'package:serpa_maps/providers/token/refresh_token_provider.dart';
 import 'package:serpa_maps/utils/dialogs.dart';

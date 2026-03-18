@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
-import 'package:serpa_maps/providers/image_provider.dart';
+import 'package:serpa_maps/providers/data/image_provider.dart';
 import 'package:serpa_maps/widgets/sheets/sheet_button.dart';
 import 'package:serpa_maps/utils/dialogs.dart';
 import 'package:skeletonizer/skeletonizer.dart';

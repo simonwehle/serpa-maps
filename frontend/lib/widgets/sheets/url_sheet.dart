@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
-import 'package:serpa_maps/providers/category_provider.dart';
-import 'package:serpa_maps/providers/place_provider.dart';
+import 'package:serpa_maps/providers/data/category_provider.dart';
+import 'package:serpa_maps/providers/data/place_provider.dart';
 import 'package:serpa_maps/widgets/place/place_form_actions.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
 import 'package:serpa_maps/widgets/fields/url_text_fields.dart';

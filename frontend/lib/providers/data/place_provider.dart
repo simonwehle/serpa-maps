@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/models/asset.dart';
 
 import 'package:serpa_maps/models/place.dart';
-import 'package:serpa_maps/providers/api_provider.dart';
+import 'package:serpa_maps/providers/api/api_provider.dart';
 
 final placeProvider = AsyncNotifierProvider<PlaceNotifier, List<Place>>(
   PlaceNotifier.new,

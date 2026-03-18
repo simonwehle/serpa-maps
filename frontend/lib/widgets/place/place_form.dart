@@ -3,7 +3,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:serpa_maps/providers/place_provider.dart';
+import 'package:serpa_maps/providers/data/place_provider.dart';
 
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/models/category.dart';
-import 'package:serpa_maps/providers/api_provider.dart';
+import 'package:serpa_maps/providers/api/api_provider.dart';
 
 final categoryProvider =
     AsyncNotifierProvider<CategoryNotifier, List<Category>>(

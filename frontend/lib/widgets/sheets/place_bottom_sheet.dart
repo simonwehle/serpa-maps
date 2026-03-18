@@ -4,9 +4,9 @@ import 'package:serpa_maps/l10n/app_localizations.dart';
 
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
-import 'package:serpa_maps/providers/category_provider.dart';
-import 'package:serpa_maps/providers/item_by_id_providers.dart';
-import 'package:serpa_maps/providers/place_provider.dart';
+import 'package:serpa_maps/providers/data/category_provider.dart';
+import 'package:serpa_maps/providers/data/item_by_id_providers.dart';
+import 'package:serpa_maps/providers/data/place_provider.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_draggable_sheet.dart';
 import 'package:serpa_maps/widgets/place/place_display.dart';
 import 'package:serpa_maps/widgets/place/place_form_actions.dart';

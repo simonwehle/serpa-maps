@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:serpa_maps/models/asset.dart';
-import 'package:serpa_maps/providers/place_provider.dart';
+import 'package:serpa_maps/providers/data/place_provider.dart';
 import 'package:serpa_maps/widgets/place/place_assets_fullscreen.dart';
 import 'package:serpa_maps/widgets/place/place_image.dart';
 

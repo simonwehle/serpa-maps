@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
-import 'package:serpa_maps/providers/overlay_url_provider.dart';
+import 'package:serpa_maps/providers/url/overlay_url_provider.dart';
 
 Future<void> addOverlay({
   required MapLibreMapController mapController,

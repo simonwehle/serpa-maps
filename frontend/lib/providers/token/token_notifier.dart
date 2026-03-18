@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:serpa_maps/providers/category_provider.dart';
-import 'package:serpa_maps/providers/place_provider.dart';
-import 'package:serpa_maps/providers/secure_storage_provider.dart';
+import 'package:serpa_maps/providers/data/category_provider.dart';
+import 'package:serpa_maps/providers/data/place_provider.dart';
+import 'package:serpa_maps/providers/token/secure_storage_provider.dart';
 
 class TokenNotifier extends Notifier<String?> {
   final String tokenKey;

@@ -2,8 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:collection/collection.dart';
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/models/category.dart';
-import 'package:serpa_maps/providers/place_provider.dart';
-import 'package:serpa_maps/providers/category_provider.dart';
+import 'package:serpa_maps/providers/data/place_provider.dart';
+import 'package:serpa_maps/providers/data/category_provider.dart';
 
 final placeByIdProvider = Provider.family<Place?, String>((ref, placeId) {
   final placesAsync = ref.watch(placeProvider);

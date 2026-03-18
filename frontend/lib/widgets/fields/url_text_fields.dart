@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:serpa_maps/providers/base_url_provider.dart';
-import 'package:serpa_maps/providers/overlay_url_provider.dart';
-import 'package:serpa_maps/providers/style_dark_provider.dart';
-import 'package:serpa_maps/providers/style_provider.dart';
+import 'package:serpa_maps/providers/url/base_url_provider.dart';
+import 'package:serpa_maps/providers/url/overlay_url_provider.dart';
+import 'package:serpa_maps/providers/url/style_dark_provider.dart';
+import 'package:serpa_maps/providers/url/style_provider.dart';
 
 class UrlTextFields extends ConsumerStatefulWidget {
   final ValueChanged<Future<void> Function()>? persistChanges;

@@ -4,12 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
 import 'package:serpa_maps/models/place.dart';
-import 'package:serpa_maps/providers/category_provider.dart';
-import 'package:serpa_maps/providers/location_permission_provider.dart';
-import 'package:serpa_maps/providers/map_layer_provider.dart';
-import 'package:serpa_maps/providers/markers_visible_provider.dart';
-import 'package:serpa_maps/providers/overlay_active_prvoider.dart';
-import 'package:serpa_maps/providers/place_provider.dart';
+import 'package:serpa_maps/providers/data/category_provider.dart';
+import 'package:serpa_maps/providers/map/location_permission_provider.dart';
+import 'package:serpa_maps/providers/map/map_layer_provider.dart';
+import 'package:serpa_maps/providers/map/markers_visible_provider.dart';
+import 'package:serpa_maps/providers/map/overlay_active_prvoider.dart';
+import 'package:serpa_maps/providers/data/place_provider.dart';
 import 'package:serpa_maps/utils/map_marker_utils.dart';
 import 'package:serpa_maps/utils/overlay_helpers.dart';
 import 'package:serpa_maps/widgets/map/compass_button.dart';

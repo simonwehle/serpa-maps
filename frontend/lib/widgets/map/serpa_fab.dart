@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
-import 'package:serpa_maps/providers/location_permission_provider.dart';
+import 'package:serpa_maps/providers/map/location_permission_provider.dart';
 
 class SerpaFab extends ConsumerWidget {
   final MapLibreMapController mapController;

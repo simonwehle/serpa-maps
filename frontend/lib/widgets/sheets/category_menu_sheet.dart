@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/models/category.dart';
-import 'package:serpa_maps/providers/category_provider.dart';
+import 'package:serpa_maps/providers/data/category_provider.dart';
 import 'package:serpa_maps/widgets/form/delete_button.dart';
 import 'package:serpa_maps/widgets/form/serpa_divider.dart';
 import 'package:serpa_maps/widgets/layer/serpa_selector.dart';

@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:serpa_maps/providers/dio_provider.dart';
+import 'package:serpa_maps/providers/api/dio_provider.dart';
 
 final imageProvider = FutureProvider.family<Uint8List, String>((
   ref,
