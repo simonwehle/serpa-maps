@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:serpa_maps/models/asset.dart';
+import 'package:serpa_maps/widgets/place/place_image.dart';
 import 'package:serpa_maps/widgets/sheets/sheet_button.dart';
 
 class PlaceAssetsFullscreen extends StatefulWidget {
@@ -44,10 +45,15 @@ class _PlaceAssetsFullscreenState extends State<PlaceAssetsFullscreen> {
               return InteractiveViewer(
                 minScale: 1,
                 maxScale: 15,
-                child: Center(
-                  child: Image.network(
-                    widget.assets[index].assetUrl,
-                    fit: BoxFit.contain,
+                child: LayoutBuilder(
+                  builder: (context, constraints) => Center(
+                    child: PlaceImage(
+                      url: widget.assets[index].assetUrl,
+                      width: constraints.maxWidth,
+                      height: constraints.maxHeight,
+                      fit: BoxFit.contain,
+                      borderRadius: BorderRadius.zero,
+                    ),
                   ),
                 ),
               );

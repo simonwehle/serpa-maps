@@ -1,13 +1,22 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:dio/dio.dart';
 import 'package:exif/exif.dart';
-import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
 Future<(double, double)?> extractGpsFromUrl(String url) async {
-  final response = await http.get(Uri.parse(url));
-  if (response.statusCode != 200) return null;
-  return extractGpsFromBytes(response.bodyBytes);
+  try {
+    final response = await Dio().get<List<int>>(
+      url,
+      options: Options(responseType: ResponseType.bytes),
+    );
+
+    final body = response.data;
+    if (response.statusCode != 200 || body == null) return null;
+    return extractGpsFromBytes(Uint8List.fromList(body));
+  } catch (_) {
+    return null;
+  }
 }
 
 Future<(double, double)?> extractGpsFromImage(XFile image) async {

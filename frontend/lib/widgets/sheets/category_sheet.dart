@@ -26,7 +26,6 @@ class CategorySheet extends ConsumerWidget {
                 .map(
                   (category) => GestureDetector(
                     onTap: () {
-                      // Extract category id to edit; if id==0 create new category
                       showSerpaStaticSheet(
                         context: context,
                         child: CategoryMenuSheet(category: category),
