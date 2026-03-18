@@ -7,8 +7,8 @@ import 'package:serpa_maps/providers/place_provider.dart';
 
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
-import 'package:serpa_maps/utils/dialogs.dart';
 import 'package:serpa_maps/utils/extract_gps.dart';
+import 'package:serpa_maps/widgets/form/delete_button.dart';
 import 'package:serpa_maps/widgets/place/place_assets.dart';
 import 'package:serpa_maps/widgets/place/place_form_button.dart';
 import 'package:serpa_maps/widgets/sheets/category_menu_sheet.dart';
@@ -173,26 +173,15 @@ class PlaceForm extends ConsumerWidget {
           if (deletePlace != null)
             Padding(
               padding: const EdgeInsets.only(top: 16),
-              child: OutlinedButton(
-                style: ButtonStyle(
-                  backgroundColor: WidgetStatePropertyAll<Color>(
-                    Theme.of(context).colorScheme.error,
-                  ),
-                  foregroundColor: WidgetStatePropertyAll<Color>(
-                    Theme.of(context).colorScheme.onError,
-                  ),
-                  side: WidgetStatePropertyAll<BorderSide>(
-                    BorderSide(color: Theme.of(context).colorScheme.error),
-                  ),
-                ),
-                onPressed: () async {
-                  final confirmed = await showDeleteConfirmationDialog(context);
-                  if (confirmed && deletePlace != null) {
-                    await deletePlace!();
-                    if (context.mounted) Navigator.pop(context);
+              child: DeleteButton(
+                deleteFunction: () async {
+                  await deletePlace!();
+                  if (context.mounted) {
+                    await Navigator.maybePop(context);
                   }
                 },
-                child: Text(i10n.deletePlace),
+                title: i10n.deletePlace,
+                question: i10n.deletePlaceQuestion,
               ),
             ),
         ],

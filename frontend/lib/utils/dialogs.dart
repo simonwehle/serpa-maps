@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 
-Future<bool> showDeleteConfirmationDialog(BuildContext context) async {
-  final i10n = AppLocalizations.of(context)!;
+Future<bool> showDeleteConfirmationDialog(
+  BuildContext context,
+  String title,
+  String message,
+) async {
   final colorScheme = Theme.of(context).colorScheme;
   return showConfirmationDialog(
     context,
-    title: i10n.deletePlace,
-    message: i10n.deletePlaceQuestion,
+    title: title,
+    message: message,
     backgroundColor: colorScheme.error,
     foregroundColor: colorScheme.onError,
   );
