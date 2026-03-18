@@ -125,7 +125,6 @@ class _CategoryMenuSheetState extends ConsumerState<CategoryMenuSheet> {
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
-              // put a color picker at the start and select it if no color matches
               children: availableColors
                   .map(
                     (color) => SerpaSelector(
