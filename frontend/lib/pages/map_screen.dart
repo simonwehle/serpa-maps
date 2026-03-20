@@ -245,7 +245,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           ? null
           : SerpaFab(
               mapController: _controller,
-              openAddPlaceBottomSheet: openAddPlaceOrCategorySheet,
+              openAddPlaceBottomSheet: () {
+                final cameraTarget = _controller.cameraPosition?.target;
+                openAddPlaceOrCategorySheet(
+                  latitude: cameraTarget?.latitude,
+                  longitude: cameraTarget?.longitude,
+                );
+              },
             ),
     );
   }
