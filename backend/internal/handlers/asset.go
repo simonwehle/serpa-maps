@@ -14,7 +14,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func UploadPlaceAssets(db *gorm.DB, mediaStorageDir string) gin.HandlerFunc {
+func UploadPlaceAssets(db *gorm.DB, mediaStorageDir, assetURL string) gin.HandlerFunc {
     return func(c *gin.Context) {
         placeIDStr := c.Param("id")
         placeID, err := uuid.Parse(placeIDStr)
@@ -88,6 +88,7 @@ func UploadPlaceAssets(db *gorm.DB, mediaStorageDir string) gin.HandlerFunc {
                 return
             }
 
+            newAsset.AssetFilename = buildAssetURL(assetURL, newAsset.AssetFilename)
             uploadedAssets = append(uploadedAssets, newAsset)
         }
 

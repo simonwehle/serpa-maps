@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"log"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 
@@ -31,6 +32,7 @@ func Execute() {
 
 	assetStorageDir := "assets"
 	assetURLPrefix := "/assets"
+	assetURL := strings.TrimRight(urlConfig.AssetBaseUrl, "/") + "/" + strings.Trim(assetURLPrefix, "/")
 
 	r := gin.Default()
 	r.Use(middleware.CorsMiddleware(urlConfig.CorsOrigin))
@@ -51,12 +53,12 @@ func Execute() {
 	protected.PATCH("/category/:id", handlers.UpdateCategory(postgres))
 	protected.DELETE("/category/:id", handlers.DeleteCategory(postgres))
 
-	protected.GET("/places", handlers.GetPlaces(postgres, urlConfig.MediaBaseUrl, assetURLPrefix))
-	protected.POST("/place", handlers.AddPlace(postgres))
-	protected.PATCH("/place/:id", handlers.UpdatePlace(postgres))
+	protected.GET("/places", handlers.GetPlaces(postgres, assetURL))
+	protected.POST("/place", handlers.AddPlace(postgres, assetURL))
+	protected.PATCH("/place/:id", handlers.UpdatePlace(postgres, assetURL))
 	protected.DELETE("/place/:id", handlers.DeletePlace(postgres))
 
-	protected.POST("/place/:id/assets", handlers.UploadPlaceAssets(postgres, assetStorageDir))
+	protected.POST("/place/:id/assets", handlers.UploadPlaceAssets(postgres, assetStorageDir, assetURL))
 	protected.PATCH("/place/:id/assets/positions", handlers.UpdateAssetPositions(postgres))
 	protected.DELETE("/place/:id/asset/:asset_id", handlers.DeletePlaceAsset(postgres, assetStorageDir))
 

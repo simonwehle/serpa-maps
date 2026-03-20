@@ -1,6 +1,6 @@
 package models
 
 type URLConfig struct {
-	MediaBaseUrl string
+	AssetBaseUrl string
 	CorsOrigin   string
 }

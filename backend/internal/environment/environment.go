@@ -52,7 +52,7 @@ func loadJwtSecrets() models.JwtSecrets {
 
 func loadUrls() models.URLConfig {
 	return models.URLConfig{
-		MediaBaseUrl: getRequiredEnv("MEDIA_BASE_URL"),
+		AssetBaseUrl: getRequiredEnv("ASSET_BASE_URL"),
 		CorsOrigin: getEnv("CORS_ORIGIN", ""),
 	}
 }
