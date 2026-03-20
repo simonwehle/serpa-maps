@@ -13,7 +13,7 @@ import (
 )
 
 func Execute() {
-	jwtSecrets, dbConfig := environment.LoadEnv()
+	urlConfig, jwtSecrets, dbConfig := environment.LoadEnv()
 	postgres, err := db.Connect(dbConfig)
 	if err != nil {
 		log.Fatalln(err)
@@ -29,8 +29,11 @@ func Execute() {
 		RefreshKey: []byte(jwtSecrets.RefreshSecret),
 	}
 
+	assetStorageDir := "assets"
+	assetURLPrefix := "/assets"
+
 	r := gin.Default()
-	r.Use(middleware.CorsMiddleware())
+	r.Use(middleware.CorsMiddleware(urlConfig.CorsOrigin))
 
 	api := r.Group("/api/v1")
 
@@ -48,15 +51,14 @@ func Execute() {
 	protected.PATCH("/category/:id", handlers.UpdateCategory(postgres))
 	protected.DELETE("/category/:id", handlers.DeleteCategory(postgres))
 
-	protected.GET("/places", handlers.GetPlaces(postgres))
+	protected.GET("/places", handlers.GetPlaces(postgres, urlConfig.MediaBaseUrl, assetURLPrefix))
 	protected.POST("/place", handlers.AddPlace(postgres))
 	protected.PATCH("/place/:id", handlers.UpdatePlace(postgres))
 	protected.DELETE("/place/:id", handlers.DeletePlace(postgres))
 
-	r.Static("/uploads", "./uploads")
-	protected.POST("/place/:id/assets", handlers.UploadPlaceAssets(postgres))
+	protected.POST("/place/:id/assets", handlers.UploadPlaceAssets(postgres, assetStorageDir))
 	protected.PATCH("/place/:id/assets/positions", handlers.UpdateAssetPositions(postgres))
-	protected.DELETE("/place/:id/asset/:asset_id", handlers.DeletePlaceAsset(postgres))
+	protected.DELETE("/place/:id/asset/:asset_id", handlers.DeletePlaceAsset(postgres, assetStorageDir))
 
 	r.Run(":53164")
 }
