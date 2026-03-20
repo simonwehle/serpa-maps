@@ -13,11 +13,11 @@ services:
       - "53164:53164"
     env_file:
       - .env
-    volumes:
-      - serpa-assets:/app/uploads
     depends_on:
       database:
         condition: service_healthy
+      garage:
+        condition: service_started
   database:
     image: postgres:bookworm
     container_name: serpa-maps-db
@@ -35,6 +35,18 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+  garage:
+    image: dxflrs/garage:v2.2.0
+    container_name: serpa-maps-garage
+    restart: unless-stopped
+    ports:
+      - "3900:3900"
+    volumes:
+      - ./garage.toml:/etc/garage.toml:ro
+      - garage_meta:/var/lib/garage/meta
+      - garage_data:/var/lib/garage/data
+    environment:
+      - RUST_LOG=garage=info
   martin:
     image: ghcr.io/maplibre/martin:latest
     container_name: serpa-maps-martin
@@ -52,3 +64,5 @@ services:
 volumes:
   pg-data:
   serpa-assets:
+  garage_meta:
+  garage_data:

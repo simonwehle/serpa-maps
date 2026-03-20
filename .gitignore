@@ -56,3 +56,6 @@ frontend/android/app/release
 
 # Ne2_shaded
 docker/tiles/ne2sr.mbtiles
+
+# garage.toml
+docker/garage.toml
