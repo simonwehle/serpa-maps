@@ -3,9 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:serpa_maps/models/asset.dart';
 import 'package:serpa_maps/providers/data/place_provider.dart';
+import 'package:serpa_maps/widgets/place/place_asset_base.dart';
 import 'package:serpa_maps/widgets/place/place_assets_fullscreen.dart';
 import 'package:serpa_maps/widgets/place/place_image.dart';
-import 'package:serpa_maps/widgets/place/place_video_preview.dart';
+import 'package:serpa_maps/widgets/place/place_video_thumbnail.dart';
 
 class PlaceAssetGallery extends ConsumerWidget {
   final List<Asset> assets;
@@ -34,21 +35,21 @@ class PlaceAssetGallery extends ConsumerWidget {
             itemCount: itemCount,
             itemBuilder: (context, index) {
               if (index == assets.length) {
-                return ClipRRect(
+                return PlaceAssetBase(
+                  width: kPlaceAssetWidth,
+                  height: kPlaceAssetHeight,
                   borderRadius: BorderRadius.circular(8),
-                  child: GestureDetector(
+                  overlay: GestureDetector(
                     onTap: onAddImage,
-                    child: Container(
-                      width: kPlaceAssetWidth,
-                      height: kPlaceAssetHeight,
-                      color: Theme.of(context).colorScheme.secondary,
-                      child: Center(
-                        child: Icon(
-                          Icons.add_a_photo,
-                          color: Theme.of(context).colorScheme.onSecondary,
-                        ),
+                    child: Center(
+                      child: Icon(
+                        Icons.add_a_photo,
+                        color: Theme.of(context).colorScheme.onSecondary,
                       ),
                     ),
+                  ),
+                  child: Container(
+                    color: Theme.of(context).colorScheme.secondary,
                   ),
                 );
               }

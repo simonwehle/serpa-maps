@@ -3,12 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/models/asset.dart';
 import 'package:serpa_maps/providers/data/image_provider.dart';
+import 'package:serpa_maps/widgets/place/place_asset_base.dart';
 import 'package:serpa_maps/widgets/sheets/sheet_button.dart';
 import 'package:serpa_maps/utils/dialogs.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-
-const double kPlaceAssetWidth = 200;
-const double kPlaceAssetHeight = 150;
 
 class PlaceImage extends ConsumerStatefulWidget {
   final Asset asset;
@@ -67,32 +65,26 @@ class _PlaceAssetState extends ConsumerState<PlaceImage> {
 
     return Skeletonizer(
       enabled: imageAsync.isLoading,
-      child: Stack(
-        children: [
-          ClipRRect(
-            borderRadius: widget.borderRadius ?? BorderRadius.circular(8),
-            child: imageAsync.when(
-              loading: () => Container(
-                width: widget.width,
-                height: widget.height,
-                color: Theme.of(context).colorScheme.outlineVariant,
-              ),
-              error: (_, _) => Container(
-                width: widget.width,
-                height: widget.height,
-                color: Theme.of(context).colorScheme.outlineVariant,
-                child: const Icon(Icons.broken_image),
-              ),
-              data: (bytes) => Image.memory(
-                bytes,
-                width: widget.width,
-                height: widget.height,
-                fit: widget.fit,
-              ),
+      child: PlaceAssetBase(
+        width: widget.width,
+        height: widget.height,
+        fit: widget.fit,
+        borderRadius: widget.borderRadius,
+        overlay: widget.isEditing ? _buildDeleteButton(context) : null,
+        child: imageAsync.when(
+          loading: () => SizedBox.expand(
+            child: Container(
+              color: Theme.of(context).colorScheme.outlineVariant,
             ),
           ),
-          if (widget.isEditing) _buildDeleteButton(context),
-        ],
+          error: (_, _) => Center(child: Icon(Icons.broken_image)),
+          data: (bytes) => Image.memory(
+            bytes,
+            width: widget.width,
+            height: widget.height,
+            fit: widget.fit,
+          ),
+        ),
       ),
     );
   }
