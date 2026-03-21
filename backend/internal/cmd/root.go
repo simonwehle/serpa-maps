@@ -62,5 +62,5 @@ func Execute() {
 	protected.PATCH("/place/:id/assets/positions", handlers.UpdateAssetPositions(postgres))
 	protected.DELETE("/place/:id/asset/:asset_id", handlers.DeletePlaceAsset(postgres, assetStorageDir))
 
-	r.Run(":53164")
+	r.Run(":53964")
 }

@@ -10,7 +10,7 @@ services:
       JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
     ports:
-      - "53964:53164"
+      - "53964:53964"
     env_file:
       - .env
     volumes:
