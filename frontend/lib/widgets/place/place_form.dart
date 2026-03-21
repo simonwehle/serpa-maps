@@ -5,11 +5,12 @@ import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/providers/data/place_provider.dart';
 
+import 'package:serpa_maps/models/asset.dart';
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/utils/extract_gps.dart';
 import 'package:serpa_maps/widgets/form/delete_button.dart';
-import 'package:serpa_maps/widgets/place/place_assets.dart';
+import 'package:serpa_maps/widgets/place/place_asset_gallery.dart';
 import 'package:serpa_maps/widgets/place/place_form_button.dart';
 import 'package:serpa_maps/widgets/sheets/category_menu_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
@@ -97,18 +98,16 @@ class PlaceForm extends ConsumerWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: PlaceAssets(
+            child: PlaceAssetGallery(
               assets: place?.assets ?? [],
               isEditing: true,
               onAddImage: () async {
                 final picker = ImagePicker();
-                final XFile? image = await picker.pickImage(
-                  source: ImageSource.gallery,
-                );
+                final XFile? media = await picker.pickMedia();
 
-                if (image != null) {
-                  final bytes = await image.readAsBytes();
-                  final filename = image.name;
+                if (media != null) {
+                  final bytes = await media.readAsBytes();
+                  final filename = media.name;
                   if (place != null) {
                     await ref
                         .read(placeProvider.notifier)
@@ -120,8 +119,8 @@ class PlaceForm extends ConsumerWidget {
                   }
                 }
 
-                if (image != null) {
-                  final gps = await extractGpsFromImage(image);
+                if (media != null && !Asset.isVideoType(media.mimeType)) {
+                  final gps = await extractGpsFromImage(media);
                   if (gps != null &&
                       latitudeController.text.isEmpty &&
                       longitudeController.text.isEmpty) {

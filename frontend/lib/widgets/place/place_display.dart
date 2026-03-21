@@ -4,7 +4,7 @@ import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/widgets/category/category_icon.dart';
-import 'package:serpa_maps/widgets/place/place_assets.dart';
+import 'package:serpa_maps/widgets/place/place_asset_gallery.dart';
 import 'package:serpa_maps/widgets/sheets/sheet_header.dart';
 
 class PlaceDisplay extends ConsumerWidget {
@@ -41,7 +41,7 @@ class PlaceDisplay extends ConsumerWidget {
           place.assets.isNotEmpty
               ? Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: PlaceAssets(assets: place.assets),
+                  child: PlaceAssetGallery(assets: place.assets),
                 )
               : SizedBox(height: 16),
           Text(

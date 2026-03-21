@@ -52,7 +52,7 @@ frontend/android/app/release
 
 # Backend builds
 /backend/serpa-maps
-/backend/uploads/
+/backend/assets/
 
 # Ne2_shaded
 docker/tiles/ne2sr.mbtiles

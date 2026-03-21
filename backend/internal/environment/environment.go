@@ -50,10 +50,17 @@ func loadJwtSecrets() models.JwtSecrets {
 	}
 }
 
-func LoadEnv() (models.JwtSecrets, models.DatabaseConfiguration) {
+func loadUrls() models.URLConfig {
+	return models.URLConfig{
+		AssetBaseUrl: getRequiredEnv("ASSET_BASE_URL"),
+		CorsOrigin: getEnv("CORS_ORIGIN", ""),
+	}
+}
+
+func LoadEnv() (models.URLConfig, models.JwtSecrets, models.DatabaseConfiguration) {
 	err := godotenv.Load()
 	if err != nil {
 		log.Println(".env file not found, using environment variables")
 	}
-	return loadJwtSecrets(), createDatabaseConfiguration()
+	return loadUrls(), loadJwtSecrets(), createDatabaseConfiguration()
 }

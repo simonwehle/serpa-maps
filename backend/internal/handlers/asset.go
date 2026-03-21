@@ -8,14 +8,13 @@ import (
 	"path/filepath"
 	"serpa-maps/internal/models"
 	"strings"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
-func UploadPlaceAssets(db *gorm.DB) gin.HandlerFunc {
+func UploadPlaceAssets(db *gorm.DB, mediaStorageDir, assetURL string) gin.HandlerFunc {
     return func(c *gin.Context) {
         placeIDStr := c.Param("id")
         placeID, err := uuid.Parse(placeIDStr)
@@ -64,14 +63,11 @@ func UploadPlaceAssets(db *gorm.DB) gin.HandlerFunc {
 				return
 			}
 
-            assetType := "image"
-            if ext == ".mp4" || ext == ".mov" {
-                assetType = "video"
-            }
 
-            filename := fmt.Sprintf("uploads/%d_%s", time.Now().UnixNano(), file.Filename)
-            if err := c.SaveUploadedFile(file, filename); err != nil {
-                c.JSON(http.StatusInternalServerError, gin.H{"error": "Fehler beim Speichern"})
+            assetFilename := fmt.Sprintf("%s%s", uuid.Must(uuid.NewV7()).String(), ext)
+            storagePath := filepath.Join(mediaStorageDir, assetFilename)
+            if err := c.SaveUploadedFile(file, storagePath); err != nil {
+                c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while saving asset"})
                 return
             }
 
@@ -81,9 +77,14 @@ func UploadPlaceAssets(db *gorm.DB) gin.HandlerFunc {
                 return
             }
 
+            assetType := "image"
+            if ext == ".mp4" || ext == ".mov" {
+                assetType = "video"
+            }
+
             newAsset := models.Asset{
                 PlaceID:   placeID,
-                AssetURL:  filename,
+                AssetFilename:  assetFilename,
                 AssetType: assetType,
                 Position:  nextPos,
             }
@@ -93,7 +94,7 @@ func UploadPlaceAssets(db *gorm.DB) gin.HandlerFunc {
                 return
             }
 
-            newAsset.AssetURL = buildAssetURL(newAsset.AssetURL)
+            newAsset.AssetURL = buildAssetURL(assetURL, newAsset.AssetFilename)
             uploadedAssets = append(uploadedAssets, newAsset)
         }
 
@@ -136,7 +137,7 @@ func UpdateAssetPositions(db *gorm.DB) gin.HandlerFunc {
     }
 }
 
-func DeletePlaceAsset(db *gorm.DB) gin.HandlerFunc {
+func DeletePlaceAsset(db *gorm.DB, mediaStorageDir string) gin.HandlerFunc {
     return func(c *gin.Context) {
         placeIDStr := c.Param("id")
         assetIDStr := c.Param("asset_id")
@@ -160,7 +161,7 @@ func DeletePlaceAsset(db *gorm.DB) gin.HandlerFunc {
         }
 
         var asset models.Asset
-        if err := db.Select("asset_url, asset_type, position").
+        if err := db.Select("asset_filename, position").
             Where("asset_id = ? AND place_id = ?", assetID, placeID).
             First(&asset).Error; err != nil {
             c.JSON(http.StatusNotFound, gin.H{"error": "Asset not found"})
@@ -172,7 +173,7 @@ func DeletePlaceAsset(db *gorm.DB) gin.HandlerFunc {
             return
         }
 
-        filePath := asset.AssetURL
+        filePath := filepath.Join(mediaStorageDir, asset.AssetFilename)
         if err := os.Remove(filePath); err != nil {
             log.Printf("Failed to delete file %s: %v", filePath, err)
         }

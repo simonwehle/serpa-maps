@@ -8,13 +8,15 @@ import (
 )
 
 type Asset struct {
-	AssetID   uuid.UUID `gorm:"type:uuid;primaryKey" json:"asset_id"`
-	PlaceID   uuid.UUID `gorm:"type:uuid;not null;index" json:"place_id"`
-	Place     Place     `gorm:"constraint:OnDelete:CASCADE;" json:"-"`
-	AssetURL  string    `gorm:"not null" json:"asset_url"`
-	AssetType string    `gorm:"not null;check:asset_type IN ('image', 'video')" json:"asset_type"`
-	Position  int       `gorm:"default:0" json:"position"`
-	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
+	AssetID       uuid.UUID `gorm:"type:uuid;primaryKey;column:asset_id" json:"asset_id"`
+	PlaceID       uuid.UUID `gorm:"type:uuid;not null;index;column:place_id" json:"place_id"`
+	Place         Place     `gorm:"constraint:OnDelete:CASCADE;" json:"-"`
+	// Stored in DB as filename; transformed to URL for JSON responses
+	AssetFilename string    `gorm:"column:asset_filename;not null" json:"-"`
+	AssetURL      string    `gorm:"-" json:"asset_url"`
+	AssetType     string    `gorm:"not null;check:asset_type IN ('image', 'video')" json:"asset_type"`
+	Position      int       `gorm:"default:0" json:"position"`
+	CreatedAt     time.Time `gorm:"autoCreateTime" json:"created_at"`
 }
 
 func (a *Asset) BeforeCreate(tx *gorm.DB) error {

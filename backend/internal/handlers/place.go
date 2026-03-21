@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"math"
 	"net/http"
-	"os"
 	"strings"
 
 	"serpa-maps/internal/models"
@@ -14,12 +13,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func buildAssetURL(assetURL string) string {
-	baseURL := os.Getenv("BASE_URL")
-	if baseURL == "" {
-		baseURL = "http://localhost:53164"
-	}
-	return fmt.Sprintf("%s/%s", baseURL, assetURL)
+func buildAssetURL(assetURL, assetFilename string) string {
+    return fmt.Sprintf("%s/%s", strings.TrimRight(assetURL, "/"), strings.TrimPrefix(assetFilename, "/"))
 }
 
 func validatePlaceInput(name string, latitude, longitude float64) error {
@@ -42,7 +37,7 @@ func round6(v float64) float64 {
 	return math.Round(v*1e6) / 1e6
 }
 
-func AddPlace(db *gorm.DB) gin.HandlerFunc {
+func AddPlace(db *gorm.DB, assetURL string) gin.HandlerFunc {
     return func(c *gin.Context) {
         var place models.Place
 
@@ -86,17 +81,17 @@ func AddPlace(db *gorm.DB) gin.HandlerFunc {
             assets = []models.Asset{}
         }
 
-        place.Assets = assets
+        for i := range assets {
+            assets[i].AssetURL = buildAssetURL(assetURL, assets[i].AssetFilename)
+        }
 
-		for i := range place.Assets {
-			place.Assets[i].AssetURL = buildAssetURL(place.Assets[i].AssetURL)
-		}
+        place.Assets = assets
 
         c.JSON(http.StatusCreated, place)
     }
 }
 
-func GetPlaces(db *gorm.DB) gin.HandlerFunc {
+func GetPlaces(db *gorm.DB, assetURL string) gin.HandlerFunc {
     return func(c *gin.Context) {
         var places []models.Place
 
@@ -117,16 +112,16 @@ func GetPlaces(db *gorm.DB) gin.HandlerFunc {
             return
         }
 
-		for i, p := range places {
-			var assets []models.Asset
+        for i, p := range places {
+            var assets []models.Asset
 			err := db.Where("place_id = ?", p.PlaceID).Order("position").Find(&assets).Error
 			if err != nil || assets == nil {
-				assets = []models.Asset{}
+                assets = []models.Asset{}
 			}
-			for j := range assets {
-				assets[j].AssetURL = buildAssetURL(assets[j].AssetURL)
-			}
-			places[i].Assets = assets
+            for j := range assets {
+                assets[j].AssetURL = buildAssetURL(assetURL, assets[j].AssetFilename)
+            }
+            places[i].Assets = assets
 		}
 
         c.JSON(http.StatusOK, places)
@@ -134,7 +129,7 @@ func GetPlaces(db *gorm.DB) gin.HandlerFunc {
 }
 
 
-func UpdatePlace(db *gorm.DB) gin.HandlerFunc {
+func UpdatePlace(db *gorm.DB, assetURLBase string) gin.HandlerFunc {
     return func(c *gin.Context) {
         id := c.Param("id")
         var payload map[string]interface{}
@@ -215,10 +210,12 @@ func UpdatePlace(db *gorm.DB) gin.HandlerFunc {
         if assets == nil {
             assets = []models.Asset{}
         }
-		for i := range assets {
-			assets[i].AssetURL = buildAssetURL(assets[i].AssetURL)
-		}
-		place.Assets = assets
+
+        for i := range assets {
+            assets[i].AssetURL = buildAssetURL(assetURLBase, assets[i].AssetFilename)
+        }
+
+        place.Assets = assets
 
         c.JSON(http.StatusOK, place)
     }

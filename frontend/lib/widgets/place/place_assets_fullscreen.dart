@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:serpa_maps/models/asset.dart';
 import 'package:serpa_maps/widgets/place/place_image.dart';
+import 'package:serpa_maps/widgets/place/place_fullscreen_video.dart';
 import 'package:serpa_maps/widgets/sheets/sheet_button.dart';
 
 class PlaceAssetsFullscreen extends StatefulWidget {
@@ -19,10 +20,12 @@ class PlaceAssetsFullscreen extends StatefulWidget {
 
 class _PlaceAssetsFullscreenState extends State<PlaceAssetsFullscreen> {
   late final PageController _pageController;
+  late int _currentIndex;
 
   @override
   void initState() {
     super.initState();
+    _currentIndex = widget.initialIndex;
     _pageController = PageController(initialPage: widget.initialIndex);
   }
 
@@ -41,21 +44,45 @@ class _PlaceAssetsFullscreenState extends State<PlaceAssetsFullscreen> {
           PageView.builder(
             controller: _pageController,
             itemCount: widget.assets.length,
+            onPageChanged: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
             itemBuilder: (context, index) {
-              return InteractiveViewer(
-                minScale: 1,
-                maxScale: 15,
-                child: LayoutBuilder(
-                  builder: (context, constraints) => Center(
+              final asset = widget.assets[index];
+
+              return LayoutBuilder(
+                builder: (context, constraints) {
+                  if (asset.isVideo) {
+                    return Center(
+                      child: PlaceFullscreenVideo(
+                        asset: asset,
+                        width: constraints.maxWidth,
+                        height: constraints.maxHeight,
+                        fit: BoxFit.contain,
+                        autoPlayOnLoad: index == widget.initialIndex,
+                        isActive: index == _currentIndex,
+                      ),
+                    );
+                  }
+
+                  final media = Center(
                     child: PlaceImage(
-                      url: widget.assets[index].assetUrl,
+                      asset: asset,
                       width: constraints.maxWidth,
                       height: constraints.maxHeight,
                       fit: BoxFit.contain,
                       borderRadius: BorderRadius.zero,
                     ),
-                  ),
-                ),
+                  );
+
+                  return InteractiveViewer(
+                    minScale: 1,
+                    maxScale: 15,
+                    child: media,
+                  );
+                },
               );
             },
           ),
