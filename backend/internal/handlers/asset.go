@@ -94,7 +94,7 @@ func UploadPlaceAssets(db *gorm.DB, mediaStorageDir, assetURL string) gin.Handle
                 return
             }
 
-            newAsset.AssetFilename = buildAssetURL(assetURL, newAsset.AssetFilename)
+            newAsset.AssetURL = buildAssetURL(assetURL, newAsset.AssetFilename)
             uploadedAssets = append(uploadedAssets, newAsset)
         }
 

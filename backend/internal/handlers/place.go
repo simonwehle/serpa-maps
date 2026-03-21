@@ -82,7 +82,7 @@ func AddPlace(db *gorm.DB, assetURL string) gin.HandlerFunc {
         }
 
         for i := range assets {
-            assets[i].AssetFilename = buildAssetURL(assetURL, assets[i].AssetFilename)
+            assets[i].AssetURL = buildAssetURL(assetURL, assets[i].AssetFilename)
         }
 
         place.Assets = assets
@@ -119,8 +119,7 @@ func GetPlaces(db *gorm.DB, assetURL string) gin.HandlerFunc {
                 assets = []models.Asset{}
 			}
             for j := range assets {
-                // Actually mapping asset url here not filename
-                assets[j].AssetFilename = buildAssetURL(assetURL, assets[j].AssetFilename)
+                assets[j].AssetURL = buildAssetURL(assetURL, assets[j].AssetFilename)
             }
             places[i].Assets = assets
 		}
@@ -213,7 +212,7 @@ func UpdatePlace(db *gorm.DB, assetURLBase string) gin.HandlerFunc {
         }
 
         for i := range assets {
-            assets[i].AssetFilename = buildAssetURL(assetURLBase, assets[i].AssetFilename)
+            assets[i].AssetURL = buildAssetURL(assetURLBase, assets[i].AssetFilename)
         }
 
         place.Assets = assets
