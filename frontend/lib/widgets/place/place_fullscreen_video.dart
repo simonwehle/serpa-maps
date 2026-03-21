@@ -96,52 +96,56 @@ class _PlaceFullscreenVideoState extends State<PlaceFullscreenVideo> {
           }
 
           final controller = _controller!;
-          if (!widget.isActive && controller.value.isPlaying) {
-            controller.pause();
-          }
+          return ValueListenableBuilder<VideoPlayerValue>(
+            valueListenable: controller,
+            builder: (context, value, _) {
+              if (!widget.isActive && value.isPlaying) {
+                controller.pause();
+              }
 
-          final videoWidth = controller.value.size.width;
-          final videoHeight = controller.value.size.height;
-          final rotationCorrection =
-              ((controller.value.rotationCorrection % 360) + 360) % 360;
-          final quarterTurns = rotationCorrection ~/ 90;
+              final videoWidth = value.size.width;
+              final videoHeight = value.size.height;
+              final rotationCorrection =
+                  ((value.rotationCorrection % 360) + 360) % 360;
+              final quarterTurns = rotationCorrection ~/ 90;
 
-          return GestureDetector(
-            onTap: widget.isActive
-                ? () {
-                    if (controller.value.isPlaying) {
-                      controller.pause();
-                    } else {
-                      controller.play();
-                    }
-                    setState(() {});
-                  }
-                : null,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                FittedBox(
-                  fit: widget.fit,
-                  clipBehavior: Clip.hardEdge,
-                  child: SizedBox(
-                    width: videoWidth,
-                    height: videoHeight,
-                    child: RotatedBox(
-                      quarterTurns: quarterTurns,
-                      child: VideoPlayer(controller),
+              return GestureDetector(
+                onTap: widget.isActive
+                    ? () {
+                        if (value.isPlaying) {
+                          controller.pause();
+                        } else {
+                          controller.play();
+                        }
+                      }
+                    : null,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    FittedBox(
+                      fit: widget.fit,
+                      clipBehavior: Clip.hardEdge,
+                      child: SizedBox(
+                        width: videoWidth,
+                        height: videoHeight,
+                        child: RotatedBox(
+                          quarterTurns: quarterTurns,
+                          child: VideoPlayer(controller),
+                        ),
+                      ),
                     ),
-                  ),
+                    if (!value.isPlaying)
+                      const Center(
+                        child: Icon(
+                          Icons.play_circle_fill,
+                          size: 48,
+                          color: Colors.white,
+                        ),
+                      ),
+                  ],
                 ),
-                if (!controller.value.isPlaying)
-                  const Center(
-                    child: Icon(
-                      Icons.play_circle_fill,
-                      size: 48,
-                      color: Colors.white,
-                    ),
-                  ),
-              ],
-            ),
+              );
+            },
           );
         },
       ),
