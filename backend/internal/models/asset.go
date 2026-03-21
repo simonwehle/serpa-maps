@@ -13,6 +13,7 @@ type Asset struct {
 	Place         Place     `gorm:"constraint:OnDelete:CASCADE;" json:"-"`
 	// Persisting filename.ext in db and delivering full media url in json
 	AssetFilename string    `gorm:"column:asset_filename;not null" json:"asset_url"`
+	AssetType     string    `gorm:"not null;check:asset_type IN ('image', 'video')" json:"asset_type"`
 	Position      int       `gorm:"default:0" json:"position"`
 	CreatedAt     time.Time `gorm:"autoCreateTime" json:"created_at"`
 }

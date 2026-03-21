@@ -77,9 +77,15 @@ func UploadPlaceAssets(db *gorm.DB, mediaStorageDir, assetURL string) gin.Handle
                 return
             }
 
+            assetType := "image"
+            if ext == ".mp4" || ext == ".mov" {
+                assetType = "video"
+            }
+
             newAsset := models.Asset{
                 PlaceID:   placeID,
                 AssetFilename:  assetFilename,
+                AssetType: assetType,
                 Position:  nextPos,
             }
 
