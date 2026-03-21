@@ -23,4 +23,13 @@ class Asset {
     position: json['position'],
     createdAt: DateTime.parse(json['created_at']),
   );
+
+  static bool isVideoType(String? assetType) {
+    final type = assetType?.toLowerCase() ?? '';
+    return type.contains('video');
+  }
+
+  bool get isVideo {
+    return isVideoType(assetType);
+  }
 }

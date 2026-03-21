@@ -5,13 +5,14 @@ import 'package:serpa_maps/models/asset.dart';
 import 'package:serpa_maps/providers/data/place_provider.dart';
 import 'package:serpa_maps/widgets/place/place_assets_fullscreen.dart';
 import 'package:serpa_maps/widgets/place/place_image.dart';
+import 'package:serpa_maps/widgets/place/place_video_preview.dart';
 
-class PlaceAssets extends ConsumerWidget {
+class PlaceAssetGallery extends ConsumerWidget {
   final List<Asset> assets;
   final bool isEditing;
   final VoidCallback? onAddImage;
 
-  const PlaceAssets({
+  const PlaceAssetGallery({
     super.key,
     required this.assets,
     this.isEditing = false,
@@ -53,6 +54,21 @@ class PlaceAssets extends ConsumerWidget {
               }
 
               final asset = assets[index];
+              final child = asset.isVideo
+                  ? PlaceVideoPreview(asset: asset)
+                  : PlaceImage(
+                      asset: asset,
+                      isEditing: isEditing,
+                      onDelete: () {
+                        ref
+                            .read(placeProvider.notifier)
+                            .deleteAsset(
+                              placeId: asset.placeId,
+                              assetId: asset.assetId,
+                            )
+                            .catchError((_) {});
+                      },
+                    );
               return GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(
@@ -64,21 +80,7 @@ class PlaceAssets extends ConsumerWidget {
                     ),
                   );
                 },
-                child: PlaceImage(
-                  url: asset.assetUrl,
-                  width: kPlaceAssetWidth,
-                  height: kPlaceAssetHeight,
-                  isEditing: isEditing,
-                  onDelete: () {
-                    ref
-                        .read(placeProvider.notifier)
-                        .deleteAsset(
-                          placeId: asset.placeId,
-                          assetId: asset.assetId,
-                        )
-                        .catchError((_) {});
-                  },
-                ),
+                child: child,
               );
             },
             separatorBuilder: (_, _) => const SizedBox(width: 8),
