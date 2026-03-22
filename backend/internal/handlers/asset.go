@@ -49,6 +49,11 @@ func UploadPlaceAssets(db *gorm.DB, mediaStorageDir, assetURL string) gin.Handle
 			}
 		}
 
+        if err := os.MkdirAll(mediaStorageDir, 0o755); err != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while preparing asset directory"})
+            return
+        }
+
         uploadedAssets := []models.Asset{}
 
         for _, file := range files {
@@ -68,6 +73,10 @@ func UploadPlaceAssets(db *gorm.DB, mediaStorageDir, assetURL string) gin.Handle
             storagePath := filepath.Join(mediaStorageDir, assetFilename)
             if err := c.SaveUploadedFile(file, storagePath); err != nil {
                 c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while saving asset"})
+                return
+            }
+            if err := os.Chmod(storagePath, 0o644); err != nil {
+                c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while setting asset permissions"})
                 return
             }
 

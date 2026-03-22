@@ -43,7 +43,7 @@ services:
       - "45537:80"
     volumes:
       - serpa-assets:/var/www/assets:ro
-      - ./nginx/media.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/assets.conf:/etc/nginx/conf.d/default.conf:ro
   martin:
     image: ghcr.io/maplibre/martin:latest
     container_name: serpa-maps-martin
