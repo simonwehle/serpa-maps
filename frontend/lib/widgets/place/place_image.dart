@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/models/asset.dart';
 import 'package:serpa_maps/providers/data/asset_provider.dart';
-import 'package:serpa_maps/widgets/place/place_video_thumbnail.dart';
 import 'package:serpa_maps/widgets/sheets/sheet_button.dart';
 import 'package:serpa_maps/utils/dialogs.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -56,7 +55,7 @@ class PlaceImage extends ConsumerWidget {
                 child: const Icon(Icons.broken_image),
               ),
               data: (bytes) => isVideo
-                  ? PlaceVideoThumbnail(asset: asset)
+                  ? const SizedBox.shrink() // PlaceVideoThumbnail(asset: asset)
                   : Image.memory(bytes, width: width, height: height, fit: fit),
             ),
           ),

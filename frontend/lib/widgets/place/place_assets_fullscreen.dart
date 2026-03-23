@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:serpa_maps/models/asset.dart';
 import 'package:serpa_maps/widgets/place/place_image.dart';
-import 'package:serpa_maps/widgets/place/place_fullscreen_video.dart';
+import 'package:serpa_maps/widgets/place/video/place_fullscreen_video.dart';
 import 'package:serpa_maps/widgets/sheets/sheet_button.dart';
 
 class PlaceAssetsFullscreen extends StatefulWidget {
@@ -52,21 +52,12 @@ class _PlaceAssetsFullscreenState extends State<PlaceAssetsFullscreen> {
             itemBuilder: (context, index) {
               final asset = widget.assets[index];
 
+              if (asset.isVideo) {
+                // Skip videos, show nothing
+                return const SizedBox.shrink();
+              }
               return LayoutBuilder(
                 builder: (context, constraints) {
-                  if (asset.isVideo) {
-                    return Center(
-                      child: PlaceFullscreenVideo(
-                        asset: asset,
-                        width: constraints.maxWidth,
-                        height: constraints.maxHeight,
-                        fit: BoxFit.contain,
-                        autoPlayOnLoad: index == widget.initialIndex,
-                        isActive: index == _currentIndex,
-                      ),
-                    );
-                  }
-
                   final media = Center(
                     child: PlaceImage(
                       asset: asset,
@@ -76,7 +67,6 @@ class _PlaceAssetsFullscreenState extends State<PlaceAssetsFullscreen> {
                       borderRadius: BorderRadius.zero,
                     ),
                   );
-
                   return InteractiveViewer(
                     minScale: 1,
                     maxScale: 15,
