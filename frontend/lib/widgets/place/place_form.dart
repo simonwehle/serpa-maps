@@ -106,7 +106,9 @@ class PlaceForm extends ConsumerWidget {
                     isEditing: true,
                     onAddImage: () async {
                       final picker = ImagePicker();
-                      final XFile? media = await picker.pickMedia();
+                      final XFile? media = await picker.pickImage(
+                        source: ImageSource.gallery,
+                      );
 
                       if (media != null) {
                         final bytes = await media.readAsBytes();
