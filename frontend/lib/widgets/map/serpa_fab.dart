@@ -14,13 +14,15 @@ class SerpaFab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Align(
       alignment: Alignment.bottomRight,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           FloatingActionButton(
-            backgroundColor: Theme.of(context).colorScheme.surface,
+            backgroundColor: colorScheme.surface,
+            foregroundColor: colorScheme.onSurfaceVariant,
             shape: const CircleBorder(),
             onPressed: () async {
               await ref

@@ -14,13 +14,15 @@ class MapButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Align(
       alignment: Alignment.topRight,
       child: Padding(
         padding: edgeInsets,
         child: FloatingActionButton(
           mini: true,
-          backgroundColor: Theme.of(context).colorScheme.surface,
+          backgroundColor: colorScheme.surface,
+          foregroundColor: colorScheme.onSurfaceVariant,
           onPressed: onPressed,
           shape: const CircleBorder(),
           child: Icon(icon),
