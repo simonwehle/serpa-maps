@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final imageProvider = FutureProvider.family<Uint8List, String>((
+final assetProvider = FutureProvider.family<Uint8List, String>((
   ref,
   url,
 ) async {

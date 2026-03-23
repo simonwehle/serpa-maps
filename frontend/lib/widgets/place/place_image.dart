@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/models/asset.dart';
-import 'package:serpa_maps/providers/data/image_provider.dart';
-import 'package:serpa_maps/widgets/place/place_asset_base.dart';
+import 'package:serpa_maps/providers/data/asset_provider.dart';
+import 'package:serpa_maps/widgets/place/place_video_thumbnail.dart';
 import 'package:serpa_maps/widgets/sheets/sheet_button.dart';
 import 'package:serpa_maps/utils/dialogs.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class PlaceImage extends ConsumerStatefulWidget {
+const double kPlaceAssetWidth = 200;
+const double kPlaceAssetHeight = 150;
+
+class PlaceImage extends ConsumerWidget {
   final Asset asset;
   final double width;
   final double height;
@@ -29,62 +32,53 @@ class PlaceImage extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<PlaceImage> createState() => _PlaceAssetState();
-}
-
-class _PlaceAssetState extends ConsumerState<PlaceImage> {
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  Widget _buildDeleteButton(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final i10n = AppLocalizations.of(context)!;
-    return Positioned(
-      top: 6,
-      right: 6,
-      child: SheetButton(
-        icon: Icons.close,
-        onPressed: () async {
-          final confirmed = await showDeleteConfirmationDialog(
-            context,
-            i10n.deleteAsset,
-            i10n.deleteAssetQuestion,
-          );
-          if (confirmed && widget.onDelete != null) {
-            widget.onDelete!();
-          }
-        },
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final imageAsync = ref.watch(imageProvider(widget.asset.assetUrl));
+    final assetAsync = ref.watch(assetProvider(asset.assetUrl));
+    final isVideo = asset.isVideo;
 
     return Skeletonizer(
-      enabled: imageAsync.isLoading,
-      child: PlaceAssetBase(
-        width: widget.width,
-        height: widget.height,
-        fit: widget.fit,
-        borderRadius: widget.borderRadius,
-        overlay: widget.isEditing ? _buildDeleteButton(context) : null,
-        child: imageAsync.when(
-          loading: () => SizedBox.expand(
-            child: Container(
-              color: Theme.of(context).colorScheme.outlineVariant,
+      enabled: assetAsync.isLoading,
+      child: Stack(
+        children: [
+          ClipRRect(
+            borderRadius: borderRadius ?? BorderRadius.circular(8),
+            child: assetAsync.when(
+              loading: () => Container(
+                width: width,
+                height: height,
+                color: Theme.of(context).colorScheme.outlineVariant,
+              ),
+              error: (_, _) => Container(
+                width: width,
+                height: height,
+                color: Theme.of(context).colorScheme.outlineVariant,
+                child: const Icon(Icons.broken_image),
+              ),
+              data: (bytes) => isVideo
+                  ? PlaceVideoThumbnail(asset: asset)
+                  : Image.memory(bytes, width: width, height: height, fit: fit),
             ),
           ),
-          error: (_, _) => Center(child: Icon(Icons.broken_image)),
-          data: (bytes) => Image.memory(
-            bytes,
-            width: widget.width,
-            height: widget.height,
-            fit: widget.fit,
-          ),
-        ),
+          if (isEditing)
+            Positioned(
+              top: 6,
+              right: 6,
+              child: SheetButton(
+                icon: Icons.close,
+                onPressed: () async {
+                  final confirmed = await showDeleteConfirmationDialog(
+                    context,
+                    i10n.deleteAsset,
+                    i10n.deleteAssetQuestion,
+                  );
+                  if (confirmed && onDelete != null) {
+                    onDelete!();
+                  }
+                },
+              ),
+            ),
+        ],
       ),
     );
   }

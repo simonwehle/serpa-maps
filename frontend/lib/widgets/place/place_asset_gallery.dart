@@ -3,10 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:serpa_maps/models/asset.dart';
 import 'package:serpa_maps/providers/data/place_provider.dart';
-import 'package:serpa_maps/widgets/place/place_asset_base.dart';
 import 'package:serpa_maps/widgets/place/place_assets_fullscreen.dart';
 import 'package:serpa_maps/widgets/place/place_image.dart';
-import 'package:serpa_maps/widgets/place/place_video_thumbnail.dart';
 
 class PlaceAssetGallery extends ConsumerWidget {
   final List<Asset> assets;
@@ -35,41 +33,26 @@ class PlaceAssetGallery extends ConsumerWidget {
             itemCount: itemCount,
             itemBuilder: (context, index) {
               if (index == assets.length) {
-                return PlaceAssetBase(
-                  width: kPlaceAssetWidth,
-                  height: kPlaceAssetHeight,
+                return ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  overlay: GestureDetector(
+                  child: GestureDetector(
                     onTap: onAddImage,
-                    child: Center(
-                      child: Icon(
-                        Icons.add_a_photo,
-                        color: Theme.of(context).colorScheme.onSecondary,
+                    child: Container(
+                      width: kPlaceAssetWidth,
+                      height: kPlaceAssetHeight,
+                      color: Theme.of(context).colorScheme.secondary,
+                      child: Center(
+                        child: Icon(
+                          Icons.add_a_photo,
+                          color: Theme.of(context).colorScheme.onSecondary,
+                        ),
                       ),
                     ),
-                  ),
-                  child: Container(
-                    color: Theme.of(context).colorScheme.secondary,
                   ),
                 );
               }
 
               final asset = assets[index];
-              final child = asset.isVideo
-                  ? PlaceVideoPreview(asset: asset)
-                  : PlaceImage(
-                      asset: asset,
-                      isEditing: isEditing,
-                      onDelete: () {
-                        ref
-                            .read(placeProvider.notifier)
-                            .deleteAsset(
-                              placeId: asset.placeId,
-                              assetId: asset.assetId,
-                            )
-                            .catchError((_) {});
-                      },
-                    );
               return GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(
@@ -81,7 +64,21 @@ class PlaceAssetGallery extends ConsumerWidget {
                     ),
                   );
                 },
-                child: child,
+                child: PlaceImage(
+                  asset: asset,
+                  width: kPlaceAssetWidth,
+                  height: kPlaceAssetHeight,
+                  isEditing: isEditing,
+                  onDelete: () {
+                    ref
+                        .read(placeProvider.notifier)
+                        .deleteAsset(
+                          placeId: asset.placeId,
+                          assetId: asset.assetId,
+                        )
+                        .catchError((_) {});
+                  },
+                ),
               );
             },
             separatorBuilder: (_, _) => const SizedBox(width: 8),
