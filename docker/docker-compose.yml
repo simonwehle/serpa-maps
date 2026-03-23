@@ -14,7 +14,7 @@ services:
     env_file:
       - .env
     volumes:
-      - serpa-assets:/app/assets
+      - ./assets:/app/assets
     depends_on:
       database:
         condition: service_healthy
@@ -42,7 +42,7 @@ services:
     ports:
       - "45537:80"
     volumes:
-      - serpa-assets:/var/www/assets:ro
+      - ./assets:/var/www/assets:ro
       - ./nginx/assets.conf:/etc/nginx/conf.d/default.conf:ro
   martin:
     image: ghcr.io/maplibre/martin:latest
@@ -60,4 +60,3 @@ services:
 
 volumes:
   pg-data:
-  serpa-assets:
