@@ -110,6 +110,7 @@ class _AddPlaceBottomSheetState extends ConsumerState<AddPlaceBottomSheet> {
                 selectedCategory = newCategory!;
               });
             },
+            hideImageGallery: true,
           ),
         );
       },

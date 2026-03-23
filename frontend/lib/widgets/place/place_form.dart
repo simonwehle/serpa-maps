@@ -5,10 +5,10 @@ import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/providers/data/place_provider.dart';
 
-import 'package:serpa_maps/models/asset.dart';
+//import 'package:serpa_maps/models/asset.dart';
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
-import 'package:serpa_maps/utils/extract_gps.dart';
+//import 'package:serpa_maps/utils/extract_gps.dart';
 import 'package:serpa_maps/widgets/form/delete_button.dart';
 import 'package:serpa_maps/widgets/place/place_asset_gallery.dart';
 import 'package:serpa_maps/widgets/place/place_form_button.dart';
@@ -25,6 +25,7 @@ class PlaceForm extends ConsumerWidget {
   final Category selectedCategory;
   final ValueChanged<Category?> onCategorySelected;
   final Future<void> Function()? deletePlace;
+  final bool hideImageGallery;
 
   const PlaceForm({
     super.key,
@@ -37,6 +38,7 @@ class PlaceForm extends ConsumerWidget {
     required this.selectedCategory,
     required this.onCategorySelected,
     this.deletePlace,
+    this.hideImageGallery = false,
   });
 
   void _normalizeDecimalInput(TextEditingController controller, String value) {
@@ -96,41 +98,43 @@ class PlaceForm extends ConsumerWidget {
               ),
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: PlaceAssetGallery(
-              assets: place?.assets ?? [],
-              isEditing: true,
-              onAddImage: () async {
-                final picker = ImagePicker();
-                final XFile? media = await picker.pickMedia();
+          !hideImageGallery
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: PlaceAssetGallery(
+                    assets: place?.assets ?? [],
+                    isEditing: true,
+                    onAddImage: () async {
+                      final picker = ImagePicker();
+                      final XFile? media = await picker.pickMedia();
 
-                if (media != null) {
-                  final bytes = await media.readAsBytes();
-                  final filename = media.name;
-                  if (place != null) {
-                    await ref
-                        .read(placeProvider.notifier)
-                        .addAsset(
-                          placeId: place!.id,
-                          assetBytes: bytes,
-                          filename: filename,
-                        );
-                  }
-                }
+                      if (media != null) {
+                        final bytes = await media.readAsBytes();
+                        final filename = media.name;
+                        if (place != null) {
+                          await ref
+                              .read(placeProvider.notifier)
+                              .addAsset(
+                                placeId: place!.id,
+                                assetBytes: bytes,
+                                filename: filename,
+                              );
+                        }
+                      }
 
-                if (media != null && !Asset.isVideoType(media.mimeType)) {
-                  final gps = await extractGpsFromImage(media);
-                  if (gps != null &&
-                      latitudeController.text.isEmpty &&
-                      longitudeController.text.isEmpty) {
-                    latitudeController.text = gps.$1.toString();
-                    longitudeController.text = gps.$2.toString();
-                  }
-                }
-              },
-            ),
-          ),
+                      // if (media != null && !Asset.isVideoType(media.mimeType)) {
+                      //   final gps = await extractGpsFromImage(media);
+                      //   if (gps != null &&
+                      //       latitudeController.text.isEmpty &&
+                      //       longitudeController.text.isEmpty) {
+                      //     latitudeController.text = gps.$1.toString();
+                      //     longitudeController.text = gps.$2.toString();
+                      //   }
+                      // }
+                    },
+                  ),
+                )
+              : SizedBox(height: 16),
           TextField(
             controller: descriptionController,
             maxLines: null,
