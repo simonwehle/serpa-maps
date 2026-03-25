@@ -34,6 +34,15 @@ final Map<String, IconData> iconMap = {
   "local_florist": Symbols.local_florist,
   "table_picnic": MdiIcons.tablePicnic,
   "tower_fire": MdiIcons.towerFire,
+  "tower-beach": MdiIcons.towerBeach,
+  "high-chair": Symbols.high_chair,
+  "landscape_2": Symbols.landscape_2,
+  "ski": MdiIcons.ski,
+  //"waterfall": MdiIcons.waterfall,
+  //"bridge": MdiIcons.bridge,
+  //"island": MdiIcons.island,
+  //"bungalow": Symbols.bungalow,
+  //"tunnel": MdiIcons.tunnel,
   "add": Icons.add,
 };
 
@@ -59,4 +68,5 @@ final List<Color> availableColors = [
   Colors.blue,
   Colors.purple,
   Colors.pink,
+  Colors.brown,
 ];
