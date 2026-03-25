@@ -7,7 +7,7 @@ final styleDarkUrlProvider = NotifierProvider<StyleDarkUrlNotifier, String>(
 class StyleDarkUrlNotifier extends Notifier<String> {
   @override
   String build() {
-    return 'https://tiles.openfreemap.org/styles/dark';
+    return 'https://raw.githubusercontent.com/simonwehle/osm-liberty-dark/refs/heads/main/style.json';
   }
 
   void updateStyleDarkUrl(String newUrl) {
