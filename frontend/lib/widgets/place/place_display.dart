@@ -60,7 +60,7 @@ class PlaceDisplay extends ConsumerWidget {
               : SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.only(bottom: 16),
-            child: OutlinedButton(
+            child: ElevatedButton(
               onPressed: () =>
                   openMaps(place.latitude, place.longitude, place.name),
               child: Text(i10n.directions),
