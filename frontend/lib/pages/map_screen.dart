@@ -238,6 +238,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               onPressed: () {
                 _controller.animateCamera(CameraUpdate.bearingTo(0));
               },
+              bearing: _currentBearing,
             ),
         ],
       ),

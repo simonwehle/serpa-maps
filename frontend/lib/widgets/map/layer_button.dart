@@ -10,7 +10,7 @@ class LayerButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return MapButton(
       onPressed: onPressed,
-      icon: Icons.layers,
+      iconWidget: Icon(Icons.layers),
       edgeInsets: const EdgeInsets.only(top: 125, right: 5),
     );
   }

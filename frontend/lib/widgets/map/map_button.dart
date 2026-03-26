@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class MapButton extends StatelessWidget {
   final VoidCallback onPressed;
-  final IconData icon;
+  final Widget iconWidget;
   final EdgeInsets edgeInsets;
 
   const MapButton({
     super.key,
     required this.onPressed,
-    required this.icon,
+    required this.iconWidget,
     required this.edgeInsets,
   });
 
@@ -25,7 +25,7 @@ class MapButton extends StatelessWidget {
           foregroundColor: colorScheme.onSurfaceVariant,
           onPressed: onPressed,
           shape: const CircleBorder(),
-          child: Icon(icon),
+          child: iconWidget,
         ),
       ),
     );
