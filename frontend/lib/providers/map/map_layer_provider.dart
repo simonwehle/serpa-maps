@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/providers/preferences/style_dark_provider.dart';
 import 'package:serpa_maps/providers/preferences/style_provider.dart';
+import 'package:serpa_maps/providers/preferences/theme_mode_provider.dart';
 
 enum MapLayer { vector, osm, satellite }
 
@@ -10,6 +11,12 @@ String getMapLayerStyleUrl(
   Brightness brightness,
   WidgetRef ref,
 ) {
+  final themeMode = ref.watch(themeModeProvider);
+  if (themeMode == ThemeMode.light) {
+    brightness = Brightness.light;
+  } else if (themeMode == ThemeMode.dark) {
+    brightness = Brightness.dark;
+  }
   switch (layer) {
     case MapLayer.vector:
       if (brightness == Brightness.dark) {

@@ -5,6 +5,7 @@ import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/pages/login_screen.dart';
 import 'package:serpa_maps/pages/map_screen.dart';
 import 'package:serpa_maps/pages/welcome_screen.dart';
+import 'package:serpa_maps/providers/preferences/theme_mode_provider.dart';
 import 'package:serpa_maps/providers/token/access_token_provider.dart';
 import 'package:serpa_maps/providers/token/refresh_token_provider.dart';
 import 'package:serpa_maps/providers/preferences/base_url_provider.dart';
@@ -102,7 +103,7 @@ class SerpaMaps extends ConsumerWidget {
           shadow: Colors.grey,
         ),
       ),
-      themeMode: ThemeMode.system,
+      themeMode: ref.watch(themeModeProvider),
       home: home,
     );
   }
