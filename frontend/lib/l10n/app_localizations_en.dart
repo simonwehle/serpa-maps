@@ -54,6 +54,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get description => 'Description';
 
   @override
+  String get directions => 'Directions';
+
+  @override
   String get email => 'Email';
 
   @override

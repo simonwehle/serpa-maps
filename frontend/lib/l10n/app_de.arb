@@ -15,6 +15,7 @@
   "deletePlace": "Ort löschen",
   "deletePlaceQuestion": "Möchten Sie diesen Ort löschen?",
   "description": "Beschreibung",
+  "directions": "Route",
   "email": "Email",
   "explore": "Erkunden",
   "latitude": "Breitengrad",

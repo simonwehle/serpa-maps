@@ -22,6 +22,7 @@ class PlaceDisplay extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final i10n = AppLocalizations.of(context)!;
     Future<void> openMaps(
       double latitude,
       double longitude,
@@ -62,7 +63,7 @@ class PlaceDisplay extends ConsumerWidget {
             child: OutlinedButton(
               onPressed: () =>
                   openMaps(place.latitude, place.longitude, place.name),
-              child: Text("Directions"),
+              child: Text(i10n.directions),
             ),
           ),
           Text(

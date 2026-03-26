@@ -188,6 +188,12 @@ abstract class AppLocalizations {
   /// **'Description'**
   String get description;
 
+  /// No description provided for @directions.
+  ///
+  /// In en, this message translates to:
+  /// **'Directions'**
+  String get directions;
+
   /// No description provided for @email.
   ///
   /// In en, this message translates to:
