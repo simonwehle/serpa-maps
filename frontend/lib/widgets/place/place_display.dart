@@ -6,6 +6,7 @@ import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/widgets/category/category_icon.dart';
 import 'package:serpa_maps/widgets/place/place_asset_gallery.dart';
 import 'package:serpa_maps/widgets/sheets/sheet_header.dart';
+import 'package:map_launcher/map_launcher.dart'; // [AvailableMap { mapName: Google Maps, mapType: google }, ...]
 
 class PlaceDisplay extends ConsumerWidget {
   final Category category;
@@ -21,6 +22,18 @@ class PlaceDisplay extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    Future<void> openMaps(
+      double latitude,
+      double longitude,
+      String title,
+    ) async {
+      final availableMaps = await MapLauncher.installedMaps;
+      await availableMaps.first.showDirections(
+        destination: Coords(latitude, longitude),
+        destinationTitle: title,
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
@@ -44,6 +57,14 @@ class PlaceDisplay extends ConsumerWidget {
                   child: PlaceAssetGallery(assets: place.assets),
                 )
               : SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: OutlinedButton(
+              onPressed: () =>
+                  openMaps(place.latitude, place.longitude, place.name),
+              child: Text("Directions"),
+            ),
+          ),
           Text(
             place.description?.isNotEmpty == true
                 ? place.description!
