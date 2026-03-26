@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/providers/preferences/theme_mode_provider.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,6 +11,7 @@ class AppearanceSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
+    final i10n = AppLocalizations.of(context)!;
     final themeModes = [ThemeMode.system, ThemeMode.light, ThemeMode.dark];
     final themeMode = ref.watch(themeModeProvider);
     final isSelected = themeModes.map((m) => m == themeMode).toList();
@@ -20,7 +22,7 @@ class AppearanceSheet extends ConsumerWidget {
     }
 
     return SerpaStaticSheet(
-      title: "Appearance",
+      title: i10n.appearance,
       child: ToggleButtons(
         direction: Axis.horizontal,
         onPressed: (index) {
@@ -36,7 +38,7 @@ class AppearanceSheet extends ConsumerWidget {
         color: colorScheme.primary,
         constraints: const BoxConstraints(minHeight: 40.0, minWidth: 80.0),
         isSelected: isSelected,
-        children: const [Text('System'), Text('Light'), Text('Dark')],
+        children: [Text(i10n.system), Text(i10n.light), Text(i10n.dark)],
       ),
     );
   }

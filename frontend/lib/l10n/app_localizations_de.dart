@@ -15,6 +15,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get anonymousUser => 'Anonymer Benutzer';
 
   @override
+  String get appearance => 'Erscheinungsbild';
+
+  @override
   String get cancel => 'Abbrechen';
 
   @override
@@ -22,6 +25,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get categoryNotFound => 'Kategorie nicht gefunden';
+
+  @override
+  String get dark => 'Dunkel';
 
   @override
   String get defaultMap => 'Standard';
@@ -55,6 +61,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get latitude => 'Breitengrad';
+
+  @override
+  String get light => 'Hell';
 
   @override
   String get login => 'Einloggen';
@@ -112,6 +121,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get showOverlay => 'Overlay anzeigen';
+
+  @override
+  String get system => 'System';
 
   @override
   String get yes => 'Ja';

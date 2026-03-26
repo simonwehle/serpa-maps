@@ -28,7 +28,7 @@ class SettingsSheet extends ConsumerWidget {
             onPressed: () {
               showSerpaStaticSheet(context: context, child: AppearanceSheet());
             },
-            child: Text('Appearance'),
+            child: Text(i10n.appearance),
           ),
           ElevatedButton(
             onPressed: () {

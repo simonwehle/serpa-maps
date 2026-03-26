@@ -2,9 +2,11 @@
   "@@locale": "de",
   "add": "Hinzufügen",
   "anonymousUser": "Anonymer Benutzer",
+  "appearance": "Erscheinungsbild",
   "cancel": "Abbrechen",
   "categories": "Kategorien",
   "categoryNotFound": "Kategorie nicht gefunden",
+  "dark": "Dunkel",
   "defaultMap": "Standard",
   "deleteAsset": "Inhalt löschen",
   "deleteAssetQuestion": "Möchten Sie diesen Inhalt löschen?",
@@ -16,6 +18,7 @@
   "email": "Email",
   "explore": "Erkunden",
   "latitude": "Breitengrad",
+  "light": "Hell",
   "login": "Einloggen",
   "logout": "Ausloggen",
   "logoutQuestion": "Möchten Sie sich ausloggen?",
@@ -35,5 +38,6 @@
   "settings": "Einstellungen",
   "showMarkers": "Markierungen anzeigen",
   "showOverlay": "Overlay anzeigen",
+  "system": "System",
   "yes": "Ja"
 }
