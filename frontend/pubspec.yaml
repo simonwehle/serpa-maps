@@ -36,7 +36,7 @@ dependencies:
   app_settings: ^6.1.1
   image_picker: ^1.2.0
   exif: ^3.0.2
-  material_symbols_icons: ^4.2874.0
+  material_symbols_icons: ^4.2906.0
   material_design_icons_flutter: ^7.0.7296
   skeletonizer: ^2.1.0+1
   cached_network_image: ^3.4.1
