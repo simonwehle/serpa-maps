@@ -5,12 +5,13 @@ import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/pages/login_screen.dart';
 import 'package:serpa_maps/pages/map_screen.dart';
 import 'package:serpa_maps/pages/welcome_screen.dart';
+import 'package:serpa_maps/providers/preferences/theme_mode_provider.dart';
 import 'package:serpa_maps/providers/token/access_token_provider.dart';
 import 'package:serpa_maps/providers/token/refresh_token_provider.dart';
-import 'package:serpa_maps/providers/url/base_url_provider.dart';
-import 'package:serpa_maps/providers/url/overlay_url_provider.dart';
-import 'package:serpa_maps/providers/url/style_dark_provider.dart';
-import 'package:serpa_maps/providers/url/style_provider.dart';
+import 'package:serpa_maps/providers/preferences/base_url_provider.dart';
+import 'package:serpa_maps/providers/preferences/overlay_url_provider.dart';
+import 'package:serpa_maps/providers/preferences/style_dark_provider.dart';
+import 'package:serpa_maps/providers/preferences/style_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -20,6 +21,8 @@ void main() async {
 
   final prefs = await SharedPreferences.getInstance();
   final container = ProviderContainer();
+
+  await container.read(themeModeProvider.notifier).loadThemeModeFromPrefs();
 
   final urlConfigs = {
     'baseUrl': container.read(baseUrlProvider.notifier).updateBaseUrl,
@@ -102,7 +105,7 @@ class SerpaMaps extends ConsumerWidget {
           shadow: Colors.grey,
         ),
       ),
-      themeMode: ThemeMode.system,
+      themeMode: ref.watch(themeModeProvider),
       home: home,
     );
   }

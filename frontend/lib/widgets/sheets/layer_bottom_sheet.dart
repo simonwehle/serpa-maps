@@ -4,7 +4,7 @@ import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/providers/map/map_layer_provider.dart';
 import 'package:serpa_maps/providers/map/markers_visible_provider.dart';
 import 'package:serpa_maps/providers/map/overlay_active_prvoider.dart';
-import 'package:serpa_maps/providers/url/overlay_url_provider.dart';
+import 'package:serpa_maps/providers/preferences/overlay_url_provider.dart';
 import 'package:serpa_maps/widgets/layer/layer_image.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
 
