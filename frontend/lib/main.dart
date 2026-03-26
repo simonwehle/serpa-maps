@@ -22,6 +22,8 @@ void main() async {
   final prefs = await SharedPreferences.getInstance();
   final container = ProviderContainer();
 
+  await container.read(themeModeProvider.notifier).loadThemeModeFromPrefs();
+
   final urlConfigs = {
     'baseUrl': container.read(baseUrlProvider.notifier).updateBaseUrl,
     'styleUrl': container.read(styleUrlProvider.notifier).updateStyleUrl,

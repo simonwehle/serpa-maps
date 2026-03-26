@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/providers/preferences/theme_mode_provider.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AppearanceSheet extends ConsumerWidget {
   const AppearanceSheet({super.key});
@@ -13,6 +14,11 @@ class AppearanceSheet extends ConsumerWidget {
     final themeMode = ref.watch(themeModeProvider);
     final isSelected = themeModes.map((m) => m == themeMode).toList();
 
+    Future<void> persistTheme(ThemeMode themeMode) async {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('ThemeMode', themeMode.toString());
+    }
+
     return SerpaStaticSheet(
       title: "Appearance",
       child: ToggleButtons(
@@ -21,6 +27,7 @@ class AppearanceSheet extends ConsumerWidget {
           ref
               .read(themeModeProvider.notifier)
               .updateThemeMode(themeModes[index]);
+          persistTheme(themeModes[index]);
         },
         borderRadius: const BorderRadius.all(Radius.circular(8)),
         selectedBorderColor: colorScheme.primary,
