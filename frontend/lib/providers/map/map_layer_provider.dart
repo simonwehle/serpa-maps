@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:serpa_maps/providers/url/style_dark_provider.dart';
-import 'package:serpa_maps/providers/url/style_provider.dart';
+import 'package:serpa_maps/providers/preferences/style_dark_provider.dart';
+import 'package:serpa_maps/providers/preferences/style_provider.dart';
 
 enum MapLayer { vector, osm, satellite }
 
