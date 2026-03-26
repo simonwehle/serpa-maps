@@ -5,16 +5,16 @@
     "ne2_shaded": {
       "maxzoom": 6,
       "tileSize": 256,
-      "tiles": ["http://localhost:7135/ne2sr/{z}/{x}/{y}"],
+      "tiles": ["http://localhost:7143/ne2sr/{z}/{x}/{y}"],
       "type": "raster"
     },
     "openmaptiles": {
       "type": "vector",
-      "url": "http://localhost:7135/monaco"
+      "url": "http://localhost:7143/monaco"
     }
   },
-  "sprite": "http://localhost:7135/sprite/liberty",
-  "glyphs": "http://localhost:7135/font/{fontstack}/{range}",
+  "sprite": "http://localhost:7143/sprite/liberty",
+  "glyphs": "http://localhost:7143/font/{fontstack}/{range}",
   "layers": [
     {
       "id": "background",

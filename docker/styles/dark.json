@@ -3,11 +3,11 @@
   "sources": {
     "openmaptiles": {
       "type": "vector",
-      "url": "http://localhost:7135/monaco"
+      "url": "http://localhost:7143/monaco"
     }
   },
-  "sprite": "http://localhost:7135/sprite/dark",
-  "glyphs": "http://localhost:7135/fonts/{fontstack}/{range}.pbf",
+  "sprite": "http://localhost:7143/sprite/dark",
+  "glyphs": "http://localhost:7143/fonts/{fontstack}/{range}.pbf",
   "layers": [
     {
       "id": "background",
