@@ -14,7 +14,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func UploadPlaceAssets(db *gorm.DB, mediaStorageDir, assetURL string) gin.HandlerFunc {
+func UploadPlaceAssets(db *gorm.DB, mediaStorageDir string) gin.HandlerFunc {
     return func(c *gin.Context) {
         placeIDStr := c.Param("id")
         placeID, err := uuid.Parse(placeIDStr)
@@ -103,7 +103,6 @@ func UploadPlaceAssets(db *gorm.DB, mediaStorageDir, assetURL string) gin.Handle
                 return
             }
 
-            newAsset.AssetURL = buildAssetURL(assetURL, newAsset.AssetFilename)
             uploadedAssets = append(uploadedAssets, newAsset)
         }
 
@@ -143,6 +142,38 @@ func UpdateAssetPositions(db *gorm.DB) gin.HandlerFunc {
         }
 
         c.JSON(http.StatusOK, gin.H{"message": "Positions updated"})
+    }
+}
+
+func ServeAsset(db *gorm.DB) gin.HandlerFunc {
+    return func(c *gin.Context) {
+        filename := c.Param("filename")
+
+        userID, exists := c.Get("user_id")
+        if !exists {
+            c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+            return
+        }
+        userIDStr := fmt.Sprintf("%v", userID)
+        parsedUserID, err := uuid.Parse(userIDStr)
+        if err != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID format"})
+            return
+        }
+
+        var asset models.Asset
+        var place models.Place
+        if err := db.Where("asset_filename = ?", filename).First(&asset).Error; err != nil {
+            c.JSON(http.StatusNotFound, gin.H{"error": "Asset not found"})
+            return
+        }
+        if err := db.Where("place_id = ? AND user_id = ?", asset.PlaceID, parsedUserID).First(&place).Error; err != nil {
+            c.JSON(http.StatusForbidden, gin.H{"error": "You do not have access to this asset"})
+            return
+        }
+
+        c.Header("X-Accel-Redirect", "/protected-assets/"+asset.AssetFilename)
+        c.Status(http.StatusOK)
     }
 }
 

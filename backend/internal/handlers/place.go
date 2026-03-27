@@ -13,10 +13,6 @@ import (
 	"gorm.io/gorm"
 )
 
-func buildAssetURL(assetURL, assetFilename string) string {
-    return fmt.Sprintf("%s/%s", strings.TrimRight(assetURL, "/"), strings.TrimPrefix(assetFilename, "/"))
-}
-
 func validatePlaceInput(name string, latitude, longitude float64) error {
 	if strings.TrimSpace(name) == "" {
 		return fmt.Errorf("name is required")
@@ -37,7 +33,7 @@ func round6(v float64) float64 {
 	return math.Round(v*1e6) / 1e6
 }
 
-func AddPlace(db *gorm.DB, assetURL string) gin.HandlerFunc {
+func AddPlace(db *gorm.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
         var place models.Place
 
@@ -81,17 +77,13 @@ func AddPlace(db *gorm.DB, assetURL string) gin.HandlerFunc {
             assets = []models.Asset{}
         }
 
-        for i := range assets {
-            assets[i].AssetURL = buildAssetURL(assetURL, assets[i].AssetFilename)
-        }
-
         place.Assets = assets
 
         c.JSON(http.StatusCreated, place)
     }
 }
 
-func GetPlaces(db *gorm.DB, assetURL string) gin.HandlerFunc {
+func GetPlaces(db *gorm.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
         var places []models.Place
 
@@ -118,9 +110,6 @@ func GetPlaces(db *gorm.DB, assetURL string) gin.HandlerFunc {
 			if err != nil || assets == nil {
                 assets = []models.Asset{}
 			}
-            for j := range assets {
-                assets[j].AssetURL = buildAssetURL(assetURL, assets[j].AssetFilename)
-            }
             places[i].Assets = assets
 		}
 
@@ -129,7 +118,7 @@ func GetPlaces(db *gorm.DB, assetURL string) gin.HandlerFunc {
 }
 
 
-func UpdatePlace(db *gorm.DB, assetURLBase string) gin.HandlerFunc {
+func UpdatePlace(db *gorm.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
         id := c.Param("id")
         var payload map[string]interface{}
@@ -209,10 +198,6 @@ func UpdatePlace(db *gorm.DB, assetURLBase string) gin.HandlerFunc {
 
         if assets == nil {
             assets = []models.Asset{}
-        }
-
-        for i := range assets {
-            assets[i].AssetURL = buildAssetURL(assetURLBase, assets[i].AssetFilename)
         }
 
         place.Assets = assets
