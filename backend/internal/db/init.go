@@ -13,5 +13,9 @@ func InitDB(db *gorm.DB) error {
 		&models.Category{},
 		&models.Place{},
 		&models.Asset{},
+		&models.Group{},
+    	&models.GroupMember{},
+		&models.GroupInvite{},
+		&models.PlaceShare{},
 	)
 }
