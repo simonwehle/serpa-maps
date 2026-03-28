@@ -29,6 +29,13 @@ func UploadPlaceAssets(db *gorm.DB, mediaStorageDir, assetURL string) gin.Handle
 			return
 		}
 
+        var place models.Place
+        if err := db.Select("user_id").Where("place_id = ?", placeID).First(&place).Error; err != nil {
+            c.JSON(http.StatusNotFound, gin.H{"error": "Place not found"})
+            return
+        }
+        userID := place.UserID
+
         form, err := c.MultipartForm()
         if err != nil {
             c.JSON(http.StatusBadRequest, gin.H{"error": "Error reading uploaded files"})
@@ -58,18 +65,17 @@ func UploadPlaceAssets(db *gorm.DB, mediaStorageDir, assetURL string) gin.Handle
 
         for _, file := range files {
             ext := strings.ToLower(filepath.Ext(file.Filename))
-			
-			validExtensions := map[string]bool{
-				".jpg": true, ".jpeg": true, ".png": true, ".gif": true,
-				".mp4": true, ".mov": true, ".webp": true,
-			}
-			if !validExtensions[ext] {
-				c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Invalid file type: %s", ext)})
-				return
-			}
+            validExtensions := map[string]bool{
+                ".jpg": true, ".jpeg": true, ".png": true, ".gif": true,
+                ".mp4": true, ".mov": true, ".webp": true,
+            }
+            if !validExtensions[ext] {
+                c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Invalid file type: %s", ext)})
+                return
+            }
 
-
-            assetFilename := fmt.Sprintf("%s%s", uuid.Must(uuid.NewV7()).String(), ext)
+            assetUUID := uuid.Must(uuid.NewV7()).String()
+            assetFilename := filepath.Join(userID.String(), placeID.String(), assetUUID+ext)
             storagePath := filepath.Join(mediaStorageDir, assetFilename)
             if err := c.SaveUploadedFile(file, storagePath); err != nil {
                 c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while saving asset"})
@@ -110,7 +116,6 @@ func UploadPlaceAssets(db *gorm.DB, mediaStorageDir, assetURL string) gin.Handle
         c.JSON(http.StatusOK, gin.H{"assets": uploadedAssets})
     }
 }
-
 
 func UpdateAssetPositions(db *gorm.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
