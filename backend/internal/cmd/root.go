@@ -74,7 +74,6 @@ func Execute() {
 	protected.PATCH("/invite/:id", handlers.RespondToInvite(postgres))
 
 	protected.POST("/group/:id/place", handlers.SharePlaceWithGroup(postgres))
-	protected.GET("/group/:id/places", handlers.GetGroupPlaces(postgres, assetURL))
 	protected.DELETE("/group/:id/place/:place_id", handlers.UnsharePlace(postgres))
 
 	r.Run(":53964")

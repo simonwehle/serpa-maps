@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"fmt"
-	"math"
 	"net/http"
 	"strings"
 
@@ -12,30 +11,6 @@ import (
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
-
-func buildAssetURL(assetURL, assetFilename string) string {
-    return fmt.Sprintf("%s/%s", strings.TrimRight(assetURL, "/"), strings.TrimPrefix(assetFilename, "/"))
-}
-
-func validatePlaceInput(name string, latitude, longitude float64) error {
-	if strings.TrimSpace(name) == "" {
-		return fmt.Errorf("name is required")
-	}
-	if len(name) > 255 {
-		return fmt.Errorf("name too long (max 255 characters)")
-	}
-	if latitude < -90 || latitude > 90 {
-		return fmt.Errorf("invalid latitude (must be between -90 and 90)")
-	}
-	if longitude < -180 || longitude > 180 {
-		return fmt.Errorf("invalid longitude (must be between -180 and 180)")
-	}
-	return nil
-}
-
-func round6(v float64) float64 {
-	return math.Round(v*1e6) / 1e6
-}
 
 func AddPlace(db *gorm.DB, assetURL string) gin.HandlerFunc {
     return func(c *gin.Context) {
@@ -92,40 +67,37 @@ func AddPlace(db *gorm.DB, assetURL string) gin.HandlerFunc {
 }
 
 func GetPlaces(db *gorm.DB, assetURL string) gin.HandlerFunc {
-    return func(c *gin.Context) {
-        var places []models.Place
-
-        userID, exists := c.Get("user_id")
-        if !exists {
-            c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
-            return
-        }
-        userIDStr := fmt.Sprintf("%v", userID)
-        parsedUserID, err := uuid.Parse(userIDStr)
-        if err != nil {
-            c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID format"})
-            return
-        }
-
-        if err = db.Where("user_id = ?", parsedUserID).Order("place_id").Find(&places).Error; err != nil {
-            c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-            return
-        }
-
-        for i, p := range places {
-            var assets []models.Asset
-			err := db.Where("place_id = ?", p.PlaceID).Order("position").Find(&assets).Error
-			if err != nil || assets == nil {
-                assets = []models.Asset{}
-			}
-            for j := range assets {
-                assets[j].AssetURL = buildAssetURL(assetURL, assets[j].AssetFilename)
-            }
-            places[i].Assets = assets
+	return func(c *gin.Context) {
+		parsedUserID, ok := parseUserID(c)
+		if !ok {
+			return
 		}
 
-        c.JSON(http.StatusOK, places)
-    }
+		sharedPlaceIDs := getSharedPlaceIDs(db, parsedUserID)
+		query := db.Where("user_id = ?", parsedUserID)
+		if len(sharedPlaceIDs) > 0 {
+			query = query.Or("place_id IN ?", sharedPlaceIDs)
+		}
+		var places []models.Place
+		if err := query.Order("place_id").Find(&places).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		for i, p := range places {
+			var assets []models.Asset
+			err := db.Where("place_id = ?", p.PlaceID).Order("position").Find(&assets).Error
+			if err != nil || assets == nil {
+				assets = []models.Asset{}
+			}
+			for j := range assets {
+				assets[j].AssetURL = buildAssetURL(assetURL, assets[j].AssetFilename)
+			}
+			places[i].Assets = assets
+		}
+
+		c.JSON(http.StatusOK, places)
+	}
 }
 
 
