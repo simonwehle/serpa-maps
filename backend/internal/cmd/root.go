@@ -62,5 +62,20 @@ func Execute() {
 	protected.PATCH("/place/:id/assets/positions", handlers.UpdateAssetPositions(postgres))
 	protected.DELETE("/place/:id/asset/:asset_id", handlers.DeletePlaceAsset(postgres, assetStorageDir))
 
+	protected.POST("/group", handlers.CreateGroup(postgres))
+	protected.GET("/groups", handlers.GetGroups(postgres))
+	protected.DELETE("/group/:id", handlers.DeleteGroup(postgres))
+
+	protected.GET("/group/:id/members", handlers.GetGroupMembers(postgres))
+	protected.DELETE("/group/:id/member/:user_id", handlers.RemoveGroupMember(postgres))
+
+	protected.POST("/group/:id/invite", handlers.InviteToGroup(postgres))
+	protected.GET("/invites", handlers.GetMyInvites(postgres))
+	protected.PATCH("/invite/:id", handlers.RespondToInvite(postgres))
+
+	protected.POST("/group/:id/place", handlers.SharePlaceWithGroup(postgres))
+	protected.GET("/group/:id/places", handlers.GetGroupPlaces(postgres, assetURL))
+	protected.DELETE("/group/:id/place/:place_id", handlers.UnsharePlace(postgres))
+
 	r.Run(":53964")
 }
