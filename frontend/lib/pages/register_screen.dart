@@ -4,6 +4,7 @@ import 'package:serpa_maps/pages/login_screen.dart';
 import 'package:serpa_maps/pages/map_screen.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/pages/textfield_screen.dart';
+import 'package:serpa_maps/pages/welcome_screen.dart';
 import 'package:serpa_maps/widgets/fields/register_fields.dart';
 
 class RegisterScreen extends ConsumerWidget {
@@ -15,6 +16,7 @@ class RegisterScreen extends ConsumerWidget {
 
     return TextFieldScreen(
       title: i10n.register,
+      navigationBackTarget: WelcomeScreen(),
       childBuilder: (onRegisterSubmit) => RegisterFields(
         persistChanges: onRegisterSubmit,
         onRegisterTap: () {

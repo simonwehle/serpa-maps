@@ -6,6 +6,7 @@ class TextFieldScreen extends ConsumerStatefulWidget {
   final IconData icon;
   final Widget Function(ValueChanged<Future<void> Function()>) childBuilder;
   final Widget navigationTarget;
+  final Widget? navigationBackTarget;
 
   const TextFieldScreen({
     super.key,
@@ -13,6 +14,7 @@ class TextFieldScreen extends ConsumerStatefulWidget {
     required this.icon,
     required this.childBuilder,
     required this.navigationTarget,
+    this.navigationBackTarget,
   });
 
   @override
@@ -28,9 +30,22 @@ class _TextFieldScreenState extends ConsumerState<TextFieldScreen> {
     _onSubmitCallback = callback;
   }
 
+  void _pushNavigationTarget(Widget target) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => target));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+        leading: widget.navigationBackTarget != null
+            ? BackButton(
+                onPressed: () =>
+                    _pushNavigationTarget(widget.navigationBackTarget!),
+              )
+            : const SizedBox.shrink(),
+      ),
       body: SafeArea(
         child: Center(
           child: Column(
@@ -79,11 +94,7 @@ class _TextFieldScreenState extends ConsumerState<TextFieldScreen> {
                   if (!mounted) return;
 
                   if (context.mounted) {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => widget.navigationTarget,
-                      ),
-                    );
+                    _pushNavigationTarget(widget.navigationTarget);
                   }
                 } catch (e) {
                   if (!mounted) return;
