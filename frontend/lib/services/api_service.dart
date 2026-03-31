@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 
 import 'package:serpa_maps/models/category.dart';
+import 'package:serpa_maps/models/group.dart';
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/models/auth.dart';
 
@@ -169,4 +170,25 @@ class ApiService {
 
     await _dio.post('/logout', data: logoutRequest);
   }
+
+  Future<List<Group>> fetchGroups() async {
+    final res = await _dio.get('/groups');
+    final List data = res.data;
+    return data.map((json) => Group.fromJson(json)).toList();
+  }
+
+  Future<Group> addGroup({required String name, String? description}) async {
+    final Map<String, dynamic> newGroup = {'name': name};
+
+    if (description != null) newGroup['description'] = description;
+
+    final res = await _dio.post('/group', data: newGroup);
+    return Group.fromJson(res.data);
+  }
+
+  Future<void> deleteGroup({required String id}) async {
+    await _dio.delete('/group/$id');
+  }
+
+  //Future<void> respondToInvite({required bool accept}) async {}
 }
