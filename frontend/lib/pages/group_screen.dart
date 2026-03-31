@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:serpa_maps/widgets/group/group_header.dart';
 
 class GroupScreen extends StatelessWidget {
   const GroupScreen({super.key});
@@ -12,30 +13,19 @@ class GroupScreen extends StatelessWidget {
         padding: EdgeInsetsGeometry.symmetric(horizontal: 16),
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Invites",
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.refresh),
-                  onPressed: () {
-                    print("Refresh Invites");
-                  },
-                ),
-              ],
+            GroupHeader(
+              title: "Invites",
+              icon: Icons.refresh,
+              onPressed: () {
+                print("Invites");
+              },
             ),
             Padding(
               padding: EdgeInsets.symmetric(vertical: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Horde"),
+                  Text("Monaco Vacation"),
                   Row(
                     children: [
                       IconButton(
@@ -62,23 +52,12 @@ class GroupScreen extends StatelessWidget {
               child: Center(child: Text("No group invites available")),
             ),
             Divider(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Groups",
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: () {
-                    print("Create Group");
-                  },
-                ),
-              ],
+            GroupHeader(
+              title: "Groups",
+              icon: Icons.add,
+              onPressed: () {
+                print("Add group");
+              },
             ),
           ],
         ),

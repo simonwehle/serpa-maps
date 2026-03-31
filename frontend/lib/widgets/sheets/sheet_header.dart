@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:serpa_maps/widgets/fields/serpa_title.dart';
 import 'package:serpa_maps/widgets/sheets/sheet_button.dart';
 
 class SheetHeader extends StatelessWidget {
@@ -11,10 +12,7 @@ class SheetHeader extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          title,
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
+        SerpaTitle(title: title),
         Row(
           children: [
             if (onPressed != null)
