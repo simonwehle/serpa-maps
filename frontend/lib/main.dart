@@ -93,6 +93,7 @@ class SerpaMaps extends ConsumerWidget {
           surface: Colors.white,
           outlineVariant: Colors.grey[200],
           shadow: Colors.black26,
+          tertiary: Colors.green,
         ),
       ),
       darkTheme: ThemeData(
@@ -103,6 +104,7 @@ class SerpaMaps extends ConsumerWidget {
           surface: Colors.black,
           outlineVariant: Colors.grey[800],
           shadow: Colors.grey,
+          tertiary: Colors.lightGreen,
         ),
       ),
       themeMode: ref.watch(themeModeProvider),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/models/user.dart';
+import 'package:serpa_maps/pages/group_screen.dart';
 import 'package:serpa_maps/providers/api/api_provider.dart';
 import 'package:serpa_maps/providers/token/access_token_provider.dart';
 import 'package:serpa_maps/providers/token/refresh_token_provider.dart';
@@ -41,6 +42,15 @@ class SettingsSheet extends ConsumerWidget {
               showSerpaStaticSheet(context: context, child: UrlSheet());
             },
             child: Text(i10n.settings),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => GroupScreen()),
+              );
+            },
+            child: Text("Groups"),
           ),
           ElevatedButton(
             onPressed: () async {
