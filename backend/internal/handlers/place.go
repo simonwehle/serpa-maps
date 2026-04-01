@@ -45,6 +45,16 @@ func AddPlace(db *gorm.DB, assetURL string) gin.HandlerFunc {
 		return
 	}
 
+        var existing models.Place
+        err = db.Where("user_id = ? AND ABS(latitude - ?) < 0.000001 AND ABS(longitude - ?) < 0.000001", parsedUserID, payload.Place.Latitude, payload.Place.Longitude).First(&existing).Error
+        if err == nil {
+            c.JSON(http.StatusConflict, gin.H{"error": "An diesem Ort existiert bereits ein Platz."})
+            return
+        } else if err != gorm.ErrRecordNotFound {
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "Fehler bei der Platzprüfung", "details": err.Error()})
+            return
+        }
+
         if err := db.Create(&payload.Place).Error; err != nil {
             c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to insert place", "details": err.Error()})
             return
