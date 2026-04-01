@@ -68,13 +68,26 @@ func GetMyInvites(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		var invites []models.GroupInvite
-		if err := db.Where("invitee_id = ? AND status = 'pending'", userID).Find(&invites).Error; err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch invites"})
-			return
-		}
+		   	var invites []models.GroupInvite
+			if err := db.Preload("Group").Preload("InvitedBy").Where("invitee_id = ? AND status = 'pending'", userID).Find(&invites).Error; err != nil {
+			   c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch invites"})
+			   return
+		   }
 
-		c.JSON(http.StatusOK, invites)
+		   var result []gin.H
+		   for _, invite := range invites {
+			   result = append(result, gin.H{
+				   "group_invite_id": invite.GroupInviteID,
+				   "group_id": invite.GroupID,
+				   "group_name": invite.Group.Name,
+				   "invited_by_id": invite.InvitedByID,
+				   "invited_by_username": invite.InvitedBy.Username,
+				   "status": invite.Status,
+				   "created_at": invite.CreatedAt,
+				   "responded_at": invite.RespondedAt,
+			   })
+		   }
+		   c.JSON(http.StatusOK, result)
 	}
 }
 
