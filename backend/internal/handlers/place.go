@@ -110,19 +110,36 @@ func GetPlaces(db *gorm.DB, assetURL string) gin.HandlerFunc {
 			return
 		}
 
-		for i, p := range places {
-			var assets []models.Asset
-			err := db.Where("place_id = ?", p.PlaceID).Order("position").Find(&assets).Error
-			if err != nil || assets == nil {
-				assets = []models.Asset{}
-			}
-			for j := range assets {
-				assets[j].AssetURL = buildAssetURL(assetURL, assets[j].AssetFilename)
-			}
-			places[i].Assets = assets
-		}
+        type PlaceWithGroups struct {
+            models.Place
+            GroupIDs []string `json:"group_ids"`
+        }
+        var result []PlaceWithGroups
+        for i, p := range places {
+            var assets []models.Asset
+            err := db.Where("place_id = ?", p.PlaceID).Order("position").Find(&assets).Error
+            if err != nil || assets == nil {
+                assets = []models.Asset{}
+            }
+            for j := range assets {
+                assets[j].AssetURL = buildAssetURL(assetURL, assets[j].AssetFilename)
+            }
+            places[i].Assets = assets
 
-		c.JSON(http.StatusOK, places)
+            var shares []models.PlaceShare
+            groupIDs := []string{}
+            if err := db.Where("place_id = ?", p.PlaceID).Find(&shares).Error; err == nil {
+                for _, share := range shares {
+                    groupIDs = append(groupIDs, share.GroupID.String())
+                }
+            }
+            result = append(result, PlaceWithGroups{
+                Place:    places[i],
+                GroupIDs: groupIDs,
+            })
+        }
+
+        c.JSON(http.StatusOK, result)
 	}
 }
 
