@@ -24,11 +24,11 @@ func GetGroupMembers(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		var members []models.GroupMember
-		if err := db.Where("group_id = ? AND status = 'accepted'", groupID).Find(&members).Error; err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch members"})
-			return
-		}
+		       var members []models.GroupMember
+		       if err := db.Where("group_id = ?", groupID).Find(&members).Error; err != nil {
+			       c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch members"})
+			       return
+		       }
 
 		c.JSON(http.StatusOK, members)
 	}
