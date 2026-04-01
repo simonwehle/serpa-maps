@@ -14,9 +14,12 @@ import (
 
 func AddPlace(db *gorm.DB, assetURL string) gin.HandlerFunc {
     return func(c *gin.Context) {
-        var place models.Place
+        var payload struct {
+            models.Place
+            GroupIDs []string `json:"group_ids"`
+        }
 
-        if err := c.ShouldBindJSON(&place); err != nil {
+        if err := c.ShouldBindJSON(&payload); err != nil {
             c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON payload"})
             return
         }
@@ -32,23 +35,36 @@ func AddPlace(db *gorm.DB, assetURL string) gin.HandlerFunc {
             c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID format"})
             return
         }
-        place.UserID = parsedUserID
+        payload.Place.UserID = parsedUserID
 
-        place.Latitude = round6(place.Latitude)
-        place.Longitude = round6(place.Longitude)
+        payload.Place.Latitude = round6(payload.Place.Latitude)
+        payload.Place.Longitude = round6(payload.Place.Longitude)
 
-		if err := validatePlaceInput(place.Name, place.Latitude, place.Longitude); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
+	if err := validatePlaceInput(payload.Place.Name, payload.Place.Latitude, payload.Place.Longitude); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-        if err := db.Create(&place).Error; err != nil {
+        if err := db.Create(&payload.Place).Error; err != nil {
             c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to insert place", "details": err.Error()})
             return
         }
 
+        for _, groupID := range payload.GroupIDs {
+            gid, err := uuid.Parse(groupID)
+            if err != nil {
+                continue
+            }
+            share := models.PlaceShare{
+                GroupID:    gid,
+                PlaceID:    payload.Place.PlaceID,
+                SharedByID: parsedUserID,
+            }
+            _ = db.Create(&share)
+        }
+
         var assets []models.Asset
-        if err := db.Where("place_id = ?", place.PlaceID).Order("position").Find(&assets).Error; err != nil {
+        if err := db.Where("place_id = ?", payload.Place.PlaceID).Order("position").Find(&assets).Error; err != nil {
             assets = []models.Asset{}
         }
 
@@ -60,9 +76,9 @@ func AddPlace(db *gorm.DB, assetURL string) gin.HandlerFunc {
             assets[i].AssetURL = buildAssetURL(assetURL, assets[i].AssetFilename)
         }
 
-        place.Assets = assets
+        payload.Place.Assets = assets
 
-        c.JSON(http.StatusCreated, place)
+        c.JSON(http.StatusCreated, payload.Place)
     }
 }
 
