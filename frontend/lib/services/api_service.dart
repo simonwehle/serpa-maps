@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/group.dart';
+import 'package:serpa_maps/models/invite.dart';
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/models/auth.dart';
 
@@ -190,5 +191,19 @@ class ApiService {
     await _dio.delete('/group/$id');
   }
 
-  //Future<void> respondToInvite({required bool accept}) async {}
+  Future<List<Invite>> fetchInvites() async {
+    final res = await _dio.get('/invites');
+    final List data = res.data;
+    return data.map((json) => Invite.fromJson(json)).toList();
+  }
+
+  Future<void> respondToInvite({
+    required String id,
+    required bool accept,
+  }) async {
+    String status = "accepted";
+    if (accept == false) status = "decline";
+    final Map<String, dynamic> payload = {'status': status};
+    await _dio.post('/invite/$id/respond', data: payload);
+  }
 }

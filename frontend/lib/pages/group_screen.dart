@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/pages/group_detail_screen.dart';
 import 'package:serpa_maps/providers/data/group_provider.dart';
+import 'package:serpa_maps/providers/data/invite_provider.dart';
 import 'package:serpa_maps/widgets/group/group_header.dart';
 import 'package:serpa_maps/widgets/sheets/add_group_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
@@ -13,6 +14,16 @@ class GroupScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
     final groupsAsync = ref.watch(groupProvider);
+    final invitesAsync = ref.watch(inviteProvider);
+
+    acceptInvite({required String id}) {
+      ref.read(inviteProvider.notifier).respondToInvite(id: id, accept: true);
+    }
+
+    declineInvite({required String id}) {
+      ref.read(inviteProvider.notifier).respondToInvite(id: id, accept: false);
+    }
+
     return Scaffold(
       appBar: AppBar(title: Text("Groups")),
       body: Padding(
@@ -20,32 +31,39 @@ class GroupScreen extends ConsumerWidget {
         child: Column(
           children: [
             GroupHeader(title: "Invites"),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Monaco Vacation"),
-                  Row(
-                    children: [
-                      IconButton(
-                        color: colorScheme.tertiary,
-                        onPressed: () {
-                          print("Accept");
-                        },
-                        icon: Icon(Icons.check),
+            ...invitesAsync.when(
+              data: (invites) => invites.isEmpty
+                  ? [
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        child: Center(
+                          child: Text("No group invites available."),
+                        ),
                       ),
-                      IconButton(
-                        color: colorScheme.error,
-                        onPressed: () {
-                          print("Reject");
-                        },
-                        icon: Icon(Icons.close),
+                    ]
+                  : invites.map(
+                      (invite) => ListTile(
+                        title: Text(invite.groupName),
+                        trailing: Row(
+                          children: [
+                            IconButton(
+                              color: colorScheme.tertiary,
+                              onPressed: () =>
+                                  acceptInvite(id: invite.groupInviteId),
+                              icon: Icon(Icons.check),
+                            ),
+                            IconButton(
+                              color: colorScheme.error,
+                              onPressed: () =>
+                                  declineInvite(id: invite.groupInviteId),
+                              icon: Icon(Icons.close),
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+              loading: () => [Center(child: CircularProgressIndicator())],
+              error: (e, _) => [Center(child: Text(e.toString()))],
             ),
             Divider(),
             GroupHeader(
