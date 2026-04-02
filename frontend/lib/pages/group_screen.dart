@@ -15,80 +15,84 @@ class GroupScreen extends ConsumerWidget {
     final groupsAsync = ref.watch(groupProvider);
     return Scaffold(
       appBar: AppBar(title: Text("Groups")),
-      body: groupsAsync.when(
-        data: (groups) => Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            children: [
-              GroupHeader(
-                title: "Invites",
-                icon: Icons.refresh,
-                onPressed: () {
-                  print("Invites");
-                },
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("Monaco Vacation"),
-                    Row(
-                      children: [
-                        IconButton(
-                          color: colorScheme.tertiary,
-                          onPressed: () {
-                            print("Accept");
-                          },
-                          icon: Icon(Icons.check),
-                        ),
-                        IconButton(
-                          color: colorScheme.error,
-                          onPressed: () {
-                            print("Reject");
-                          },
-                          icon: Icon(Icons.close),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                child: Center(child: Text("No group invites available")),
-              ),
-              Divider(),
-              GroupHeader(
-                title: "Groups",
-                icon: Icons.add,
-                onPressed: () {
-                  showSerpaStaticSheet(
-                    context: context,
-                    child: AddGroupBottomSheet(),
-                  );
-                },
-              ),
-              ...groups.map(
-                (group) => ListTile(
-                  title: Text(group.name),
-                  // subtitle: group.description != ""
-                  //     ? Text(group.description!)
-                  //     : null,
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => GroupDetailScreen(group: group),
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          children: [
+            GroupHeader(title: "Invites"),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("Monaco Vacation"),
+                  Row(
+                    children: [
+                      IconButton(
+                        color: colorScheme.tertiary,
+                        onPressed: () {
+                          print("Accept");
+                        },
+                        icon: Icon(Icons.check),
                       ),
-                    );
-                  },
-                ),
+                      IconButton(
+                        color: colorScheme.error,
+                        onPressed: () {
+                          print("Reject");
+                        },
+                        icon: Icon(Icons.close),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+            Divider(),
+            GroupHeader(
+              title: "Groups",
+              icon: Icons.add,
+              onPressed: () {
+                showSerpaStaticSheet(
+                  context: context,
+                  child: AddGroupBottomSheet(),
+                );
+              },
+            ),
+            ...groupsAsync.when(
+              data: (groups) => groups.isEmpty
+                  ? [
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        child: Center(
+                          child: Text(
+                            "No groups available. Create one with the + Button",
+                          ),
+                        ),
+                      ),
+                    ]
+                  : groups
+                        .map(
+                          (group) => ListTile(
+                            title: Text(group.name),
+                            // subtitle: group.description != ""
+                            //     ? Text(group.description!)
+                            //     : null,
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      GroupDetailScreen(group: group),
+                                ),
+                              );
+                            },
+                          ),
+                        )
+                        .toList(),
+              loading: () => [Center(child: CircularProgressIndicator())],
+              error: (e, _) => [Center(child: Text(e.toString()))],
+            ),
+          ],
         ),
-        loading: () => Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text(e.toString())),
       ),
     );
   }
