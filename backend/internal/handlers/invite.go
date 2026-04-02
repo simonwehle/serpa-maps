@@ -56,8 +56,15 @@ func InviteToGroup(db *gorm.DB) gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create invite", "details": err.Error()})
 			return
 		}
-
-		c.JSON(http.StatusCreated, invite)
+			       c.JSON(http.StatusCreated, models.GroupInviteResponse{
+				       GroupInviteID:   invite.GroupInviteID,
+				       GroupID:         invite.GroupID,
+				       InvitedByID:     invite.InvitedByID,
+				       InviteeID:       invite.InviteeID,
+				       InviteeUsername: invitee.Username,
+				       Status:          invite.Status,
+				       CreatedAt:       invite.CreatedAt,
+			       })
 	}
 }
 
@@ -74,18 +81,18 @@ func GetMyInvites(db *gorm.DB) gin.HandlerFunc {
 			   return
 		   }
 
-		   result := make([]gin.H, 0)
+		   result := make([]models.GroupInviteResponse, 0)
 		   for _, invite := range invites {
-			   result = append(result, gin.H{
-				   "group_invite_id": invite.GroupInviteID,
-				   "group_id": invite.GroupID,
-				   "group_name": invite.Group.Name,
-				   "invited_by_id": invite.InvitedByID,
-				   "invited_by_username": invite.InvitedBy.Username,
-				   "status": invite.Status,
-				   "created_at": invite.CreatedAt,
-				   "responded_at": invite.RespondedAt,
-			   })
+			  result = append(result, models.GroupInviteResponse{
+				  GroupInviteID:     invite.GroupInviteID,
+				  GroupID:           invite.GroupID,
+				  GroupName:         invite.Group.Name,
+				  InvitedByID:       invite.InvitedByID,
+				  InvitedByUsername: invite.InvitedBy.Username,
+				  Status:            invite.Status,
+				  CreatedAt:         invite.CreatedAt,
+				  RespondedAt:       invite.RespondedAt,
+			  })
 		   }
 		   c.JSON(http.StatusOK, result)
 	}
@@ -138,7 +145,20 @@ func RespondToInvite(db *gorm.DB) gin.HandlerFunc {
 				return
 			}
 		}
-
-		c.JSON(http.StatusOK, invite)
+			       var invitee models.User
+			       if err := db.Where("user_id = ?", invite.InviteeID).First(&invitee).Error; err != nil {
+				       c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch invitee username"})
+				       return
+			       }
+				   c.JSON(http.StatusOK, models.GroupInviteResponse{
+				       GroupInviteID:   invite.GroupInviteID,
+				       GroupID:         invite.GroupID,
+				       InvitedByID:     invite.InvitedByID,
+				       InviteeID:       invite.InviteeID,
+				       InviteeUsername: invitee.Username,
+				       Status:          invite.Status,
+				       CreatedAt:       invite.CreatedAt,
+				       RespondedAt:     invite.RespondedAt,
+			       })
 	}
 }

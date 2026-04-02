@@ -30,3 +30,16 @@ func (g *GroupInvite) BeforeCreate(tx *gorm.DB) error {
 func (GroupInvite) TableName() string {
     return "group_invites"
 }
+
+type GroupInviteResponse struct {
+	GroupInviteID     uuid.UUID  `json:"group_invite_id"`
+	GroupID           uuid.UUID  `json:"group_id"`
+	GroupName         string     `json:"group_name,omitempty"`
+	InvitedByID       uuid.UUID  `json:"invited_by_id"`
+	InvitedByUsername string     `json:"invited_by_username,omitempty"`
+	InviteeID         uuid.UUID  `json:"invitee_id"`
+	InviteeUsername   string     `json:"invitee_username,omitempty"`
+	Status            string     `json:"status"`
+	CreatedAt         time.Time  `json:"created_at"`
+	RespondedAt       *time.Time `json:"responded_at,omitempty"`
+}
