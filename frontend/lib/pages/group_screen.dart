@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/providers/data/group_provider.dart';
 import 'package:serpa_maps/widgets/group/group_header.dart';
+import 'package:serpa_maps/widgets/sheets/add_group_sheet.dart';
+import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
 
 class GroupScreen extends ConsumerWidget {
   const GroupScreen({super.key});
@@ -60,7 +62,10 @@ class GroupScreen extends ConsumerWidget {
                 title: "Groups",
                 icon: Icons.add,
                 onPressed: () {
-                  print("Add group");
+                  showSerpaStaticSheet(
+                    context: context,
+                    child: AddGroupBottomSheet(),
+                  );
                 },
               ),
               ...groups.map(
