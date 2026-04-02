@@ -206,4 +206,11 @@ class ApiService {
     final Map<String, dynamic> payload = {'status': status};
     await _dio.post('/invite/$id/respond', data: payload);
   }
+
+  Future<void> removeGroupMember({
+    required String groupId,
+    required String memberId,
+  }) async {
+    await _dio.delete('/group/$groupId/member/$memberId');
+  }
 }

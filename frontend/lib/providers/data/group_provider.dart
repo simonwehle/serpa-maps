@@ -27,4 +27,14 @@ class GroupNotifier extends AsyncNotifier<List<Group>> {
       (groups) => groups.where((g) => g.groupId != id).toList(),
     );
   }
+
+  Future<void> removeGroupMember({
+    required String groupId,
+    required String memberId,
+  }) async {
+    final api = ref.read(apiServiceProvider);
+    await api.removeGroupMember(groupId: groupId, memberId: memberId);
+    // TODO: Find a cleaner way to handle leave group
+    ref.invalidate(groupProvider);
+  }
 }
