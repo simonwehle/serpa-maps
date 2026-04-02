@@ -28,3 +28,11 @@ func (g *Group) BeforeCreate(tx *gorm.DB) error {
 func (Group) TableName() string {
     return "groups"
 }
+
+type GroupWithRole struct {
+    GroupID     uuid.UUID `json:"group_id"`
+    Name        string    `json:"name"`
+    Description string    `json:"description"`
+    CreatedAt   time.Time `json:"created_at"`
+    Role        string    `json:"role"`
+}

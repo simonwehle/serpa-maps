@@ -68,12 +68,25 @@ func GetGroups(db *gorm.DB) gin.HandlerFunc {
 		}
 
 		var groups []models.Group
-		if err := db.Where("group_id IN ?", groupIDs).Order("group_id").Find(&groups).Error; err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch groups"})
-			return
-		}
-
-		c.JSON(http.StatusOK, groups)
+		       if err := db.Where("group_id IN ?", groupIDs).Order("group_id").Find(&groups).Error; err != nil {
+			       c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch groups"})
+			       return
+		       }
+		       groupRoleMap := make(map[uuid.UUID]string)
+		       for _, m := range members {
+			       groupRoleMap[m.GroupID] = m.Role
+		       }
+		       resp := make([]models.GroupWithRole, 0, len(groups))
+		       for _, g := range groups {
+			       resp = append(resp, models.GroupWithRole{
+				       GroupID:     g.GroupID,
+				       Name:        g.Name,
+				       Description: g.Description,
+				       CreatedAt:   g.CreatedAt,
+				       Role:        groupRoleMap[g.GroupID],
+			       })
+		       }
+		       c.JSON(http.StatusOK, resp)
 	}
 }
 
