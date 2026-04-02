@@ -34,6 +34,14 @@ class GroupDetailScreen extends ConsumerWidget {
           ),
         ],
       ),
+      body: Column(
+        children: [
+          const SizedBox(height: 16),
+          Center(
+            child: FilledButton(onPressed: () {}, child: Text("Invite Member")),
+          ),
+        ],
+      ),
     );
   }
 }

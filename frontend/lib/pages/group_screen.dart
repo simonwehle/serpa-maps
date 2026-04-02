@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/pages/group_detail_screen.dart';
 import 'package:serpa_maps/providers/data/group_provider.dart';
 import 'package:serpa_maps/providers/data/invite_provider.dart';
+import 'package:serpa_maps/utils/dialogs.dart';
 import 'package:serpa_maps/widgets/group/group_header.dart';
 import 'package:serpa_maps/widgets/sheets/add_group_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
@@ -117,8 +118,22 @@ class GroupScreen extends ConsumerWidget {
                             trailing: group.role == 'member'
                                 ? IconButton(
                                     icon: Icon(Icons.logout),
-                                    onPressed: () {
-                                      print("Leave Button Pressed");
+                                    onPressed: () async {
+                                      final confirmed =
+                                          await showConfirmationDialog(
+                                            context,
+                                            title: "Leave Group",
+                                            message:
+                                                "Do you want to leave this group?",
+                                          );
+                                      if (confirmed) {
+                                        await ref
+                                            .read(groupProvider.notifier)
+                                            .deleteGroup(id: group.groupId);
+                                        if (context.mounted) {
+                                          Navigator.pop(context);
+                                        }
+                                      }
                                     },
                                   )
                                 : null,
