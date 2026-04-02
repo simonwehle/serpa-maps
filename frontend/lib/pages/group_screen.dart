@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serpa_maps/pages/group_detail_screen.dart';
 import 'package:serpa_maps/providers/data/group_provider.dart';
 import 'package:serpa_maps/widgets/group/group_header.dart';
 import 'package:serpa_maps/widgets/sheets/add_group_sheet.dart';
@@ -75,7 +76,11 @@ class GroupScreen extends ConsumerWidget {
                   //     ? Text(group.description!)
                   //     : null,
                   onTap: () {
-                    print(group.name + " pressed");
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => GroupDetailScreen(group: group),
+                      ),
+                    );
                   },
                 ),
               ),
