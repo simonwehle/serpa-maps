@@ -10,11 +10,11 @@ class GroupScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
     final groupsAsync = ref.watch(groupProvider);
-    return groupsAsync.when(
-      data: (groups) => Scaffold(
-        appBar: AppBar(title: Text("Groups")),
-        body: Padding(
-          padding: EdgeInsetsGeometry.symmetric(horizontal: 16),
+    return Scaffold(
+      appBar: AppBar(title: Text("Groups")),
+      body: groupsAsync.when(
+        data: (groups) => Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             children: [
               GroupHeader(
@@ -77,14 +77,8 @@ class GroupScreen extends ConsumerWidget {
             ],
           ),
         ),
-      ),
-      loading: () => Scaffold(
-        appBar: AppBar(title: Text("Groups")),
-        body: Center(child: CircularProgressIndicator()),
-      ),
-      error: (e, _) => Scaffold(
-        appBar: AppBar(title: Text("Groups")),
-        body: Center(child: Text(e.toString())),
+        loading: () => Center(child: CircularProgressIndicator()),
+        error: (e, _) => Center(child: Text(e.toString())),
       ),
     );
   }
