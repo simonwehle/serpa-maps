@@ -30,7 +30,13 @@ class GroupScreen extends ConsumerWidget {
         padding: EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
-            GroupHeader(title: "Invites"),
+            GroupHeader(
+              title: "Invites",
+              icon: Icons.refresh,
+              onPressed: () {
+                ref.invalidate(inviteProvider);
+              },
+            ),
             ...invitesAsync.when(
               data: (invites) => invites.isEmpty
                   ? [
@@ -45,6 +51,7 @@ class GroupScreen extends ConsumerWidget {
                       (invite) => ListTile(
                         title: Text(invite.groupName),
                         trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
                               color: colorScheme.tertiary,

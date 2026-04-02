@@ -202,7 +202,7 @@ class ApiService {
     required bool accept,
   }) async {
     String status = "accepted";
-    if (accept == false) status = "decline";
+    if (accept == false) status = "declined";
     final Map<String, dynamic> payload = {'status': status};
     await _dio.post('/invite/$id/respond', data: payload);
   }

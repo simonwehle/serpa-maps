@@ -3,14 +3,14 @@ import 'package:serpa_maps/widgets/fields/serpa_title.dart';
 
 class GroupHeader extends StatelessWidget {
   final String title;
-  final IconData? icon;
-  final VoidCallback? onPressed;
+  final IconData icon;
+  final VoidCallback onPressed;
 
   const GroupHeader({
     super.key,
     required this.title,
-    this.icon,
-    this.onPressed,
+    required this.icon,
+    required this.onPressed,
   });
 
   @override
