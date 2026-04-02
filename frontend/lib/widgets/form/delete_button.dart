@@ -28,12 +28,10 @@ class DeleteButton extends StatelessWidget {
         ),
       ),
       onPressed: () async {
-        final confirmed = await showConfirmationDialog(
+        final confirmed = await showDeleteConfirmationDialog(
           context,
           title: title,
           message: question,
-          backgroundColor: Theme.of(context).colorScheme.error,
-          foregroundColor: Theme.of(context).colorScheme.onError,
         );
         if (confirmed) {
           await deleteFunction();

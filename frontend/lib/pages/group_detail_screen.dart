@@ -19,12 +19,10 @@ class GroupDetailScreen extends ConsumerWidget {
           IconButton(
             icon: Icon(Icons.delete),
             onPressed: () async {
-              final confirmed = await showConfirmationDialog(
+              final confirmed = await showDeleteConfirmationDialog(
                 context,
                 title: "Delete Group",
                 message: "Do you want to delete this group?",
-                backgroundColor: Theme.of(context).colorScheme.error,
-                foregroundColor: Theme.of(context).colorScheme.onError,
               );
               if (confirmed) {
                 await ref

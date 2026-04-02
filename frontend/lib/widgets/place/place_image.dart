@@ -68,8 +68,8 @@ class PlaceImage extends ConsumerWidget {
                 onPressed: () async {
                   final confirmed = await showDeleteConfirmationDialog(
                     context,
-                    i10n.deleteAsset,
-                    i10n.deleteAssetQuestion,
+                    title: i10n.deleteAsset,
+                    message: i10n.deleteAssetQuestion,
                   );
                   if (confirmed && onDelete != null) {
                     onDelete!();
