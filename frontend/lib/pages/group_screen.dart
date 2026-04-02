@@ -47,28 +47,30 @@ class GroupScreen extends ConsumerWidget {
                         ),
                       ),
                     ]
-                  : invites.map(
-                      (invite) => ListTile(
-                        title: Text(invite.groupName),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              color: colorScheme.tertiary,
-                              onPressed: () =>
-                                  acceptInvite(id: invite.groupInviteId),
-                              icon: Icon(Icons.check),
+                  : invites
+                        .map(
+                          (invite) => ListTile(
+                            title: Text(invite.groupName),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  color: colorScheme.tertiary,
+                                  onPressed: () =>
+                                      acceptInvite(id: invite.groupInviteId),
+                                  icon: Icon(Icons.check),
+                                ),
+                                IconButton(
+                                  color: colorScheme.error,
+                                  onPressed: () =>
+                                      declineInvite(id: invite.groupInviteId),
+                                  icon: Icon(Icons.close),
+                                ),
+                              ],
                             ),
-                            IconButton(
-                              color: colorScheme.error,
-                              onPressed: () =>
-                                  declineInvite(id: invite.groupInviteId),
-                              icon: Icon(Icons.close),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                          ),
+                        )
+                        .toList(),
               loading: () => [Center(child: CircularProgressIndicator())],
               error: (e, _) => [Center(child: Text(e.toString()))],
             ),
@@ -102,14 +104,24 @@ class GroupScreen extends ConsumerWidget {
                             // subtitle: group.description != ""
                             //     ? Text(group.description!)
                             //     : null,
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      GroupDetailScreen(group: group),
-                                ),
-                              );
-                            },
+                            onTap: group.role == 'member'
+                                ? null
+                                : () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            GroupDetailScreen(group: group),
+                                      ),
+                                    );
+                                  },
+                            trailing: group.role == 'member'
+                                ? IconButton(
+                                    icon: Icon(Icons.logout),
+                                    onPressed: () {
+                                      print("Leave Button Pressed");
+                                    },
+                                  )
+                                : null,
                           ),
                         )
                         .toList(),
