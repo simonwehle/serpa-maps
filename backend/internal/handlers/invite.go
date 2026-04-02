@@ -74,7 +74,7 @@ func GetMyInvites(db *gorm.DB) gin.HandlerFunc {
 			   return
 		   }
 
-		   var result []gin.H
+		   result := make([]gin.H, 0)
 		   for _, invite := range invites {
 			   result = append(result, gin.H{
 				   "group_invite_id": invite.GroupInviteID,
