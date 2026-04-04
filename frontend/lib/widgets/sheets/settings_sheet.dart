@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/pages/group_screen.dart';
-import 'package:serpa_maps/providers/api/api_provider.dart';
 import 'package:serpa_maps/providers/data/user_prodiver.dart';
-import 'package:serpa_maps/providers/token/access_token_provider.dart';
-import 'package:serpa_maps/providers/token/refresh_token_provider.dart';
 import 'package:serpa_maps/utils/dialogs.dart';
 import 'package:serpa_maps/widgets/sheets/appearance_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/category_sheet.dart';
@@ -60,8 +57,6 @@ class SettingsSheet extends ConsumerWidget {
               final confirmed = await showLogoutConfirmationDialog(context);
               if (confirmed) {
                 ref.read(userProvider.notifier).logout().catchError((_) {});
-                ref.read(accessTokenProvider.notifier).clearToken();
-                ref.read(refreshTokenProvider.notifier).clearToken();
               }
               if (context.mounted) Navigator.pop(context);
             },

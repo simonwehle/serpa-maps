@@ -70,5 +70,7 @@ class UserNotifier extends AsyncNotifier<User?> {
     //TODO: make refreshToken not nullable
     if (refreshToken != null) await api.logout(refreshToken: refreshToken);
     state = const AsyncValue.data(null);
+    ref.read(accessTokenProvider.notifier).clearToken();
+    ref.read(refreshTokenProvider.notifier).clearToken();
   }
 }
