@@ -43,7 +43,7 @@ class _RegisterFieldsState extends ConsumerState<RegisterFields> {
     super.dispose();
   }
 
-  Future<void> performLogin() async {
+  Future<void> performRegister() async {
     if (emailController.text.trim().isEmpty ||
         usernameController.text.trim().isEmpty ||
         passwordController.text.trim().isEmpty) {
@@ -53,7 +53,7 @@ class _RegisterFieldsState extends ConsumerState<RegisterFields> {
     final api = ref.read(apiServiceProvider);
     final registerResponse = await api.register(
       email: emailController.text.trim(),
-      username: usernameController.text.trim(),
+      name: usernameController.text.trim(),
       password: passwordController.text.trim(),
     );
     await ref
@@ -72,7 +72,7 @@ class _RegisterFieldsState extends ConsumerState<RegisterFields> {
     final i10n = AppLocalizations.of(context)!;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      widget.persistChanges.call(performLogin);
+      widget.persistChanges.call(performRegister);
     });
 
     return Column(
