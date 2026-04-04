@@ -6,6 +6,7 @@ import 'package:serpa_maps/models/group.dart';
 import 'package:serpa_maps/models/invite.dart';
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/models/auth.dart';
+import 'package:serpa_maps/models/user.dart';
 
 class ApiService {
   final Dio _dio;
@@ -212,5 +213,10 @@ class ApiService {
     required String memberId,
   }) async {
     await _dio.delete('/group/$groupId/member/$memberId');
+  }
+
+  Future<User> me() async {
+    final res = await _dio.get('/me');
+    return User.fromJson(res.data);
   }
 }

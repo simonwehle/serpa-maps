@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
-import 'package:serpa_maps/models/user.dart';
 import 'package:serpa_maps/pages/group_screen.dart';
 import 'package:serpa_maps/providers/api/api_provider.dart';
+import 'package:serpa_maps/providers/data/user_prodiver.dart';
 import 'package:serpa_maps/providers/token/access_token_provider.dart';
 import 'package:serpa_maps/providers/token/refresh_token_provider.dart';
 import 'package:serpa_maps/utils/dialogs.dart';
@@ -13,16 +13,19 @@ import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/url_sheet.dart';
 
 class SettingsSheet extends ConsumerWidget {
-  final User? user;
-
-  const SettingsSheet({super.key, this.user});
+  const SettingsSheet({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final i10n = AppLocalizations.of(context)!;
+    final userAsync = ref.watch(userProvider);
 
     return SerpaStaticSheet(
-      title: user?.name ?? i10n.anonymousUser,
+      title: userAsync.when(
+        data: (user) => user?.name ?? i10n.anonymousUser,
+        loading: () => "Loading...",
+        error: (error, stackTrace) => "Error",
+      ),
       child: Column(
         children: [
           ElevatedButton(

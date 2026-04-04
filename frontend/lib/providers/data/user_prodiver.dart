@@ -13,8 +13,9 @@ final userProvider = AsyncNotifierProvider<UserNotifier, User?>(
 
 class UserNotifier extends AsyncNotifier<User?> {
   @override
-  Future<User?> build() async {
-    return null;
+  Future<User> build() async {
+    final api = ref.read(apiServiceProvider);
+    return await api.me();
   }
 
   Future<User> login({required String email, required String password}) async {
