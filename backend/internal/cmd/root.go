@@ -48,6 +48,8 @@ func Execute() {
 
 	protected := api.Group("/").Use(middleware.AuthMiddleware(jwtKeys.AccessKey))
 
+	protected.GET("/me", handlers.Me(postgres))
+
 	protected.GET("/categories", handlers.GetCategories(postgres))
 	protected.POST("/category", handlers.AddCategory(postgres))
 	protected.PATCH("/category/:id", handlers.UpdateCategory(postgres))

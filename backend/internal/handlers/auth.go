@@ -140,6 +140,31 @@ func Refresh(db *gorm.DB, jwtKeys models.JwtKeys) gin.HandlerFunc {
 	}
 }
 
+func Me(db *gorm.DB) gin.HandlerFunc {
+       return func(c *gin.Context) {
+	       userIDValue, exists := c.Get("user_id")
+	       if !exists {
+		       c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		       return
+	       }
+	       userID, ok := userIDValue.(string)
+	       if !ok {
+		       c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID format"})
+		       return
+	       }
+	       var user models.User
+	       if err := db.Where("user_id = ?", userID).First(&user).Error; err != nil {
+		       c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		       return
+	       }
+	       c.JSON(http.StatusOK, gin.H{
+		       "user_id":  user.UserID,
+		       "email":    user.Email,
+		       "username": user.Username,
+	       })
+       }
+}
+
 func Logout(db *gorm.DB, refreshKey []byte) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		userIDValue, exists := c.Get("user_id")
