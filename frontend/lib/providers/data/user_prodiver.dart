@@ -1,0 +1,39 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serpa_maps/models/user.dart';
+
+import 'package:serpa_maps/providers/api/api_provider.dart';
+import 'package:serpa_maps/providers/data/category_provider.dart';
+import 'package:serpa_maps/providers/data/place_provider.dart';
+import 'package:serpa_maps/providers/token/access_token_provider.dart';
+import 'package:serpa_maps/providers/token/refresh_token_provider.dart';
+
+final userProvider = AsyncNotifierProvider<UserNotifier, User?>(
+  UserNotifier.new,
+);
+
+class UserNotifier extends AsyncNotifier<User?> {
+  @override
+  Future<User?> build() async {
+    return null;
+  }
+
+  Future<User> login({required String email, required String password}) async {
+    final api = ref.read(apiServiceProvider);
+    final loginResponse = await api.login(email: email, password: password);
+    await ref
+        .read(accessTokenProvider.notifier)
+        .setToken(loginResponse.accessToken);
+    await ref
+        .read(refreshTokenProvider.notifier)
+        .setToken(loginResponse.refreshToken);
+    ref.invalidate(categoryProvider);
+    ref.invalidate(placeProvider);
+    final user = User(
+      userId: loginResponse.userId,
+      name: loginResponse.username,
+      email: loginResponse.email,
+    );
+    state = AsyncValue.data(user);
+    return user;
+  }
+}
