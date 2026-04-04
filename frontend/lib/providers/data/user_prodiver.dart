@@ -37,4 +37,12 @@ class UserNotifier extends AsyncNotifier<User?> {
     state = AsyncValue.data(user);
     return user;
   }
+
+  Future<void> logout() async {
+    final api = ref.read(apiServiceProvider);
+    final refreshToken = ref.read(refreshTokenProvider);
+    //TODO: make refreshToken not nullable
+    if (refreshToken != null) await api.logout(refreshToken: refreshToken);
+    state = const AsyncValue.data(null);
+  }
 }

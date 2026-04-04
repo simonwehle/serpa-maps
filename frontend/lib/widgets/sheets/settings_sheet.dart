@@ -59,13 +59,7 @@ class SettingsSheet extends ConsumerWidget {
             onPressed: () async {
               final confirmed = await showLogoutConfirmationDialog(context);
               if (confirmed) {
-                final refreshToken = ref.read(refreshTokenProvider);
-                if (refreshToken != null) {
-                  ref
-                      .read(apiServiceProvider)
-                      .logout(refreshToken: refreshToken)
-                      .catchError((_) {});
-                }
+                ref.read(userProvider.notifier).logout().catchError((_) {});
                 ref.read(accessTokenProvider.notifier).clearToken();
                 ref.read(refreshTokenProvider.notifier).clearToken();
               }
