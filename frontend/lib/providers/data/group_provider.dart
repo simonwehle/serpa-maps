@@ -34,7 +34,5 @@ class GroupNotifier extends AsyncNotifier<List<Group>> {
   }) async {
     final api = ref.read(apiServiceProvider);
     await api.removeGroupMember(groupId: groupId, memberId: memberId);
-    // TODO: Find a cleaner way to handle leave group
-    ref.invalidate(groupProvider);
   }
 }

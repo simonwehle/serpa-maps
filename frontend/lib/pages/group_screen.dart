@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/pages/group_detail_screen.dart';
 import 'package:serpa_maps/providers/data/group_provider.dart';
 import 'package:serpa_maps/providers/data/invite_provider.dart';
+import 'package:serpa_maps/providers/data/user_prodiver.dart';
 import 'package:serpa_maps/utils/dialogs.dart';
 import 'package:serpa_maps/widgets/group/group_header.dart';
 import 'package:serpa_maps/widgets/sheets/add_group_sheet.dart';
@@ -16,6 +17,7 @@ class GroupScreen extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final groupsAsync = ref.watch(groupProvider);
     final invitesAsync = ref.watch(inviteProvider);
+    final user = ref.watch(userProvider);
 
     acceptInvite({required String id}) {
       ref.read(inviteProvider.notifier).respondToInvite(id: id, accept: true);
@@ -127,12 +129,17 @@ class GroupScreen extends ConsumerWidget {
                                                 "Do you want to leave this group?",
                                           );
                                       if (confirmed) {
-                                        await ref
-                                            .read(groupProvider.notifier)
-                                            .deleteGroup(id: group.groupId);
-                                        if (context.mounted) {
-                                          Navigator.pop(context);
-                                        }
+                                        user.whenData((user) async {
+                                          if (user != null) {
+                                            await ref
+                                                .read(groupProvider.notifier)
+                                                .removeGroupMember(
+                                                  groupId: group.groupId,
+                                                  memberId: user.userId,
+                                                );
+                                            ref.invalidate(groupProvider);
+                                          }
+                                        });
                                       }
                                     },
                                   )
