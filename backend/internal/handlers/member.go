@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"time"
 	"serpa-maps/internal/models"
 
 	"github.com/gin-gonic/gin"
@@ -24,13 +25,42 @@ func GetGroupMembers(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		       var members []models.GroupMember
-		       if err := db.Where("group_id = ?", groupID).Find(&members).Error; err != nil {
-			       c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch members"})
-			       return
-		       }
+				var members []models.GroupMember
+				if err := db.Preload("User").Where("group_id = ?", groupID).Find(&members).Error; err != nil {
+					c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch members"})
+					return
+				}
 
-		c.JSON(http.StatusOK, members)
+				var invites []models.GroupInvite
+				if err := db.Preload("Invitee").Where("group_id = ? AND status = ?", groupID, "pending").Find(&invites).Error; err != nil {
+					c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch invited members"})
+					return
+				}
+
+				type MemberResponse struct {
+					UserID   string `json:"user_id"`
+					Username string `json:"username"`
+					Role     string `json:"role"`
+					JoinedAt *string `json:"joined_at,omitempty"`
+				}
+				responses := make([]MemberResponse, 0, len(members)+len(invites))
+				for _, m := range members {
+					responses = append(responses, MemberResponse{
+						UserID:   m.UserID.String(),
+						Username: m.User.Username,
+						Role:     m.Role,
+						JoinedAt: func() *string { t := m.JoinedAt.Format(time.RFC3339); return &t }(),
+					})
+				}
+				for _, inv := range invites {
+					responses = append(responses, MemberResponse{
+						UserID:   inv.InviteeID.String(),
+						Username: inv.Invitee.Username,
+						Role:     "pending",
+						JoinedAt: nil,
+					})
+				}
+				c.JSON(http.StatusOK, responses)
 	}
 }
 
