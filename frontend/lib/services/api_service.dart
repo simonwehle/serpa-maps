@@ -219,4 +219,12 @@ class ApiService {
     final res = await _dio.get('/me');
     return User.fromJson(res.data);
   }
+
+  Future<void> inviteToGroup({
+    required String groupId,
+    required String username,
+  }) async {
+    final Map<String, dynamic> payload = {'username': username};
+    await _dio.post('/group/$groupId/invite', data: payload);
+  }
 }

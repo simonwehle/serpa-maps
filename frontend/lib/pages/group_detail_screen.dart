@@ -4,6 +4,8 @@ import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/models/group.dart';
 import 'package:serpa_maps/providers/data/group_provider.dart';
 import 'package:serpa_maps/utils/dialogs.dart';
+import 'package:serpa_maps/widgets/sheets/group_invite_sheet.dart';
+import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
 
 class GroupDetailScreen extends ConsumerWidget {
   final Group group;
@@ -38,7 +40,15 @@ class GroupDetailScreen extends ConsumerWidget {
         children: [
           const SizedBox(height: 16),
           Center(
-            child: FilledButton(onPressed: () {}, child: Text("Invite Member")),
+            child: FilledButton(
+              onPressed: () {
+                showSerpaStaticSheet(
+                  context: context,
+                  child: GroupInviteSheet(groupId: group.groupId),
+                );
+              },
+              child: Text("Invite Member"),
+            ),
           ),
         ],
       ),
