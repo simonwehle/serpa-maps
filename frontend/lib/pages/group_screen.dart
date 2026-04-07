@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/pages/group_detail_screen.dart';
 import 'package:serpa_maps/providers/data/group_provider.dart';
 import 'package:serpa_maps/providers/data/invite_provider.dart';
@@ -15,6 +16,7 @@ class GroupScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
+    final i10n = AppLocalizations.of(context)!;
     final groupsAsync = ref.watch(groupProvider);
     final invitesAsync = ref.watch(inviteProvider);
     final user = ref.watch(userProvider);
@@ -28,13 +30,13 @@ class GroupScreen extends ConsumerWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text("Groups")),
+      appBar: AppBar(title: Text(i10n.groups)),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
             GroupHeader(
-              title: "Invites",
+              title: i10n.invites,
               icon: Icons.refresh,
               onPressed: () {
                 ref.invalidate(inviteProvider);
@@ -45,9 +47,7 @@ class GroupScreen extends ConsumerWidget {
                   ? [
                       Padding(
                         padding: EdgeInsets.symmetric(vertical: 16),
-                        child: Center(
-                          child: Text("No group invites available."),
-                        ),
+                        child: Center(child: Text(i10n.noGroupInvites)),
                       ),
                     ]
                   : invites
@@ -79,7 +79,7 @@ class GroupScreen extends ConsumerWidget {
             ),
             Divider(),
             GroupHeader(
-              title: "Groups",
+              title: i10n.groups,
               icon: Icons.add,
               onPressed: () {
                 showSerpaStaticSheet(
@@ -93,11 +93,7 @@ class GroupScreen extends ConsumerWidget {
                   ? [
                       Padding(
                         padding: EdgeInsets.symmetric(vertical: 16),
-                        child: Center(
-                          child: Text(
-                            "No groups available. Create one with the + Button",
-                          ),
-                        ),
+                        child: Center(child: Text(i10n.noGroups)),
                       ),
                     ]
                   : groups
@@ -124,9 +120,8 @@ class GroupScreen extends ConsumerWidget {
                                       final confirmed =
                                           await showConfirmationDialog(
                                             context,
-                                            title: "Leave Group",
-                                            message:
-                                                "Do you want to leave this group?",
+                                            title: i10n.leaveGroup,
+                                            message: i10n.leaveGroupQuestion,
                                           );
                                       if (confirmed) {
                                         user.whenData((user) async {

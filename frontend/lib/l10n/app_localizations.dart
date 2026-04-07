@@ -104,6 +104,12 @@ abstract class AppLocalizations {
   /// **'Add'**
   String get add;
 
+  /// No description provided for @addGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Add group'**
+  String get addGroup;
+
   /// No description provided for @anonymousUser.
   ///
   /// In en, this message translates to:
@@ -170,6 +176,18 @@ abstract class AppLocalizations {
   /// **'Do you want to delete this category?'**
   String get deleteCategoryQuestion;
 
+  /// No description provided for @deleteGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Group'**
+  String get deleteGroup;
+
+  /// No description provided for @deleteGroupQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to delete this group?'**
+  String get deleteGroupQuestion;
+
   /// No description provided for @deletePlace.
   ///
   /// In en, this message translates to:
@@ -200,11 +218,35 @@ abstract class AppLocalizations {
   /// **'Email'**
   String get email;
 
+  /// No description provided for @error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error;
+
   /// No description provided for @explore.
   ///
   /// In en, this message translates to:
   /// **'Explore'**
   String get explore;
+
+  /// No description provided for @groups.
+  ///
+  /// In en, this message translates to:
+  /// **'Groups'**
+  String get groups;
+
+  /// No description provided for @inviteGroupMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite group memnber'**
+  String get inviteGroupMember;
+
+  /// No description provided for @invites.
+  ///
+  /// In en, this message translates to:
+  /// **'Invites'**
+  String get invites;
 
   /// No description provided for @latitude.
   ///
@@ -212,11 +254,29 @@ abstract class AppLocalizations {
   /// **'Latitude'**
   String get latitude;
 
+  /// No description provided for @leaveGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave group'**
+  String get leaveGroup;
+
+  /// No description provided for @leaveGroupQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to leave this group?'**
+  String get leaveGroupQuestion;
+
   /// No description provided for @light.
   ///
   /// In en, this message translates to:
   /// **'Light'**
   String get light;
+
+  /// No description provided for @loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get loading;
 
   /// No description provided for @login.
   ///
@@ -272,6 +332,18 @@ abstract class AppLocalizations {
   /// **'No description available'**
   String get noDescription;
 
+  /// No description provided for @noGroups.
+  ///
+  /// In en, this message translates to:
+  /// **'No groups available. Create one with the + Button'**
+  String get noGroups;
+
+  /// No description provided for @noGroupInvites.
+  ///
+  /// In en, this message translates to:
+  /// **'No group invites available'**
+  String get noGroupInvites;
+
   /// No description provided for @username.
   ///
   /// In en, this message translates to:
@@ -319,6 +391,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Settings'**
   String get settings;
+
+  /// No description provided for @sharedWith.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared with: '**
+  String get sharedWith;
 
   /// No description provided for @showMarkers.
   ///

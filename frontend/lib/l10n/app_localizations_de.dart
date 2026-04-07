@@ -12,6 +12,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get add => 'Hinzufügen';
 
   @override
+  String get addGroup => 'Gruppe hinzufügen';
+
+  @override
   String get anonymousUser => 'Anonymer Benutzer';
 
   @override
@@ -45,6 +48,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get deleteCategoryQuestion => 'Möchten Sie diese Kategorie löschen?';
 
   @override
+  String get deleteGroup => 'Gruppe löschen';
+
+  @override
+  String get deleteGroupQuestion => 'Möchten Sie diese Gruppe löschen?';
+
+  @override
   String get deletePlace => 'Ort löschen';
 
   @override
@@ -60,13 +69,34 @@ class AppLocalizationsDe extends AppLocalizations {
   String get email => 'Email';
 
   @override
+  String get error => 'Fehler';
+
+  @override
   String get explore => 'Erkunden';
+
+  @override
+  String get groups => 'Gruppen';
+
+  @override
+  String get inviteGroupMember => 'Gruppenmitglied einladen';
+
+  @override
+  String get invites => 'Einladungen';
 
   @override
   String get latitude => 'Breitengrad';
 
   @override
+  String get leaveGroup => 'Gruppe verlassen';
+
+  @override
+  String get leaveGroupQuestion => 'Möchten Sie die Gruppe verlassen?';
+
+  @override
   String get light => 'Hell';
+
+  @override
+  String get loading => 'Laden...';
 
   @override
   String get login => 'Einloggen';
@@ -96,6 +126,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get noDescription => 'Keine Beschreibung verfügbar';
 
   @override
+  String get noGroups => 'Keine Gruppe verfügbar. Erstelle eine neue mit +';
+
+  @override
+  String get noGroupInvites => 'Keine Gruppeneinladungen verfügbar';
+
+  @override
   String get username => 'Nutzername';
 
   @override
@@ -118,6 +154,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settings => 'Einstellungen';
+
+  @override
+  String get sharedWith => 'Geteilt mit: ';
 
   @override
   String get showMarkers => 'Markierungen anzeigen';

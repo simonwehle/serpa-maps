@@ -81,7 +81,7 @@ class PlaceDisplay extends ConsumerWidget {
           if (sharedWithText != null)
             Padding(
               padding: const EdgeInsets.only(bottom: 16),
-              child: Text('Shared with: $sharedWithText'),
+              child: Text(i10n.sharedWith + sharedWithText),
             ),
           Text(
             place.description?.isNotEmpty == true

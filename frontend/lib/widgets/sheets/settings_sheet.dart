@@ -20,8 +20,8 @@ class SettingsSheet extends ConsumerWidget {
     return SerpaStaticSheet(
       title: userAsync.when(
         data: (user) => user?.name ?? i10n.anonymousUser,
-        loading: () => "Loading...",
-        error: (error, stackTrace) => "Error",
+        loading: () => i10n.loading,
+        error: (error, stackTrace) => i10n.error,
       ),
       child: Column(
         children: [
@@ -50,7 +50,7 @@ class SettingsSheet extends ConsumerWidget {
                 MaterialPageRoute(builder: (context) => GroupScreen()),
               );
             },
-            child: Text("Groups"),
+            child: Text(i10n.groups),
           ),
           ElevatedButton(
             onPressed: () async {

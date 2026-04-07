@@ -36,7 +36,7 @@ class _AddGroupBottomSheetState extends ConsumerState<AddGroupBottomSheet> {
   Widget build(BuildContext context) {
     final i10n = AppLocalizations.of(context)!;
     return SerpaStaticSheet(
-      title: "Add Group",
+      title: i10n.addGroup,
       child: Column(
         children: [
           FormTextField(label: i10n.name, controller: nameController),

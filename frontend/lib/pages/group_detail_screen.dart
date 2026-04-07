@@ -23,8 +23,8 @@ class GroupDetailScreen extends ConsumerWidget {
             onPressed: () async {
               final confirmed = await showDeleteConfirmationDialog(
                 context,
-                title: "Delete Group",
-                message: "Do you want to delete this group?",
+                title: i10n.deleteGroup,
+                message: i10n.deleteGroupQuestion,
               );
               if (confirmed) {
                 await ref
@@ -47,7 +47,7 @@ class GroupDetailScreen extends ConsumerWidget {
                   child: GroupInviteSheet(groupId: group.groupId),
                 );
               },
-              child: Text("Invite Member"),
+              child: Text(i10n.inviteGroupMember),
             ),
           ),
         ],

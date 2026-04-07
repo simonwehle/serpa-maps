@@ -33,7 +33,7 @@ class _GroupInviteSheetState extends ConsumerState<GroupInviteSheet> {
   Widget build(BuildContext context) {
     final i10n = AppLocalizations.of(context)!;
     return SerpaStaticSheet(
-      title: "Invite Group Member",
+      title: i10n.inviteGroupMember,
       child: Column(
         children: [
           FormTextField(label: i10n.username, controller: usernameController),
