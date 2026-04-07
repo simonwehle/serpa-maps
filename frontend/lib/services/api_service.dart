@@ -32,6 +32,7 @@ class ApiService {
     double? latitude,
     double? longitude,
     String? categoryId,
+    List<String>? groups,
   }) async {
     final Map<String, dynamic> updates = {};
 
@@ -40,6 +41,7 @@ class ApiService {
     if (latitude != null) updates['latitude'] = latitude;
     if (longitude != null) updates['longitude'] = longitude;
     if (categoryId != null) updates['category_id'] = categoryId;
+    if (groups != null) updates['group_ids'] = groups;
 
     if (updates.isEmpty) {
       throw Exception('No fields to update');
@@ -55,6 +57,7 @@ class ApiService {
     required double longitude,
     required String categoryId,
     String? description,
+    List<String>? groups,
   }) async {
     final Map<String, dynamic> newRoom = {
       'name': name,
@@ -64,6 +67,7 @@ class ApiService {
     };
 
     if (description != null) newRoom['description'] = description;
+    if (groups != null) newRoom['groups'] = groups;
 
     final res = await _dio.post('/place', data: newRoom);
     return Place.fromJson(res.data);

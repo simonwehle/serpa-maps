@@ -21,6 +21,7 @@ class PlaceNotifier extends AsyncNotifier<List<Place>> {
     required double latitude,
     required double longitude,
     String? description,
+    List<String>? groups,
   }) async {
     final api = ref.read(apiServiceProvider);
     final addedPlace = await api.addPlace(
@@ -29,6 +30,7 @@ class PlaceNotifier extends AsyncNotifier<List<Place>> {
       longitude: longitude,
       categoryId: categoryId,
       description: description,
+      groups: groups,
     );
     state = state.whenData(
       (places) => [...places, if (addedPlace != null) addedPlace],
@@ -43,6 +45,7 @@ class PlaceNotifier extends AsyncNotifier<List<Place>> {
     double? latitude,
     double? longitude,
     String? categoryId,
+    List<String>? groups,
   }) async {
     final api = ref.read(apiServiceProvider);
     final updatedPlace = await api.updatePlace(
@@ -52,6 +55,7 @@ class PlaceNotifier extends AsyncNotifier<List<Place>> {
       latitude: latitude,
       longitude: longitude,
       categoryId: categoryId,
+      groups: groups,
     );
     state = state.whenData((places) {
       final index = places.indexWhere((p) => p.id == updatedPlace.id);
