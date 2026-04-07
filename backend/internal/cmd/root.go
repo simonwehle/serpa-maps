@@ -48,6 +48,8 @@ func Execute() {
 
 	protected := api.Group("/").Use(middleware.AuthMiddleware(jwtKeys.AccessKey))
 
+	protected.GET("/me", handlers.Me(postgres))
+
 	protected.GET("/categories", handlers.GetCategories(postgres))
 	protected.POST("/category", handlers.AddCategory(postgres))
 	protected.PATCH("/category/:id", handlers.UpdateCategory(postgres))
@@ -61,6 +63,17 @@ func Execute() {
 	protected.POST("/place/:id/assets", handlers.UploadPlaceAssets(postgres, assetStorageDir, assetURL))
 	protected.PATCH("/place/:id/assets/positions", handlers.UpdateAssetPositions(postgres))
 	protected.DELETE("/place/:id/asset/:asset_id", handlers.DeletePlaceAsset(postgres, assetStorageDir))
+
+	protected.POST("/group", handlers.CreateGroup(postgres))
+	protected.GET("/groups", handlers.GetGroups(postgres))
+	protected.DELETE("/group/:id", handlers.DeleteGroup(postgres))
+
+	protected.GET("/group/:id/members", handlers.GetGroupMembers(postgres))
+	protected.DELETE("/group/:id/member/:user_id", handlers.RemoveGroupMember(postgres))
+
+	protected.POST("/group/:id/invite", handlers.InviteToGroup(postgres))
+	protected.GET("/invites", handlers.GetMyInvites(postgres))
+	protected.POST("/invite/:id/respond", handlers.RespondToInvite(postgres))
 
 	r.Run(":53964")
 }

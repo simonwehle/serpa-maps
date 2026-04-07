@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:serpa_maps/widgets/form/serpa_divider.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_bottom_sheet.dart';
 
-class SerpaDraggableSheet extends StatelessWidget {
+class SerpaDraggableSheet extends StatefulWidget {
   final Widget child;
   final Widget? bottomActions;
   final double initialChildSize;
@@ -15,16 +15,70 @@ class SerpaDraggableSheet extends StatelessWidget {
   });
 
   @override
+  State<SerpaDraggableSheet> createState() => _SerpaDraggableSheetState();
+}
+
+class _SerpaDraggableSheetState extends State<SerpaDraggableSheet> {
+  late DraggableScrollableController _controller;
+  double _previousKeyboardHeight = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = DraggableScrollableController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _handleKeyboardChange(double keyboardHeight) {
+    if (!_controller.isAttached) return;
+
+    // If keyboard appears and wasn't visible before
+    if (keyboardHeight > 0 && _previousKeyboardHeight == 0) {
+      // Expand sheet to 0.9 to make text fields visible
+      _controller.animateTo(
+        0.9,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+    // If keyboard disappears
+    else if (keyboardHeight == 0 && _previousKeyboardHeight > 0) {
+      // Return to initial size
+      _controller.animateTo(
+        widget.initialChildSize,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+
+    _previousKeyboardHeight = keyboardHeight;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+
+    // Handle keyboard changes
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _handleKeyboardChange(keyboardHeight);
+    });
+
     return Stack(
       children: [
         DraggableScrollableSheet(
-          initialChildSize: initialChildSize,
+          controller: _controller,
+          initialChildSize: widget.initialChildSize,
           maxChildSize: 1,
           builder: (context, scrollController) {
             return SerpaBottomSheet(
               child: ListView(
                 controller: scrollController,
+                padding: EdgeInsets.only(bottom: keyboardHeight),
                 children: [
                   Center(
                     child: Container(
@@ -37,13 +91,13 @@ class SerpaDraggableSheet extends StatelessWidget {
                       ),
                     ),
                   ),
-                  child,
+                  widget.child,
                 ],
               ),
             );
           },
         ),
-        if (bottomActions != null)
+        if (widget.bottomActions != null)
           Positioned(
             bottom: 0,
             left: 0,
@@ -54,7 +108,7 @@ class SerpaDraggableSheet extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                   color: Theme.of(context).colorScheme.surface,
-                  child: bottomActions,
+                  child: widget.bottomActions,
                 ),
                 Container(
                   height: 16,

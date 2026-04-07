@@ -25,6 +25,7 @@ class _AddPlaceBottomSheetState extends ConsumerState<AddPlaceBottomSheet> {
   late TextEditingController longitudeController;
   late List<Category> categories;
   Category? selectedCategory;
+  List<String> selectedGroups = [];
 
   @override
   void initState() {
@@ -67,6 +68,7 @@ class _AddPlaceBottomSheetState extends ConsumerState<AddPlaceBottomSheet> {
             categoryId: selectedCategory!.id,
             latitude: latitude,
             longitude: longitude,
+            groups: selectedGroups,
           );
 
       if (mounted && addPlace != null) {
@@ -110,11 +112,16 @@ class _AddPlaceBottomSheetState extends ConsumerState<AddPlaceBottomSheet> {
                 selectedCategory = newCategory!;
               });
             },
+            onGroupsSelected: (newGroups) {
+              setState(() {
+                selectedGroups = newGroups;
+              });
+            },
             hideImageGallery: true,
           ),
         );
       },
-      loading: () => CircularProgressIndicator(),
+      loading: () => const CircularProgressIndicator(),
       error: (err, _) => Text('Error: $err'),
     );
   }

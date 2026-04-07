@@ -9,6 +9,7 @@ class Place {
   String categoryId;
   final DateTime createdAt;
   List<Asset> assets;
+  List<String> groupIds;
 
   Place({
     required this.id,
@@ -19,6 +20,7 @@ class Place {
     required this.categoryId,
     required this.assets,
     required this.createdAt,
+    required this.groupIds,
   });
 
   factory Place.fromJson(Map<String, dynamic> json) {
@@ -34,6 +36,9 @@ class Place {
       assets: (assetsJson is List)
           ? assetsJson.map((e) => Asset.fromJson(e)).toList()
           : [],
+      groupIds: (json['group_ids'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
     );
   }
 }

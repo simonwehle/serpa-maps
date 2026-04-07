@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
-import 'package:serpa_maps/models/user.dart';
-import 'package:serpa_maps/providers/api/api_provider.dart';
-import 'package:serpa_maps/providers/token/access_token_provider.dart';
-import 'package:serpa_maps/providers/token/refresh_token_provider.dart';
+import 'package:serpa_maps/pages/group_screen.dart';
+import 'package:serpa_maps/providers/data/user_prodiver.dart';
 import 'package:serpa_maps/utils/dialogs.dart';
 import 'package:serpa_maps/widgets/sheets/appearance_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/category_sheet.dart';
@@ -12,16 +10,19 @@ import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/url_sheet.dart';
 
 class SettingsSheet extends ConsumerWidget {
-  final User? user;
-
-  const SettingsSheet({super.key, this.user});
+  const SettingsSheet({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final i10n = AppLocalizations.of(context)!;
+    final userAsync = ref.watch(userProvider);
 
     return SerpaStaticSheet(
-      title: user?.name ?? i10n.anonymousUser,
+      title: userAsync.when(
+        data: (user) => user?.name ?? i10n.anonymousUser,
+        loading: () => i10n.loading,
+        error: (error, stackTrace) => i10n.error,
+      ),
       child: Column(
         children: [
           ElevatedButton(
@@ -43,18 +44,19 @@ class SettingsSheet extends ConsumerWidget {
             child: Text(i10n.settings),
           ),
           ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => GroupScreen()),
+              );
+            },
+            child: Text(i10n.groups),
+          ),
+          ElevatedButton(
             onPressed: () async {
               final confirmed = await showLogoutConfirmationDialog(context);
               if (confirmed) {
-                final refreshToken = ref.read(refreshTokenProvider);
-                if (refreshToken != null) {
-                  ref
-                      .read(apiServiceProvider)
-                      .logout(refreshToken: refreshToken)
-                      .catchError((_) {});
-                }
-                ref.read(accessTokenProvider.notifier).clearToken();
-                ref.read(refreshTokenProvider.notifier).clearToken();
+                ref.read(userProvider.notifier).logout().catchError((_) {});
               }
               if (context.mounted) Navigator.pop(context);
             },

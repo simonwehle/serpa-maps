@@ -2,8 +2,11 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 
 import 'package:serpa_maps/models/category.dart';
+import 'package:serpa_maps/models/group.dart';
+import 'package:serpa_maps/models/invite.dart';
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/models/auth.dart';
+import 'package:serpa_maps/models/user.dart';
 
 class ApiService {
   final Dio _dio;
@@ -29,6 +32,7 @@ class ApiService {
     double? latitude,
     double? longitude,
     String? categoryId,
+    List<String>? groups,
   }) async {
     final Map<String, dynamic> updates = {};
 
@@ -37,6 +41,7 @@ class ApiService {
     if (latitude != null) updates['latitude'] = latitude;
     if (longitude != null) updates['longitude'] = longitude;
     if (categoryId != null) updates['category_id'] = categoryId;
+    if (groups != null) updates['group_ids'] = groups;
 
     if (updates.isEmpty) {
       throw Exception('No fields to update');
@@ -52,6 +57,7 @@ class ApiService {
     required double longitude,
     required String categoryId,
     String? description,
+    List<String>? groups,
   }) async {
     final Map<String, dynamic> newRoom = {
       'name': name,
@@ -61,6 +67,7 @@ class ApiService {
     };
 
     if (description != null) newRoom['description'] = description;
+    if (groups != null) newRoom['group_ids'] = groups;
 
     final res = await _dio.post('/place', data: newRoom);
     return Place.fromJson(res.data);
@@ -168,5 +175,60 @@ class ApiService {
     final Map<String, dynamic> logoutRequest = {'refresh_token': refreshToken};
 
     await _dio.post('/logout', data: logoutRequest);
+  }
+
+  Future<List<Group>> fetchGroups() async {
+    final res = await _dio.get('/groups');
+    final List data = res.data;
+    return data.map((json) => Group.fromJson(json)).toList();
+  }
+
+  Future<Group> addGroup({required String name, String? description}) async {
+    final Map<String, dynamic> newGroup = {'name': name};
+
+    if (description != null) newGroup['description'] = description;
+
+    final res = await _dio.post('/group', data: newGroup);
+    return Group.fromJson(res.data);
+  }
+
+  Future<void> deleteGroup({required String id}) async {
+    await _dio.delete('/group/$id');
+  }
+
+  Future<List<Invite>> fetchInvites() async {
+    final res = await _dio.get('/invites');
+    final List data = res.data;
+    return data.map((json) => Invite.fromJson(json)).toList();
+  }
+
+  Future<void> respondToInvite({
+    required String id,
+    required bool accept,
+  }) async {
+    String status = "accepted";
+    if (accept == false) status = "declined";
+    final Map<String, dynamic> payload = {'status': status};
+    await _dio.post('/invite/$id/respond', data: payload);
+  }
+
+  Future<void> removeGroupMember({
+    required String groupId,
+    required String memberId,
+  }) async {
+    await _dio.delete('/group/$groupId/member/$memberId');
+  }
+
+  Future<User> me() async {
+    final res = await _dio.get('/me');
+    return User.fromJson(res.data);
+  }
+
+  Future<void> inviteToGroup({
+    required String groupId,
+    required String username,
+  }) async {
+    final Map<String, dynamic> payload = {'username': username};
+    await _dio.post('/group/$groupId/invite', data: payload);
   }
 }

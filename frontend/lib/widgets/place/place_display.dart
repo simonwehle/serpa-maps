@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
+import 'package:serpa_maps/providers/data/group_provider.dart';
 import 'package:serpa_maps/widgets/category/category_icon.dart';
 import 'package:serpa_maps/widgets/place/place_asset_gallery.dart';
 import 'package:serpa_maps/widgets/sheets/sheet_header.dart';
@@ -23,6 +24,19 @@ class PlaceDisplay extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final i10n = AppLocalizations.of(context)!;
+    final groupsAsync = ref.watch(groupProvider);
+    final sharedWithText = groupsAsync.when<String?>(
+      data: (groups) {
+        final sharedGroupNames = groups
+            .where((group) => place.groupIds.contains(group.groupId))
+            .map((group) => group.name)
+            .toList();
+
+        return sharedGroupNames.isNotEmpty ? sharedGroupNames.join(', ') : null;
+      },
+      loading: () => null,
+      error: (_, _) => null,
+    );
     Future<void> openMaps(
       double latitude,
       double longitude,
@@ -58,14 +72,17 @@ class PlaceDisplay extends ConsumerWidget {
                   child: PlaceAssetGallery(assets: place.assets),
                 )
               : SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 16),
-            child: ElevatedButton(
-              onPressed: () =>
-                  openMaps(place.latitude, place.longitude, place.name),
-              child: Text(i10n.directions),
-            ),
+          ElevatedButton(
+            onPressed: () =>
+                openMaps(place.latitude, place.longitude, place.name),
+            child: Text(i10n.directions),
           ),
+          const SizedBox(height: 16),
+          if (sharedWithText != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: Text(i10n.sharedWith + sharedWithText),
+            ),
           Text(
             place.description?.isNotEmpty == true
                 ? place.description!

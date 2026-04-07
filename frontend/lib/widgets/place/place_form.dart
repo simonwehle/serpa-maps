@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serpa_maps/providers/data/group_provider.dart';
 import 'package:serpa_maps/providers/data/place_provider.dart';
 
 //import 'package:serpa_maps/models/asset.dart';
@@ -10,6 +12,7 @@ import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
 //import 'package:serpa_maps/utils/extract_gps.dart';
 import 'package:serpa_maps/widgets/form/delete_button.dart';
+import 'package:serpa_maps/widgets/form/serpa_multi_dropdown.dart';
 import 'package:serpa_maps/widgets/place/place_asset_gallery.dart';
 import 'package:serpa_maps/widgets/place/place_form_button.dart';
 import 'package:serpa_maps/widgets/sheets/category_menu_sheet.dart';
@@ -24,6 +27,8 @@ class PlaceForm extends ConsumerWidget {
   final List<Category> categories;
   final Category selectedCategory;
   final ValueChanged<Category?> onCategorySelected;
+  final ValueChanged<List<String>>? onGroupsSelected;
+  final List<String>? selectedGroups;
   final Future<void> Function()? deletePlace;
   final bool hideImageGallery;
 
@@ -37,6 +42,8 @@ class PlaceForm extends ConsumerWidget {
     required this.categories,
     required this.selectedCategory,
     required this.onCategorySelected,
+    this.onGroupsSelected,
+    this.selectedGroups,
     this.deletePlace,
     this.hideImageGallery = false,
   });
@@ -54,6 +61,7 @@ class PlaceForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final groupsAsync = ref.watch(groupProvider);
     final i10n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -98,6 +106,24 @@ class PlaceForm extends ConsumerWidget {
               ),
             ],
           ),
+          const SizedBox(height: 16),
+          groupsAsync.when(
+            data: (groups) => SerpaMultiDropdown(
+              items: groups
+                  .map(
+                    (group) => DropdownItem(
+                      label: group.name,
+                      value: group.groupId,
+                      selected:
+                          place?.groupIds.contains(group.groupId) ?? false,
+                    ),
+                  )
+                  .toList(),
+              onSelectionChange: onGroupsSelected,
+            ),
+            loading: () => const CircularProgressIndicator(),
+            error: (err, _) => Text('Error: $err'),
+          ),
           !hideImageGallery
               ? Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -136,7 +162,7 @@ class PlaceForm extends ConsumerWidget {
                     },
                   ),
                 )
-              : SizedBox(height: 16),
+              : const SizedBox(height: 16),
           TextField(
             controller: descriptionController,
             maxLines: null,
@@ -151,7 +177,9 @@ class PlaceForm extends ConsumerWidget {
               Expanded(
                 child: TextField(
                   controller: latitudeController,
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: i10n.latitude,
@@ -164,7 +192,9 @@ class PlaceForm extends ConsumerWidget {
               Expanded(
                 child: TextField(
                   controller: longitudeController,
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: i10n.longitude,

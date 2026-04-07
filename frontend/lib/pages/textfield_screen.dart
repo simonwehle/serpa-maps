@@ -36,26 +36,30 @@ class _TextFieldScreenState extends ConsumerState<TextFieldScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bool showAppBar = widget.navigationBackTarget != null;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        leading: widget.navigationBackTarget != null
-            ? BackButton(
+      appBar: showAppBar
+          ? AppBar(
+              leading: BackButton(
                 onPressed: () =>
                     _pushNavigationTarget(widget.navigationBackTarget!),
-              )
-            : const SizedBox.shrink(),
-      ),
+              ),
+              title: Text(widget.title),
+              automaticallyImplyLeading: false,
+            )
+          : null,
       body: SafeArea(
         child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                widget.title,
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              const SizedBox(height: 24),
+              if (!showAppBar) ...[
+                Text(
+                  widget.title,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                const SizedBox(height: 24),
+              ],
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: widget.childBuilder(_registerSubmitCallback),

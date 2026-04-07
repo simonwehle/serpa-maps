@@ -44,21 +44,26 @@ func AddCategory(db *gorm.DB) gin.HandlerFunc {
 
 func GetCategories(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		parsedUserID, ok := parseUserID(c)
+		if !ok {
+			return
+		}
+
+		var sharedCategoryIDs []uuid.UUID
+		if sharedPlaceIDs := getSharedPlaceIDs(db, parsedUserID); len(sharedPlaceIDs) > 0 {
+			var sharedPlaces []models.Place
+			db.Select("category_id").Where("place_id IN ?", sharedPlaceIDs).Find(&sharedPlaces)
+			for _, p := range sharedPlaces {
+				sharedCategoryIDs = append(sharedCategoryIDs, p.CategoryID)
+			}
+		}
+
 		var categories []models.Category
-
-		userID, exists := c.Get("user_id")
-		if !exists {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
-			return
+		query := db.Where("user_id = ?", parsedUserID)
+		if len(sharedCategoryIDs) > 0 {
+			query = query.Or("category_id IN ?", sharedCategoryIDs)
 		}
-		userIDStr := fmt.Sprintf("%v", userID)
-		parsedUserID, err := uuid.Parse(userIDStr)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID format"})
-			return
-		}
-
-		if err = db.Where("user_id = ?", parsedUserID).Order("category_id").Find(&categories).Error; err != nil {
+		if err := query.Order("category_id").Find(&categories).Error; err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
