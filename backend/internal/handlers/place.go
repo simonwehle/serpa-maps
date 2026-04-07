@@ -221,6 +221,39 @@ func UpdatePlace(db *gorm.DB, assetURLBase string) gin.HandlerFunc {
             return
         }
 
+		if groupIDs, ok := payload["group_ids"].([]interface{}); ok {
+			var currentShares []models.PlaceShare
+			db.Where("place_id = ?", id).Find(&currentShares)
+			currentGroupIDs := make(map[string]bool)
+			for _, share := range currentShares {
+				currentGroupIDs[share.GroupID.String()] = true
+			}
+
+			newGroupIDs := make(map[string]bool)
+			for _, item := range groupIDs {
+				gid := item.(string)
+				newGroupIDs[gid] = true
+
+				if _, exists := currentGroupIDs[gid]; !exists {
+					parsedGID, err := uuid.Parse(gid)
+					if err == nil {
+						share := models.PlaceShare{
+							GroupID:    parsedGID,
+							PlaceID:    existingPlace.PlaceID,
+							SharedByID: parsedUserID,
+						}
+						db.Create(&share)
+					}
+				}
+			}
+
+			for gidStr := range currentGroupIDs {
+				if _, exists := newGroupIDs[gidStr]; !exists {
+					db.Where("place_id = ? AND group_id = ?", id, gidStr).Delete(&models.PlaceShare{})
+				}
+			}
+		}
+
         var place models.Place
         if err := db.Where("place_id = ?", id).First(&place).Error; err != nil {
             c.JSON(http.StatusNotFound, gin.H{"error": "Place not found"})
