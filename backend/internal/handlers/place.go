@@ -88,7 +88,17 @@ func AddPlace(db *gorm.DB, assetURL string) gin.HandlerFunc {
 
         payload.Place.Assets = assets
 
-        c.JSON(http.StatusCreated, payload.Place)
+        type PlaceWithGroups struct {
+            models.Place
+            GroupIDs []string `json:"group_ids"`
+        }
+
+        response := PlaceWithGroups{
+            Place:    payload.Place,
+            GroupIDs: payload.GroupIDs,
+        }
+
+        c.JSON(http.StatusCreated, response)
     }
 }
 
