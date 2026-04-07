@@ -31,6 +31,7 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
 
   List<Category>? categories;
   Category? selectedCategory;
+  List<String> selectedGroups = [];
 
   bool controllersInitialized = false;
 
@@ -91,6 +92,7 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
             latitude: latitude,
             longitude: longitude,
             categoryId: selectedCategory!.id,
+            groups: selectedGroups, // .map((g) => g.groupId).toList()
           );
       toggleEditing();
     } catch (e) {
@@ -150,6 +152,11 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
                   onCategorySelected: (Category? newCategory) {
                     setState(() {
                       selectedCategory = newCategory!;
+                    });
+                  },
+                  onGroupsSelected: (newGroups) {
+                    setState(() {
+                      selectedGroups = newGroups;
                     });
                   },
                   deletePlace: () async {
