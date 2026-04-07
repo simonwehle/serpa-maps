@@ -13,6 +13,7 @@ import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
 //import 'package:serpa_maps/utils/extract_gps.dart';
 import 'package:serpa_maps/widgets/form/delete_button.dart';
+import 'package:serpa_maps/widgets/form/serpa_multi_dropdown.dart';
 import 'package:serpa_maps/widgets/place/place_asset_gallery.dart';
 import 'package:serpa_maps/widgets/place/place_form_button.dart';
 import 'package:serpa_maps/widgets/sheets/category_menu_sheet.dart';
@@ -105,47 +106,13 @@ class PlaceForm extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           groupsAsync.when(
-            data: (groups) => MultiDropdown<String>(
-              fieldDecoration: FieldDecoration(
-                hintText: 'Add place to group',
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: colorScheme.outline),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 16,
-                ),
-              ),
-
-              dropdownDecoration: DropdownDecoration(
-                expandDirection: ExpandDirection.down,
-                elevation: 4,
-                borderRadius: BorderRadius.circular(8),
-                marginTop: 4,
-              ),
-
-              chipDecoration: ChipDecoration(
-                backgroundColor: colorScheme.primary,
-                labelStyle: Theme.of(context).textTheme.bodySmall,
-                spacing: 6,
-                runSpacing: 6,
-              ),
-
+            data: (groups) => SerpaMultiDropdown(
               items: groups
                   .map(
                     (group) =>
                         DropdownItem(label: group.name, value: group.groupId),
                   )
                   .toList(),
-
-              onSelectionChange: (selectedItems) {},
-
-              dropdownItemDecoration: DropdownItemDecoration(
-                selectedIcon: Icon(
-                  Icons.check,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
             ),
             loading: () => const CircularProgressIndicator(),
             error: (err, _) => Text('Error: $err'),
