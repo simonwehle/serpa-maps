@@ -210,6 +210,12 @@ func UpdatePlace(db *gorm.DB, assetURLBase string) gin.HandlerFunc {
 			}
 		}
 
+		var groupIDs []interface{}
+		if ids, ok := payload["group_ids"].([]interface{}); ok {
+			groupIDs = ids
+			delete(payload, "group_ids")
+		}
+
         if lat, ok := payload["latitude"].(float64); ok {
             payload["latitude"] = round6(lat)
         }
@@ -221,7 +227,7 @@ func UpdatePlace(db *gorm.DB, assetURLBase string) gin.HandlerFunc {
             return
         }
 
-		if groupIDs, ok := payload["group_ids"].([]interface{}); ok {
+		if groupIDs != nil {
 			var currentShares []models.PlaceShare
 			db.Where("place_id = ?", id).Find(&currentShares)
 			currentGroupIDs := make(map[string]bool)
@@ -275,7 +281,25 @@ func UpdatePlace(db *gorm.DB, assetURLBase string) gin.HandlerFunc {
 
         place.Assets = assets
 
-        c.JSON(http.StatusOK, place)
+        var shares []models.PlaceShare
+        finalGroupIDs := []string{}
+        if err := db.Where("place_id = ?", place.PlaceID).Find(&shares).Error; err == nil {
+            for _, share := range shares {
+                finalGroupIDs = append(finalGroupIDs, share.GroupID.String())
+            }
+        }
+
+        type PlaceWithGroups struct {
+            models.Place
+            GroupIDs []string `json:"group_ids"`
+        }
+
+        response := PlaceWithGroups{
+            Place:    place,
+            GroupIDs: finalGroupIDs,
+        }
+
+        c.JSON(http.StatusOK, response)
     }
 }
 
