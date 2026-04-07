@@ -50,7 +50,7 @@ class UserNotifier extends AsyncNotifier<User?> {
     final api = ref.read(apiServiceProvider);
     final registerResponse = await api.register(
       email: email,
-      name: name,
+      username: name,
       password: password,
     );
     setTokens(registerResponse.accessToken, registerResponse.refreshToken);

@@ -150,13 +150,13 @@ class ApiService {
   }
 
   Future<AuthResponse> register({
-    required String name,
+    required String username,
     required String email,
     required String password,
   }) async {
     final Map<String, dynamic> registerRequest = {
       'email': email,
-      'username': name,
+      'username': username,
       'password': password,
     };
 

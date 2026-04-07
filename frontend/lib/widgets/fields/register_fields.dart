@@ -53,7 +53,7 @@ class _RegisterFieldsState extends ConsumerState<RegisterFields> {
     final api = ref.read(apiServiceProvider);
     final registerResponse = await api.register(
       email: emailController.text.trim(),
-      name: usernameController.text.trim(),
+      username: usernameController.text.trim(),
       password: passwordController.text.trim(),
     );
     await ref
