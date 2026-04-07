@@ -28,6 +28,7 @@ class PlaceForm extends ConsumerWidget {
   final Category selectedCategory;
   final ValueChanged<Category?> onCategorySelected;
   final ValueChanged<List<String>>? onGroupsSelected;
+  final List<String>? selectedGroups;
   final Future<void> Function()? deletePlace;
   final bool hideImageGallery;
 
@@ -42,6 +43,7 @@ class PlaceForm extends ConsumerWidget {
     required this.selectedCategory,
     required this.onCategorySelected,
     this.onGroupsSelected,
+    this.selectedGroups,
     this.deletePlace,
     this.hideImageGallery = false,
   });
@@ -109,8 +111,12 @@ class PlaceForm extends ConsumerWidget {
             data: (groups) => SerpaMultiDropdown(
               items: groups
                   .map(
-                    (group) =>
-                        DropdownItem(label: group.name, value: group.groupId),
+                    (group) => DropdownItem(
+                      label: group.name,
+                      value: group.groupId,
+                      selected:
+                          place?.groupIds.contains(group.groupId) ?? false,
+                    ),
                   )
                   .toList(),
               onSelectionChange: onGroupsSelected,

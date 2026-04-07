@@ -96,6 +96,7 @@ class PlaceNotifier extends AsyncNotifier<List<Place>> {
             categoryId: place.categoryId,
             createdAt: place.createdAt,
             assets: updatedAssets,
+            groupIds: place.groupIds,
           );
         }
         return place;
@@ -131,6 +132,7 @@ class PlaceNotifier extends AsyncNotifier<List<Place>> {
             categoryId: place.categoryId,
             createdAt: place.createdAt,
             assets: updatedAssets,
+            groupIds: place.groupIds,
           );
         }
         return place;
