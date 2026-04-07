@@ -67,7 +67,7 @@ class ApiService {
     };
 
     if (description != null) newRoom['description'] = description;
-    if (groups != null) newRoom['groups'] = groups;
+    if (groups != null) newRoom['group_ids'] = groups;
 
     final res = await _dio.post('/place', data: newRoom);
     return Place.fromJson(res.data);
