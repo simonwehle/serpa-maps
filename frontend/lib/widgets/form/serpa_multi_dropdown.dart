@@ -3,7 +3,13 @@ import 'package:multi_dropdown/multi_dropdown.dart';
 
 class SerpaMultiDropdown extends StatelessWidget {
   final List<DropdownItem<String>> items;
-  const SerpaMultiDropdown({super.key, required this.items});
+  final void Function(List<String>)? onSelectionChange;
+
+  const SerpaMultiDropdown({
+    super.key,
+    required this.items,
+    this.onSelectionChange,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +24,7 @@ class SerpaMultiDropdown extends StatelessWidget {
       dropdownDecoration: DropdownDecoration(
         backgroundColor: colorScheme.surfaceContainer,
         expandDirection: ExpandDirection.down,
-        listPadding: EdgeInsets.symmetric(vertical: 8),
+        listPadding: const EdgeInsets.symmetric(vertical: 8),
         //backgroundColor: colorScheme.primary,
       ),
       dropdownItemDecoration: DropdownItemDecoration(
@@ -32,7 +38,7 @@ class SerpaMultiDropdown extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
       ),
       items: items,
-      onSelectionChange: (selectedItems) {},
+      onSelectionChange: onSelectionChange,
     );
   }
 }

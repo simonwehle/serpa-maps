@@ -4,7 +4,6 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:serpa_maps/models/group.dart';
 import 'package:serpa_maps/providers/data/group_provider.dart';
 import 'package:serpa_maps/providers/data/place_provider.dart';
 
@@ -28,6 +27,7 @@ class PlaceForm extends ConsumerWidget {
   final List<Category> categories;
   final Category selectedCategory;
   final ValueChanged<Category?> onCategorySelected;
+  final ValueChanged<List<String>>? onGroupsSelected;
   final Future<void> Function()? deletePlace;
   final bool hideImageGallery;
 
@@ -41,6 +41,7 @@ class PlaceForm extends ConsumerWidget {
     required this.categories,
     required this.selectedCategory,
     required this.onCategorySelected,
+    this.onGroupsSelected,
     this.deletePlace,
     this.hideImageGallery = false,
   });
@@ -60,7 +61,6 @@ class PlaceForm extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final groupsAsync = ref.watch(groupProvider);
     final i10n = AppLocalizations.of(context)!;
-    final colorScheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
@@ -113,6 +113,7 @@ class PlaceForm extends ConsumerWidget {
                         DropdownItem(label: group.name, value: group.groupId),
                   )
                   .toList(),
+              onSelectionChange: onGroupsSelected,
             ),
             loading: () => const CircularProgressIndicator(),
             error: (err, _) => Text('Error: $err'),
