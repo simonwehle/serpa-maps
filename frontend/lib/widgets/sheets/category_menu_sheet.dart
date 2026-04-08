@@ -4,6 +4,7 @@ import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/providers/data/category_provider.dart';
 import 'package:serpa_maps/widgets/form/delete_button.dart';
+import 'package:serpa_maps/widgets/form/form_text_field.dart';
 import 'package:serpa_maps/widgets/form/serpa_divider.dart';
 import 'package:serpa_maps/widgets/layer/serpa_selector.dart';
 import 'package:serpa_maps/widgets/place/place_form_actions.dart';
@@ -88,13 +89,7 @@ class _CategoryMenuSheetState extends ConsumerState<CategoryMenuSheet> {
       title: "Category Menu",
       child: Column(
         children: [
-          TextField(
-            controller: _nameController,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: i10n.name,
-            ),
-          ),
+          FormTextField(label: i10n.name, controller: _nameController),
           const SizedBox(height: 16),
           Wrap(
             spacing: 8.0,

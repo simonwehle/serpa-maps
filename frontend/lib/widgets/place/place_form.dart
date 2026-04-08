@@ -12,6 +12,7 @@ import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
 //import 'package:serpa_maps/utils/extract_gps.dart';
 import 'package:serpa_maps/widgets/form/delete_button.dart';
+import 'package:serpa_maps/widgets/form/form_text_field.dart';
 import 'package:serpa_maps/widgets/form/serpa_multi_dropdown.dart';
 import 'package:serpa_maps/widgets/place/place_asset_gallery.dart';
 import 'package:serpa_maps/widgets/place/place_form_button.dart';
@@ -68,13 +69,7 @@ class PlaceForm extends ConsumerWidget {
       child: Column(
         children: [
           const SizedBox(height: 8),
-          TextField(
-            controller: nameController,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: i10n.name,
-            ),
-          ),
+          FormTextField(label: i10n.name, controller: nameController),
           const SizedBox(height: 16),
           Row(
             children: [
@@ -163,13 +158,11 @@ class PlaceForm extends ConsumerWidget {
                   ),
                 )
               : const SizedBox(height: 16),
-          TextField(
+          FormTextField(
+            label: i10n.description,
             controller: descriptionController,
+            optional: true,
             maxLines: null,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: i10n.description,
-            ),
           ),
           const SizedBox(height: 16),
           Row(

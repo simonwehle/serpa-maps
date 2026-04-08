@@ -44,6 +44,7 @@ class _AddGroupBottomSheetState extends ConsumerState<AddGroupBottomSheet> {
           FormTextField(
             label: i10n.description,
             controller: descriptionController,
+            optional: true,
           ),
           const SizedBox(height: 16),
           PlaceFormActions(

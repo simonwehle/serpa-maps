@@ -30,6 +30,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get categoryNotFound => 'Kategorie nicht gefunden';
 
   @override
+  String get darkMapStyleURL => 'Dunkler Kartenstil URL';
+
+  @override
   String get dark => 'Dunkel';
 
   @override
@@ -93,6 +96,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get leaveGroupQuestion => 'Möchten Sie die Gruppe verlassen?';
 
   @override
+  String get lessOptions => 'weniger Optionen';
+
+  @override
   String get light => 'Hell';
 
   @override
@@ -114,6 +120,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get mapLayer => 'Kartentyp';
 
   @override
+  String get mapStyleURL => 'Kartenstil URL';
+
+  @override
+  String get moreOptions => 'mehr Optionen';
+
+  @override
   String get name => 'Name';
 
   @override
@@ -132,7 +144,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get noGroupInvites => 'Keine Gruppeneinladungen verfügbar';
 
   @override
-  String get username => 'Nutzername';
+  String get optional => '(Optional)';
+
+  @override
+  String get overlayURL => 'Overlay URL';
 
   @override
   String get password => 'Passwort';
@@ -153,6 +168,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get searchPlaces => 'Orte suchen';
 
   @override
+  String get serverURL => 'Server URL';
+
+  @override
   String get settings => 'Einstellungen';
 
   @override
@@ -166,6 +184,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get system => 'System';
+
+  @override
+  String get username => 'Nutzername';
 
   @override
   String get yes => 'Ja';

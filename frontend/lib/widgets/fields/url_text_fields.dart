@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serpa_maps/l10n/app_localizations.dart';
+import 'package:serpa_maps/widgets/form/form_text_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:serpa_maps/providers/preferences/base_url_provider.dart';
 import 'package:serpa_maps/providers/preferences/overlay_url_provider.dart';
@@ -17,35 +19,32 @@ class UrlTextFields extends ConsumerStatefulWidget {
 
 class _UrlTextFieldsState extends ConsumerState<UrlTextFields> {
   bool moreOptions = false;
-  late TextEditingController baseUrlController;
-  late TextEditingController styleUrlController;
-  late TextEditingController styleDarkUrlController;
+  late TextEditingController serverUrlController;
+  late TextEditingController mapStyleUrlController;
+  late TextEditingController darkMapStyleUrlController;
   late TextEditingController overlayUrlController;
 
   @override
   void initState() {
     super.initState();
-    baseUrlController = TextEditingController();
-    styleUrlController = TextEditingController();
-    styleDarkUrlController = TextEditingController();
+    serverUrlController = TextEditingController();
+    mapStyleUrlController = TextEditingController();
+    darkMapStyleUrlController = TextEditingController();
     overlayUrlController = TextEditingController();
   }
 
   @override
   void dispose() {
-    baseUrlController.dispose();
-    styleUrlController.dispose();
-    styleDarkUrlController.dispose();
+    serverUrlController.dispose();
+    mapStyleUrlController.dispose();
+    darkMapStyleUrlController.dispose();
     overlayUrlController.dispose();
     super.dispose();
   }
 
-  void setStyleUrlIfEmpty(
-    TextEditingController styleUrlController,
-    String styleUrl,
-  ) {
-    if (styleUrlController.text.isEmpty && styleUrl.isNotEmpty) {
-      styleUrlController.text = styleUrl;
+  void setUrlIfEmpty(TextEditingController urlController, String url) {
+    if (urlController.text.isEmpty && url.isNotEmpty) {
+      urlController.text = url;
     }
   }
 
@@ -67,15 +66,15 @@ class _UrlTextFieldsState extends ConsumerState<UrlTextFields> {
 
     final urlConfigs = {
       'baseUrl': (
-        baseUrlController,
+        serverUrlController,
         ref.read(baseUrlProvider.notifier).updateBaseUrl,
       ),
       'styleUrl': (
-        styleUrlController,
+        mapStyleUrlController,
         ref.read(styleUrlProvider.notifier).updateStyleUrl,
       ),
       'styleDarkUrl': (
-        styleDarkUrlController,
+        darkMapStyleUrlController,
         ref.read(styleDarkUrlProvider.notifier).updateStyleDarkUrl,
       ),
       'overlayUrl': (
@@ -91,16 +90,16 @@ class _UrlTextFieldsState extends ConsumerState<UrlTextFields> {
 
   @override
   Widget build(BuildContext context) {
-    //final i10n = AppLocalizations.of(context)!;
-    final baseUrl = ref.read(baseUrlProvider);
+    final i10n = AppLocalizations.of(context)!;
+    final serverUrl = ref.read(baseUrlProvider);
     final styleUrl = ref.read(styleUrlProvider);
     final styleDarkUrl = ref.read(styleDarkUrlProvider);
     final overlayUrl = ref.read(overlayUrlProvider);
 
-    setStyleUrlIfEmpty(baseUrlController, baseUrl);
-    setStyleUrlIfEmpty(styleUrlController, styleUrl);
-    setStyleUrlIfEmpty(styleDarkUrlController, styleDarkUrl);
-    setStyleUrlIfEmpty(overlayUrlController, overlayUrl);
+    setUrlIfEmpty(serverUrlController, serverUrl);
+    setUrlIfEmpty(mapStyleUrlController, styleUrl);
+    setUrlIfEmpty(darkMapStyleUrlController, styleDarkUrl);
+    setUrlIfEmpty(overlayUrlController, overlayUrl);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.persistChanges?.call(persistAllUrls);
@@ -108,37 +107,23 @@ class _UrlTextFieldsState extends ConsumerState<UrlTextFields> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        TextField(
-          controller: baseUrlController,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            labelText: 'Base URL',
-          ),
-        ),
+        FormTextField(label: i10n.serverURL, controller: serverUrlController),
         const SizedBox(height: 8),
         if (moreOptions) ...[
-          TextField(
-            controller: styleUrlController,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Style URL',
-            ),
+          FormTextField(
+            label: i10n.mapStyleURL,
+            controller: mapStyleUrlController,
           ),
           const SizedBox(height: 8),
-          TextField(
-            controller: styleDarkUrlController,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Dark Style URL',
-            ),
+          FormTextField(
+            label: i10n.darkMapStyleURL,
+            controller: darkMapStyleUrlController,
           ),
           const SizedBox(height: 8),
-          TextField(
+          FormTextField(
+            label: i10n.overlayURL,
             controller: overlayUrlController,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Overlay URL (optional)',
-            ),
+            optional: true,
           ),
           const SizedBox(height: 8),
         ],
@@ -147,7 +132,7 @@ class _UrlTextFieldsState extends ConsumerState<UrlTextFields> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               Text(
-                moreOptions ? "less options" : "more options",
+                moreOptions ? i10n.lessOptions : i10n.moreOptions,
                 style: TextStyle(color: Theme.of(context).colorScheme.primary),
               ),
             ],

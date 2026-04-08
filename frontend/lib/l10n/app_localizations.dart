@@ -140,6 +140,12 @@ abstract class AppLocalizations {
   /// **'Category not found'**
   String get categoryNotFound;
 
+  /// No description provided for @darkMapStyleURL.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark map style URL'**
+  String get darkMapStyleURL;
+
   /// No description provided for @dark.
   ///
   /// In en, this message translates to:
@@ -266,6 +272,12 @@ abstract class AppLocalizations {
   /// **'Do you want to leave this group?'**
   String get leaveGroupQuestion;
 
+  /// No description provided for @lessOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'less options'**
+  String get lessOptions;
+
   /// No description provided for @light.
   ///
   /// In en, this message translates to:
@@ -308,6 +320,18 @@ abstract class AppLocalizations {
   /// **'Map Layer'**
   String get mapLayer;
 
+  /// No description provided for @mapStyleURL.
+  ///
+  /// In en, this message translates to:
+  /// **'Map style URL'**
+  String get mapStyleURL;
+
+  /// No description provided for @moreOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'more options'**
+  String get moreOptions;
+
   /// No description provided for @name.
   ///
   /// In en, this message translates to:
@@ -344,11 +368,17 @@ abstract class AppLocalizations {
   /// **'No group invites available'**
   String get noGroupInvites;
 
-  /// No description provided for @username.
+  /// No description provided for @optional.
   ///
   /// In en, this message translates to:
-  /// **'Username'**
-  String get username;
+  /// **'(optional)'**
+  String get optional;
+
+  /// No description provided for @overlayURL.
+  ///
+  /// In en, this message translates to:
+  /// **'Overlay URL'**
+  String get overlayURL;
 
   /// No description provided for @password.
   ///
@@ -386,6 +416,12 @@ abstract class AppLocalizations {
   /// **'Search places'**
   String get searchPlaces;
 
+  /// No description provided for @serverURL.
+  ///
+  /// In en, this message translates to:
+  /// **'Server URL'**
+  String get serverURL;
+
   /// No description provided for @settings.
   ///
   /// In en, this message translates to:
@@ -415,6 +451,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'System'**
   String get system;
+
+  /// No description provided for @username.
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get username;
 
   /// No description provided for @yes.
   ///
