@@ -33,7 +33,9 @@ class PlaceImage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final i10n = AppLocalizations.of(context)!;
-    final assetAsync = ref.watch(assetProvider(asset.assetUrl));
+    final assetAsync = ref.watch(
+      assetProvider((placeId: asset.placeId, assetId: asset.assetId)),
+    );
     final isVideo = asset.isVideo;
 
     return Skeletonizer(

@@ -1,22 +1,17 @@
 import 'dart:typed_data';
 
-import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serpa_maps/providers/api/api_provider.dart';
 
-final assetProvider = FutureProvider.family<Uint8List, String>((
+typedef AssetRequest = ({String placeId, String assetId});
+
+final assetProvider = FutureProvider.family<Uint8List, AssetRequest>((
   ref,
-  url,
+  request,
 ) async {
-  final dio = Dio();
-  final response = await dio.get<List<int>>(
-    url,
-    options: Options(responseType: ResponseType.bytes),
+  final api = ref.read(apiServiceProvider);
+  return api.fetchAssetBytes(
+    placeId: request.placeId,
+    assetId: request.assetId,
   );
-
-  final body = response.data;
-  if (response.statusCode != 200 || body == null) {
-    throw Exception("Failed to load image");
-  }
-
-  return Uint8List.fromList(body);
 });
