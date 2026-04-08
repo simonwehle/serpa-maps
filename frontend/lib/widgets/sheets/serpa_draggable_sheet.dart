@@ -37,17 +37,13 @@ class _SerpaDraggableSheetState extends State<SerpaDraggableSheet> {
   void _handleKeyboardChange(double keyboardHeight) {
     if (!_controller.isAttached) return;
 
-    // If keyboard appears and wasn't visible before
     if (keyboardHeight > 0 && _previousKeyboardHeight == 0) {
-      // Expand sheet to 0.9 to make text fields visible
       _controller.animateTo(
         0.9,
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeOut,
       );
-    }
-    // If keyboard disappears
-    else if (keyboardHeight == 0 && _previousKeyboardHeight > 0) {
+    } else if (keyboardHeight == 0 && _previousKeyboardHeight > 0) {
       // Return to initial size
       _controller.animateTo(
         widget.initialChildSize,
@@ -63,7 +59,6 @@ class _SerpaDraggableSheetState extends State<SerpaDraggableSheet> {
   Widget build(BuildContext context) {
     final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
 
-    // Handle keyboard changes
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _handleKeyboardChange(keyboardHeight);
     });
