@@ -117,6 +117,41 @@ func UploadPlaceAssets(db *gorm.DB, mediaStorageDir, assetURL string) gin.Handle
     }
 }
 
+func ServePlaceAsset(db *gorm.DB, mediaStorageDir string) gin.HandlerFunc {
+    return func(c *gin.Context) {
+        placeIDStr := c.Param("id")
+        assetIDStr := c.Param("asset_id")
+
+        placeID, err := uuid.Parse(placeIDStr)
+        if err != nil {
+            c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid place id"})
+            return
+        }
+
+        assetID, err := uuid.Parse(assetIDStr)
+        if err != nil {
+            c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid asset id"})
+            return
+        }
+
+        var count int64
+        if err := db.Model(&models.Place{}).Where("place_id = ?", placeID).Count(&count).Error; err != nil || count == 0 {
+            c.JSON(http.StatusNotFound, gin.H{"error": "Place not found"})
+            return
+        }
+
+        var asset models.Asset
+        if err := db.Select("asset_filename").
+            Where("asset_id = ? AND place_id = ?", assetID, placeID).
+            First(&asset).Error; err != nil {
+            c.JSON(http.StatusNotFound, gin.H{"error": "Asset not found"})
+            return
+        }
+
+        c.File(filepath.Join(mediaStorageDir, asset.AssetFilename))
+    }
+}
+
 func UpdateAssetPositions(db *gorm.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
         placeID := c.Param("id")

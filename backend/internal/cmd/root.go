@@ -60,6 +60,7 @@ func Execute() {
 	protected.PATCH("/place/:id", handlers.UpdatePlace(postgres, assetURL))
 	protected.DELETE("/place/:id", handlers.DeletePlace(postgres))
 
+	protected.GET("/place/:id/asset/:asset_id", handlers.ServePlaceAsset(postgres, assetStorageDir))
 	protected.POST("/place/:id/assets", handlers.UploadPlaceAssets(postgres, assetStorageDir, assetURL))
 	protected.PATCH("/place/:id/assets/positions", handlers.UpdateAssetPositions(postgres))
 	protected.DELETE("/place/:id/asset/:asset_id", handlers.DeletePlaceAsset(postgres, assetStorageDir))
