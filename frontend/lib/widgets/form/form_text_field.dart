@@ -5,7 +5,9 @@ class FormTextField extends StatefulWidget {
   final String label;
   final String? hint;
   final TextEditingController controller;
+  final void Function(String)? onChanged;
   final String? Function(String?)? validator;
+  final TextInputType? keyboardType;
   final int? maxLines;
   final bool optional;
   final bool passwordField;
@@ -14,8 +16,10 @@ class FormTextField extends StatefulWidget {
     required this.label,
     this.hint,
     required this.controller,
-    this.maxLines,
+    this.onChanged,
     this.validator,
+    this.keyboardType,
+    this.maxLines,
     this.optional = false,
     this.passwordField = false,
   });
@@ -55,7 +59,8 @@ class _FormTextFieldState extends State<FormTextField> {
       validator: widget.validator,
       obscureText: widget.passwordField ? obscureText : false,
       maxLines: widget.maxLines,
-      //keyboardType: TextInputType.visiblePassword,
+      keyboardType: widget.keyboardType,
+      onChanged: widget.onChanged,
       //textInputAction: TextInputAction.done,
     );
   }

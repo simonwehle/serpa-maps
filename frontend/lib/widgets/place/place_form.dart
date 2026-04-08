@@ -168,14 +168,11 @@ class PlaceForm extends ConsumerWidget {
           Row(
             children: [
               Expanded(
-                child: TextField(
+                child: FormTextField(
+                  label: i10n.latitude,
                   controller: latitudeController,
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
-                  ),
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: i10n.latitude,
                   ),
                   onChanged: (value) =>
                       _normalizeDecimalInput(latitudeController, value),
@@ -183,14 +180,11 @@ class PlaceForm extends ConsumerWidget {
               ),
               const SizedBox(width: 8),
               Expanded(
-                child: TextField(
+                child: FormTextField(
+                  label: i10n.longitude,
                   controller: longitudeController,
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
-                  ),
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: i10n.longitude,
                   ),
                   onChanged: (value) =>
                       _normalizeDecimalInput(longitudeController, value),
