@@ -40,12 +40,17 @@ jobs:
           channel: 'stable'
 
       - name: Install Dependencies
+        working-directory: frontend
         run: flutter pub get
         
       - name: Build APK
-        run: flutter build apk --release --split-per-abi
+        working-directory: frontend
+        run: |
+          VERSION_TAG='${{ steps.get-tag.outputs.version_tag }}'
+          flutter build apk --release --split-per-abi --build-name="$VERSION_TAG" --build-number="${GITHUB_RUN_NUMBER}"
 
       - name: Prepare Release Artifacts
+        working-directory: frontend
         run: |
           VERSION_TAG='${{ steps.get-tag.outputs.version_tag }}'
           SOURCE_APK='build/app/outputs/flutter-apk/app-arm64-v8a-release.apk'
@@ -60,13 +65,13 @@ jobs:
         with:
           name: Releases
           path: |
-            build/app/outputs/flutter-apk/serpa-maps-${{ steps.get-tag.outputs.version_tag }}-arm64.apk
-            build/app/outputs/flutter-apk/serpa-maps-${{ steps.get-tag.outputs.version_tag }}-arm64.apk.sha1
+            frontend/build/app/outputs/flutter-apk/serpa-maps-${{ steps.get-tag.outputs.version_tag }}-arm64.apk
+            frontend/build/app/outputs/flutter-apk/serpa-maps-${{ steps.get-tag.outputs.version_tag }}-arm64.apk.sha1
 
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
           artifacts: |
-            build/app/outputs/flutter-apk/serpa-maps-${{ steps.get-tag.outputs.version_tag }}-arm64.apk
-            build/app/outputs/flutter-apk/serpa-maps-${{ steps.get-tag.outputs.version_tag }}-arm64.apk.sha1
+            frontend/build/app/outputs/flutter-apk/serpa-maps-${{ steps.get-tag.outputs.version_tag }}-arm64.apk
+            frontend/build/app/outputs/flutter-apk/serpa-maps-${{ steps.get-tag.outputs.version_tag }}-arm64.apk.sha1
           tag: v${{ steps.get-tag.outputs.version_tag }}
