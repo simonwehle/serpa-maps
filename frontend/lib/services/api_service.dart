@@ -16,13 +16,13 @@ class ApiService {
 
   Future<List<Category>> fetchCategories() async {
     final res = await _dio.get('/categories');
-    final List data = res.data;
+    final List data = res.data ?? [];
     return data.map((json) => Category.fromJson(json)).toList();
   }
 
   Future<List<Place>> fetchPlaces() async {
     final res = await _dio.get('/places');
-    final List data = res.data;
+    final List data = res.data ?? [];
     return data.map((json) => Place.fromJson(json)).toList();
   }
 
