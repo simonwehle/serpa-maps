@@ -45,7 +45,14 @@ func CreateGroup(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusCreated, group)
+		resp := models.GroupWithRole{
+			GroupID:     group.GroupID,
+			Name:        group.Name,
+			Description: group.Description,
+			CreatedAt:   group.CreatedAt,
+			Role:        member.Role,
+		}
+		c.JSON(http.StatusCreated, resp)
 	}
 }
 
