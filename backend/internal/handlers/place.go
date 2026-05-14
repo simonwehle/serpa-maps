@@ -73,7 +73,7 @@ func AddPlace(db *gorm.DB) gin.HandlerFunc {
             _ = db.Create(&share)
         }
 
-        var assets []models.Asset
+        assets := []models.Asset{}
         if err := db.Where("place_id = ?", payload.Place.PlaceID).Order("position").Find(&assets).Error; err != nil {
             assets = []models.Asset{}
         }
@@ -122,9 +122,9 @@ func GetPlaces(db *gorm.DB) gin.HandlerFunc {
         }
         var result []PlaceWithGroups
         for i, p := range places {
-            var assets []models.Asset
+            assets := []models.Asset{}
             err := db.Where("place_id = ?", p.PlaceID).Order("position").Find(&assets).Error
-            if err != nil || assets == nil {
+            if err != nil {
                 assets = []models.Asset{}
             }
             places[i].Assets = assets
@@ -259,7 +259,7 @@ func UpdatePlace(db *gorm.DB) gin.HandlerFunc {
             return
         }
 
-        var assets []models.Asset
+        assets := []models.Asset{}
         if err := db.Where("place_id = ?", id).Order("position").Find(&assets).Error; err != nil {
             assets = []models.Asset{}
         }

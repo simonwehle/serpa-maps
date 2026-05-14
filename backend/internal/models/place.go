@@ -18,7 +18,7 @@ type Place struct {
 	CategoryID  uuid.UUID `gorm:"type:uuid;not null;index" json:"category_id"`
 	Category    Category  `gorm:"constraint:OnDelete:RESTRICT;" json:"-"`
 	CreatedAt   time.Time `gorm:"autoCreateTime" json:"created_at"`
-	Assets      []Asset   `gorm:"foreignKey:PlaceID;constraint:OnDelete:CASCADE" json:"assets,omitempty"`
+	Assets      []Asset   `gorm:"foreignKey:PlaceID;constraint:OnDelete:CASCADE" json:"assets"`
 }
 
 func (p *Place) BeforeCreate(tx *gorm.DB) error {
