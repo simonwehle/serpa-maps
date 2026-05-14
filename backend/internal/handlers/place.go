@@ -120,7 +120,7 @@ func GetPlaces(db *gorm.DB) gin.HandlerFunc {
             models.Place
             GroupIDs []string `json:"group_ids"`
         }
-        var result []PlaceWithGroups
+        result := []PlaceWithGroups{}
         for i, p := range places {
             assets := []models.Asset{}
             err := db.Where("place_id = ?", p.PlaceID).Order("position").Find(&assets).Error

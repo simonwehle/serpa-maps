@@ -67,7 +67,9 @@ func GetCategories(db *gorm.DB) gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-
+		if categories == nil {
+			categories = []models.Category{}
+		}
 		c.JSON(http.StatusOK, categories)
 	}
 }
