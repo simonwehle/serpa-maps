@@ -35,19 +35,20 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-  martin:
-    image: ghcr.io/maplibre/martin:latest
-    container_name: serpa-maps-martin
-    restart: unless-stopped
-    ports:
-      - "7143:3000"
-    volumes:
-      - ./sprites:/sprites:ro
-      - ./styles:/styles:ro
-      - ./fonts:/fonts:ro
-      - ./config.yaml:/config.yaml:ro
-      - ./tiles:/tiles:ro
-    command: --config /config.yaml
+  # The tile server martin to self host your own map is optional
+  # martin:
+  #   image: ghcr.io/maplibre/martin:latest
+  #   container_name: serpa-maps-martin
+  #   restart: unless-stopped
+  #   ports:
+  #     - "7143:3000"
+  #   volumes:
+  #     - ./sprites:/sprites:ro
+  #     - ./styles:/styles:ro
+  #     - ./fonts:/fonts:ro
+  #     - ./config.yaml:/config.yaml:ro
+  #     - ./tiles:/tiles:ro
+  #   command: --config /config.yaml
 
 volumes:
   pg-data:
