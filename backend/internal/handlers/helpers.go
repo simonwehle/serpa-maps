@@ -12,10 +12,6 @@ import (
 	"gorm.io/gorm"
 )
 
-func buildAssetURL(assetURL, assetFilename string) string {
-    return fmt.Sprintf("%s/%s", strings.TrimRight(assetURL, "/"), strings.TrimPrefix(assetFilename, "/"))
-}
-
 func validatePlaceInput(name string, latitude, longitude float64) error {
 	if strings.TrimSpace(name) == "" {
 		return fmt.Errorf("name is required")

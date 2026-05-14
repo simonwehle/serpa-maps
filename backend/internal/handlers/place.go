@@ -12,7 +12,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func AddPlace(db *gorm.DB, assetURL string) gin.HandlerFunc {
+func AddPlace(db *gorm.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
         var payload struct {
             models.Place
@@ -78,8 +78,8 @@ func AddPlace(db *gorm.DB, assetURL string) gin.HandlerFunc {
             assets = []models.Asset{}
         }
 
-        for i := range assets {
-            assets[i].AssetURL = buildAssetURL(assetURL, assets[i].AssetFilename)
+        if assets == nil {
+            assets = []models.Asset{}
         }
 
         payload.Place.Assets = assets
@@ -98,7 +98,7 @@ func AddPlace(db *gorm.DB, assetURL string) gin.HandlerFunc {
     }
 }
 
-func GetPlaces(db *gorm.DB, assetURL string) gin.HandlerFunc {
+func GetPlaces(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		parsedUserID, ok := parseUserID(c)
 		if !ok {
@@ -127,9 +127,6 @@ func GetPlaces(db *gorm.DB, assetURL string) gin.HandlerFunc {
             if err != nil {
                 assets = []models.Asset{}
             }
-            for j := range assets {
-                assets[j].AssetURL = buildAssetURL(assetURL, assets[j].AssetFilename)
-            }
             places[i].Assets = assets
 
             var shares []models.PlaceShare
@@ -150,7 +147,7 @@ func GetPlaces(db *gorm.DB, assetURL string) gin.HandlerFunc {
 }
 
 
-func UpdatePlace(db *gorm.DB, assetURLBase string) gin.HandlerFunc {
+func UpdatePlace(db *gorm.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
         id := c.Param("id")
         var payload map[string]interface{}
@@ -267,8 +264,8 @@ func UpdatePlace(db *gorm.DB, assetURLBase string) gin.HandlerFunc {
             assets = []models.Asset{}
         }
 
-        for i := range assets {
-            assets[i].AssetURL = buildAssetURL(assetURLBase, assets[i].AssetFilename)
+        if assets == nil {
+            assets = []models.Asset{}
         }
 
         place.Assets = assets

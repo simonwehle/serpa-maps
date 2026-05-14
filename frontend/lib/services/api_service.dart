@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:dio/dio.dart';
 
 import 'package:serpa_maps/models/category.dart';
@@ -82,6 +83,21 @@ class ApiService {
     required String assetId,
   }) async {
     await _dio.delete('/place/$placeId/asset/$assetId');
+  }
+
+  Future<Uint8List> fetchAssetBytes({
+    required String placeId,
+    required String assetId,
+  }) async {
+    final res = await _dio.get<List<int>>(
+      '/place/$placeId/asset/$assetId',
+      options: Options(responseType: ResponseType.bytes),
+    );
+    final bytes = res.data;
+    if (res.statusCode != 200 || bytes == null) {
+      throw Exception('Failed to load asset');
+    }
+    return Uint8List.fromList(bytes);
   }
 
   Future<List<dynamic>> uploadAsset({
