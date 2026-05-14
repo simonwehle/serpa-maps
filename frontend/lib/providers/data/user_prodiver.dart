@@ -42,35 +42,35 @@ class UserNotifier extends AsyncNotifier<User?> {
     return user;
   }
 
-  Future<User> register({
-    required String email,
-    required String name,
-    required String password,
-  }) async {
-    final api = ref.read(apiServiceProvider);
-    final registerResponse = await api.register(
-      email: email,
-      username: name,
-      password: password,
-    );
-    setTokens(registerResponse.accessToken, registerResponse.refreshToken);
-    invalidateProviders();
-    final user = User(
-      email: registerResponse.email,
-      name: name,
-      userId: registerResponse.userId,
-    );
-    state = AsyncValue.data(user);
-    return user;
-  }
+  // Future<User> register({
+  //   required String email,
+  //   required String name,
+  //   required String password,
+  // }) async {
+  //   final api = ref.read(apiServiceProvider);
+  //   final registerResponse = await api.register(
+  //     email: email,
+  //     username: name,
+  //     password: password,
+  //   );
+  //   setTokens(registerResponse.accessToken, registerResponse.refreshToken);
+  //   invalidateProviders();
+  //   final user = User(
+  //     email: registerResponse.email,
+  //     name: name,
+  //     userId: registerResponse.userId,
+  //   );
+  //   state = AsyncValue.data(user);
+  //   return user;
+  // }
 
-  Future<void> logout() async {
-    final api = ref.read(apiServiceProvider);
-    final refreshToken = ref.read(refreshTokenProvider);
-    //TODO: make refreshToken not nullable
-    if (refreshToken != null) await api.logout(refreshToken: refreshToken);
-    state = const AsyncValue.data(null);
-    ref.read(accessTokenProvider.notifier).clearToken();
-    ref.read(refreshTokenProvider.notifier).clearToken();
-  }
+  // Future<void> logout() async {
+  //   final api = ref.read(apiServiceProvider);
+  //   final refreshToken = ref.read(refreshTokenProvider);
+  //   //TODO: make refreshToken not nullable
+  //   if (refreshToken != null) await api.logout(refreshToken: refreshToken);
+  //   state = const AsyncValue.data(null);
+  //   ref.read(accessTokenProvider.notifier).clearToken();
+  //   ref.read(refreshTokenProvider.notifier).clearToken();
+  // }
 }
