@@ -19,7 +19,7 @@ class FormTextField extends StatefulWidget {
     this.onChanged,
     this.validator,
     this.keyboardType,
-    this.maxLines,
+    this.maxLines = 1,
     this.optional = false,
     this.passwordField = false,
   });
@@ -58,7 +58,7 @@ class _FormTextFieldState extends State<FormTextField> {
       ),
       validator: widget.validator,
       obscureText: widget.passwordField ? obscureText : false,
-      maxLines: widget.maxLines,
+      maxLines: widget.passwordField ? 1 : widget.maxLines,
       keyboardType: widget.keyboardType,
       onChanged: widget.onChanged,
       //textInputAction: TextInputAction.done,
