@@ -53,8 +53,15 @@ class _AddPlaceBottomSheetState extends ConsumerState<AddPlaceBottomSheet> {
 
   Future<void> _saveChanges() async {
     try {
+      final name = nameController.text.trim().replaceAll(RegExp(r'\s+'), ' ');
+      final description = descriptionController.text.trim();
+      final groups = selectedGroups.isEmpty ? null : selectedGroups;
       final latitude = double.tryParse(latitudeController.text);
       final longitude = double.tryParse(longitudeController.text);
+
+      if (name.isEmpty) {
+        throw 'Name is required';
+      }
 
       if (latitude == null || longitude == null) {
         throw 'Invalid latitude or longitude values';
@@ -63,12 +70,12 @@ class _AddPlaceBottomSheetState extends ConsumerState<AddPlaceBottomSheet> {
       final addPlace = await ref
           .read(placeProvider.notifier)
           .addPlace(
-            name: nameController.text,
-            description: descriptionController.text,
+            name: name,
+            description: description.isEmpty ? null : description,
             categoryId: selectedCategory!.id,
             latitude: latitude,
             longitude: longitude,
-            groups: selectedGroups,
+            groups: groups,
           );
 
       if (mounted && addPlace != null) {
