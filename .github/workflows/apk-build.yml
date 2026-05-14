@@ -1,0 +1,72 @@
+name: "Build and publish apk"
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-latest
+
+    # permissions:
+    #   contents: read
+    #   packages: write
+    #   attestations: write
+    #   id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Get current tag
+        id: get-tag
+        run: |
+          FULL_TAG=${GITHUB_REF#refs/tags/}
+          VERSION_TAG=${FULL_TAG#v}
+          echo "version_tag=${VERSION_TAG}" >> $GITHUB_OUTPUT
+          echo "Version Tag: ${VERSION_TAG}"
+
+      - name: Set Up Java
+        uses: actions/setup-java@v3.12.0
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set Up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.41.4'
+          channel: 'stable'
+
+      - name: Install Dependencies
+        run: flutter pub get
+        
+      - name: Build APK
+        run: flutter build apk --release --split-per-abi
+
+      - name: Prepare Release Artifacts
+        run: |
+          VERSION_TAG='${{ steps.get-tag.outputs.version_tag }}'
+          SOURCE_APK='build/app/outputs/flutter-apk/app-arm64-v8a-release.apk'
+          RELEASE_APK="build/app/outputs/flutter-apk/serpa-maps-${VERSION_TAG}-arm64.apk"
+          RELEASE_SHA1="${RELEASE_APK}.sha1"
+
+          cp "$SOURCE_APK" "$RELEASE_APK"
+          sha1sum "$RELEASE_APK" | awk '{print $1}' > "$RELEASE_SHA1"
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: Releases
+          path: |
+            build/app/outputs/flutter-apk/serpa-maps-${{ steps.get-tag.outputs.version_tag }}-arm64.apk
+            build/app/outputs/flutter-apk/serpa-maps-${{ steps.get-tag.outputs.version_tag }}-arm64.apk.sha1
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: |
+            build/app/outputs/flutter-apk/serpa-maps-${{ steps.get-tag.outputs.version_tag }}-arm64.apk
+            build/app/outputs/flutter-apk/serpa-maps-${{ steps.get-tag.outputs.version_tag }}-arm64.apk.sha1
+          tag: v${{ steps.get-tag.outputs.version_tag }}
