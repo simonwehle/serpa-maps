@@ -36,9 +36,11 @@ class Place {
       assets: (assetsJson is List)
           ? assetsJson.map((e) => Asset.fromJson(e)).toList()
           : [],
-      groupIds: (json['group_ids'] as List<dynamic>)
-          .map((e) => e as String)
-          .toList(),
+      groupIds: (json['group_ids'] is List)
+          ? (json['group_ids'] as List<dynamic>)
+                .map((e) => e as String)
+                .toList()
+          : [],
     );
   }
 }

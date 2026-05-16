@@ -13,11 +13,17 @@ class Group {
     required this.createdAt,
   });
 
-  factory Group.fromJson(Map<String, dynamic> json) => Group(
-    groupId: json['group_id'],
-    name: json['name'],
-    role: json['role'],
-    description: json['description'],
-    createdAt: DateTime.parse(json['created_at']),
-  );
+  factory Group.fromJson(Map<String, dynamic> json) {
+    final createdAtRaw = json['created_at'] ?? json['createdAt'];
+
+    return Group(
+      groupId: (json['group_id'] ?? json['id'] ?? '').toString(),
+      name: (json['name'] ?? '').toString(),
+      role: (json['role'] ?? 'member').toString(),
+      description: json['description']?.toString(),
+      createdAt: createdAtRaw is String && createdAtRaw.isNotEmpty
+          ? DateTime.parse(createdAtRaw)
+          : DateTime.now(),
+    );
+  }
 }
