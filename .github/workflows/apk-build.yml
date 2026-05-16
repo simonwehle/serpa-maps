@@ -72,5 +72,7 @@ jobs:
           artifacts: |
             frontend/build/app/outputs/flutter-apk/serpa-maps-${{ steps.get-tag.outputs.version_tag }}-arm64.apk
             frontend/build/app/outputs/flutter-apk/serpa-maps-${{ steps.get-tag.outputs.version_tag }}-arm64.apk.sha1
+          omitBody: true
+          omitName: true
           replacesArtifacts: true
           tag: v${{ steps.get-tag.outputs.version_tag }}
