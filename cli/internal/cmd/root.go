@@ -11,7 +11,7 @@ import (
 )
 
 const toolName = "serpa-cli"
-const version = "0.1.1"
+const version = "0.5.1"
 
 func Execute() {
 	baseUrl := flag.String("u", "", "Serpa Maps base url")
@@ -75,19 +75,26 @@ func Execute() {
 	csvCategories, err := files.ReadCategoriesCSV(root, categoriesFile)
 	if err != nil {
 		fmt.Println("Error:", err)
+		os.Exit(1)
 	}
 
 	csvPlaces, err := files.ReadPlacesCSV(root, placesFile)
 	if err != nil {
 		fmt.Println("Error:", err)
+		os.Exit(1)
 	}
 
 	assets, err := files.ReadAssets(root)
 	if err != nil {
 		fmt.Println("Error:", err)
+		os.Exit(1)
 	}
 
 	categoriesDefined, err := utils.CategoriesDefined(csvCategories, csvPlaces)
+	if err != nil {
+		fmt.Println("Error:", err)
+		os.Exit(1)
+	}
 
 	fullUrl := *baseUrl + *apiVersion
 	if categoriesDefined {
