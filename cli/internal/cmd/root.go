@@ -22,6 +22,7 @@ func Execute() {
 
 	categoriesFile := "categories.csv"
 	placesFile := "places.csv"
+	groupsFile := "groups.csv"
 
 	if len(os.Args) == 1 {
 		utils.PrintVersion(toolName, version)
@@ -78,6 +79,12 @@ func Execute() {
 		os.Exit(1)
 	}
 
+	csvGroups, err := files.ReadGroupCSV(root, groupsFile)
+	if err != nil {
+		fmt.Println("Error:", err)
+		os.Exit(1)
+	}	
+
 	csvPlaces, err := files.ReadPlacesCSV(root, placesFile)
 	if err != nil {
 		fmt.Println("Error:", err)
@@ -96,12 +103,19 @@ func Execute() {
 		os.Exit(1)
 	}
 
+	groupsDefined, err := utils.GroupsDefined(csvGroups, csvPlaces)
+	if err != nil {
+		fmt.Println("Error:", err)
+		os.Exit(1)
+	}
+
 	fullUrl := *baseUrl + *apiVersion
-	if categoriesDefined {
+	if categoriesDefined && groupsDefined{
 		apiCategories, err := api.CreateCategories(fullUrl, csvCategories, *accessToken)
 		if err != nil {
 			fmt.Println("Error during add categories api call:", err)
 		}
+		//apiGroups, err := api.CreateGroups(fullUrl, csvGroups, *accessToken)
 		matchedPlaces := utils.MatchPlaces(apiCategories, csvPlaces)
 
 		apiPlaces, err := api.CreatePlaces(fullUrl, matchedPlaces, *accessToken)
