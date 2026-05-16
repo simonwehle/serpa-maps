@@ -9,11 +9,8 @@ jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
 
-    # permissions:
-    #   contents: read
-    #   packages: write
-    #   attestations: write
-    #   id-token: write
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout repository
@@ -68,10 +65,12 @@ jobs:
             frontend/build/app/outputs/flutter-apk/serpa-maps-${{ steps.get-tag.outputs.version_tag }}-arm64.apk
             frontend/build/app/outputs/flutter-apk/serpa-maps-${{ steps.get-tag.outputs.version_tag }}-arm64.apk.sha1
 
-      - name: Create Release
+      - name: Update Release Assets
         uses: ncipollo/release-action@v1
         with:
+          allowUpdates: true
           artifacts: |
             frontend/build/app/outputs/flutter-apk/serpa-maps-${{ steps.get-tag.outputs.version_tag }}-arm64.apk
             frontend/build/app/outputs/flutter-apk/serpa-maps-${{ steps.get-tag.outputs.version_tag }}-arm64.apk.sha1
+          replacesArtifacts: true
           tag: v${{ steps.get-tag.outputs.version_tag }}
