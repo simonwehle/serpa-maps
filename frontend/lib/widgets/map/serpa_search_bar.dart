@@ -6,17 +6,20 @@ import 'package:serpa_maps/l10n/app_localizations.dart';
 
 import 'package:serpa_maps/providers/data/place_provider.dart';
 import 'package:serpa_maps/providers/data/category_provider.dart';
+import 'package:serpa_maps/providers/api/photon_provider.dart';
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/widgets/category/category_icon.dart';
 
 class SerpaSearchBar extends ConsumerStatefulWidget {
   final Function(Place)? onPlaceSelected;
+  final Function(double, double)? onPositionSelected;
   final Function()? openUserSheet;
   final Function()? openCategorySheet;
 
   const SerpaSearchBar({
     super.key,
     this.onPlaceSelected,
+    this.onPositionSelected,
     this.openUserSheet,
     this.openCategorySheet,
   });
@@ -38,8 +41,6 @@ class _SerpaSearchBarState extends ConsumerState<SerpaSearchBar> {
 
   @override
   Widget build(BuildContext context) {
-    final placesAsync = ref.watch(placeProvider);
-    final categoriesAsync = ref.watch(categoryProvider);
     final l10n = AppLocalizations.of(context)!;
 
     return Column(
@@ -81,61 +82,120 @@ class _SerpaSearchBarState extends ConsumerState<SerpaSearchBar> {
             },
             suggestionsBuilder:
                 (BuildContext context, SearchController controller) {
-                  return placesAsync.when(
-                    data: (places) {
-                      final query = controller.text.toLowerCase();
-                      final filteredPlaces = query.isEmpty
-                          ? places
-                          : places
-                                .where(
-                                  (place) =>
-                                      place.name.toLowerCase().contains(query),
-                                )
-                                .toList();
-
-                      if (filteredPlaces.isEmpty) {
-                        return [
-                          const ListTile(title: Text('No results found')),
-                        ];
-                      }
-
-                      return filteredPlaces.map((place) {
-                        final category = categoriesAsync.value?.firstWhere(
-                          (cat) => cat.id == place.categoryId,
-                          orElse: () => null as dynamic,
+                  return [
+                    Consumer(
+                      builder: (context, ref, child) {
+                        final query = controller.text;
+                        final placesAsync = ref.watch(placeProvider);
+                        final categoriesAsync = ref.watch(categoryProvider);
+                        final photonPlacesAsync = ref.watch(
+                          photonSearchProvider(query),
                         );
 
-                        return ListTile(
-                          leading: category != null
-                              ? CategoryIcon(category: category)
-                              : const Icon(Icons.place),
-                          title: Text(place.name),
-                          // subtitle: place.description != ""
-                          //     ? Text(place.description!)
-                          //     : null,
-                          onTap: () {
-                            _searchFocusNode.unfocus();
-                            controller.closeView(place.name);
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              widget.onPlaceSelected?.call(place);
-                            });
-                          },
+                        if (placesAsync.hasError) {
+                          return ListTile(
+                            leading: const Icon(Icons.error),
+                            title: Text('Error: ${placesAsync.error}'),
+                          );
+                        }
+
+                        if (placesAsync.isLoading) {
+                          return const SizedBox.shrink();
+                        }
+
+                        final localPlaces = placesAsync.value ?? [];
+                        final onlinePlaces = photonPlacesAsync.value ?? [];
+
+                        final filteredLocalPlaces = query.isEmpty
+                            ? localPlaces
+                            : localPlaces
+                                  .where(
+                                    (p) => p.name.toLowerCase().contains(
+                                      query.toLowerCase(),
+                                    ),
+                                  )
+                                  .toList();
+
+                        final List<Widget> suggestions = [];
+
+                        // Build suggestions for local places
+                        for (var place in filteredLocalPlaces) {
+                          final category = categoriesAsync.value?.firstWhere(
+                            (cat) => cat.id == place.categoryId,
+                            orElse: () => null as dynamic,
+                          );
+                          suggestions.add(
+                            ListTile(
+                              leading: category != null
+                                  ? CategoryIcon(category: category)
+                                  : const Icon(Icons.history),
+                              title: Text(place.name),
+                              onTap: () {
+                                _searchFocusNode.unfocus();
+                                controller.closeView(place.name);
+                                widget.onPlaceSelected?.call(place);
+                              },
+                            ),
+                          );
+                        }
+
+                        if (suggestions.isNotEmpty &&
+                            onlinePlaces.isNotEmpty &&
+                            query.isNotEmpty) {
+                          suggestions.add(const Divider(height: 1));
+                        }
+
+                        for (var place in onlinePlaces) {
+                          suggestions.add(
+                            ListTile(
+                              leading: const Icon(Icons.travel_explore),
+                              title: Text(place.name),
+                              subtitle: Text(place.description ?? ''),
+                              onTap: () {
+                                _searchFocusNode.unfocus();
+                                controller.closeView(place.name);
+                                widget.onPositionSelected?.call(
+                                  place.latitude,
+                                  place.longitude,
+                                );
+                              },
+                            ),
+                          );
+                        }
+
+                        if (query.isEmpty && filteredLocalPlaces.isEmpty) {
+                          return ListTile(title: Text(l10n.searchPlaces));
+                        }
+
+                        if (query.isNotEmpty &&
+                            suggestions.isEmpty &&
+                            !photonPlacesAsync.isLoading) {
+                          return const ListTile(
+                            title: Text('No results found'),
+                          );
+                        }
+
+                        if (photonPlacesAsync.hasError && query.isNotEmpty) {
+                          suggestions.add(
+                            const ListTile(
+                              leading: Icon(
+                                Icons.error_outline,
+                                color: Colors.grey,
+                              ),
+                              title: Text(
+                                'Online search failed',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            ),
+                          );
+                        }
+
+                        return SingleChildScrollView(
+                          child: Column(children: suggestions),
                         );
-                      }).toList();
-                    },
-                    loading: () => [
-                      const ListTile(
-                        leading: CircularProgressIndicator(),
-                        title: Text('Loading...'),
-                      ),
-                    ],
-                    error: (error, _) => [
-                      ListTile(
-                        leading: const Icon(Icons.error),
-                        title: Text('Error: $error'),
-                      ),
-                    ],
-                  );
+                      },
+                    ),
+                  ];
                 },
           ),
         ),

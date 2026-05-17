@@ -231,6 +231,12 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               );
               openPlaceBottomSheet(placeId: place.id);
             },
+            onPositionSelected: (lat, lng) {
+              FocusManager.instance.primaryFocus?.unfocus();
+              _controller.animateCamera(
+                CameraUpdate.newLatLngZoom(LatLng(lat, lng), 15),
+              );
+            },
           ),
           LayerButton(onPressed: openLayerBottomSheet),
           if (_currentBearing.abs() > 0.1)
