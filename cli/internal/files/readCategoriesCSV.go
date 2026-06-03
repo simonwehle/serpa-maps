@@ -1,25 +1,20 @@
 package files
 
 import (
-	"encoding/csv"
 	"fmt"
 	"io"
-	"os"
-	"path/filepath"
 	"strings"
 
 	"serpa-cli/internal/types"
+	"serpa-cli/internal/utils"
 )
 
 func ReadCategoriesCSV(root, categoriesFile string) ([]types.Category, error) {
-    path := filepath.Join(root, categoriesFile)
-    f, err := os.Open(path)
+    r, f, err := utils.ReadFile(root, categoriesFile)
     if err != nil {
-        return nil, fmt.Errorf("error opening categories file: %v", err)
+        return nil, fmt.Errorf("read categories.csv: %v", err)
     }
     defer f.Close()
-
-    r := csv.NewReader(f)
 
     header, err := r.Read()
     if err != nil {

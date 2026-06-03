@@ -1,27 +1,21 @@
 package files
 
 import (
-	"encoding/csv"
 	"fmt"
 	"io"
-	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
 
 	"serpa-cli/internal/types"
+	"serpa-cli/internal/utils"
 )
 
 func ReadPlacesCSV(root, placesFile string) ([]types.Place, error) {
-	path := filepath.Join(root, placesFile)
-	f, err := os.Open(path)
+	r, f, err := utils.ReadFile(root, placesFile)
 	if err != nil {
-		return nil, fmt.Errorf("error opening places file: %v", err)
+		return nil, fmt.Errorf("error reading places csv file: %v", err)
 	}
 	defer f.Close()
-
-	r := csv.NewReader(f)
-	r.FieldsPerRecord = -1
 
 	header, err := r.Read()
 	if err != nil {
@@ -55,6 +49,10 @@ func ReadPlacesCSV(root, placesFile string) ([]types.Place, error) {
 				return nil, fmt.Errorf("places file row missing required column '%s'", c)
 			}
 		}
+		groupName := ""
+		if groupIndex, ok := colIndex["group"]; ok && groupIndex < len(record) {
+			groupName = strings.TrimSpace(record[groupIndex])
+		}
 
 		lat, err := strconv.ParseFloat(strings.TrimSpace(record[colIndex["latitude"]]), 64)
 		if err != nil {
@@ -72,6 +70,7 @@ func ReadPlacesCSV(root, placesFile string) ([]types.Place, error) {
 			Latitude:     lat,
 			Longitude:    lon,
 			CategoryName: strings.TrimSpace(record[colIndex["category"]]),
+			GroupName:    groupName,
 		}
 
 		places = append(places, place)

@@ -5,11 +5,24 @@ import (
 	"strings"
 )
 
-func MatchPlaces(apiCategories []types.Category, csvPlaces []types.Place) []types.Place {
+func MatchCategoriesToPlaces(apiCategories []types.Category, csvPlaces []types.Place) []types.Place {
 	for i, place := range csvPlaces {
 		for _, category := range apiCategories {
 			if category.Name == place.CategoryName {
 				csvPlaces[i].CategoryID = category.CategoryID
+				break
+			}
+		}
+	}
+	return csvPlaces
+}
+
+func MatchGroupsToPlaces(apiGroups []types.Group, csvPlaces []types.Place) []types.Place {
+	for i, place := range csvPlaces {
+		for _, group := range apiGroups {
+			if group.Name == place.GroupName {
+				csvPlaces[i].GroupIDs = []string{group.GroupID}
+				// or append: append(csvPlaces[i].GroupIDs, group.GroupID) and remove break
 				break
 			}
 		}

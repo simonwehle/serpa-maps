@@ -4,11 +4,12 @@ CLI tool to upload categories, places and assets to the serpa maps backend
 
 ## usage:
 
-`categories.csv` and `places.csv` must exist. In order to add assets to a place they should be in a folder with the exact place name. The order in which categories and places are added is defined by their position in the csv. The first column is added first. Same applies for assets inside a folder.
+The files `categories.csv`, `groups.csv` and `places.csv` must exist. In order to add assets to a place they should be in a folder with the exact place name. The order in which categories and places are added is defined by their position in the csv. The first column is added first. Same applies for assets inside a folder.
 
 ```
 folder/
 ├── categories.csv
+├── groups.csv
 ├── places.csv
 └── Null Island
     ├── first_image.jpg
@@ -22,11 +23,19 @@ name,icon,color
 landmark,camera_alt,#9c27b0
 ```
 
-`places.csv` should contain the following columns (description can be empty)
+`groups.csv` should container the following columns (description can be empty)
 
 ```csv
-latitude,longitude,name,description,category
-0,0,Null Island,,landmark
+name,description
+example,
+```
+
+`places.csv` should contain the following columns (description can be empty and group is optional)
+
+```csv
+latitude,longitude,name,description,category,group
+0,0,Null Island,,landmark,example
+-48.876667,-123.393333,Point Nemo,The place in the ocean that is farthest from land,landmark
 ```
 
 Now navigate to the folder via the terminal and set base-url and access token as parameters

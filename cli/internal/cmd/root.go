@@ -11,7 +11,7 @@ import (
 )
 
 const toolName = "serpa-cli"
-const version = "0.5.1"
+const version = "0.5.2"
 
 func Execute() {
 	baseUrl := flag.String("u", "", "Serpa Maps base url")
@@ -22,6 +22,7 @@ func Execute() {
 
 	categoriesFile := "categories.csv"
 	placesFile := "places.csv"
+	groupsFile := "groups.csv"
 
 	if len(os.Args) == 1 {
 		utils.PrintVersion(toolName, version)
@@ -57,6 +58,8 @@ func Execute() {
 
 	utils.FileExistsOrExit(categoriesFile)
 	utils.FileExistsOrExit(placesFile)
+	// TODO: make groups file optional
+	utils.FileExistsOrExit(groupsFile)
 	fmt.Println("Files categories.csv and places.csv exist; scanning for images ...")
 
 	root := "."
@@ -78,6 +81,12 @@ func Execute() {
 		os.Exit(1)
 	}
 
+	csvGroups, err := files.ReadGroupCSV(root, groupsFile)
+	if err != nil {
+		fmt.Println("Error:", err)
+		os.Exit(1)
+	}	
+
 	csvPlaces, err := files.ReadPlacesCSV(root, placesFile)
 	if err != nil {
 		fmt.Println("Error:", err)
@@ -96,13 +105,26 @@ func Execute() {
 		os.Exit(1)
 	}
 
+	groupsDefined, err := utils.GroupsDefined(csvGroups, csvPlaces)
+	if err != nil {
+		fmt.Println("Error:", err)
+		os.Exit(1)
+	}
+
 	fullUrl := *baseUrl + *apiVersion
-	if categoriesDefined {
+	if categoriesDefined && groupsDefined{
 		apiCategories, err := api.CreateCategories(fullUrl, csvCategories, *accessToken)
 		if err != nil {
-			fmt.Println("Error during add categories api call:", err)
+			fmt.Println("Error during create categories api call:", err)
 		}
-		matchedPlaces := utils.MatchPlaces(apiCategories, csvPlaces)
+		matchedPlacesToCategories := utils.MatchCategoriesToPlaces(apiCategories, csvPlaces)
+
+		apiGroups, err := api.CreateGroups(fullUrl, csvGroups, *accessToken)
+		if err != nil {
+			fmt.Println("Error during create groups api call:", err)
+		}
+
+		matchedPlaces := utils.MatchGroupsToPlaces(apiGroups, matchedPlacesToCategories)
 
 		apiPlaces, err := api.CreatePlaces(fullUrl, matchedPlaces, *accessToken)
 		if err != nil {
