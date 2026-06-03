@@ -7,14 +7,13 @@ import (
 	"path/filepath"
 )
 
-func ReadFile(root, file string) (*csv.Reader, error) {
+func ReadFile(root, file string) (*csv.Reader, *os.File, error) {
 	path := filepath.Join(root, file)
 	f, err := os.Open(path)
 	if err != nil {
-		return nil, fmt.Errorf("error opening places file: %v", err)
+		return nil, nil, fmt.Errorf("error opening %s: %v", file, err)
 	}
-	defer f.Close()
 
 	r := csv.NewReader(f)
-	return r, nil
+	return r, f, nil
 }

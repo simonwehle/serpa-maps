@@ -11,10 +11,11 @@ import (
 )
 
 func ReadPlacesCSV(root, placesFile string) ([]types.Place, error) {
-	r, err := utils.ReadFile(root, placesFile)
-		if err != nil {
+	r, f, err := utils.ReadFile(root, placesFile)
+	if err != nil {
 		return nil, fmt.Errorf("error reading places csv file: %v", err)
 	}
+	defer f.Close()
 
 	header, err := r.Read()
 	if err != nil {
@@ -26,7 +27,7 @@ func ReadPlacesCSV(root, placesFile string) ([]types.Place, error) {
 		colIndex[strings.ToLower(strings.TrimSpace(colName))] = i
 	}
 
-	requiredCols := []string{"name", "description", "latitude", "longitude", "category"}
+	requiredCols := []string{"name", "description", "latitude", "longitude", "category", "group"}
 	for _, c := range requiredCols {
 		if _, ok := colIndex[c]; !ok {
 			return nil, fmt.Errorf("places file missing required column '%s'", c)
@@ -65,6 +66,7 @@ func ReadPlacesCSV(root, placesFile string) ([]types.Place, error) {
 			Latitude:     lat,
 			Longitude:    lon,
 			CategoryName: strings.TrimSpace(record[colIndex["category"]]),
+			GroupName: strings.TrimSpace(record[colIndex["group"]]),
 		}
 
 		places = append(places, place)

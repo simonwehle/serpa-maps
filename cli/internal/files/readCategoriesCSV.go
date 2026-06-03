@@ -10,7 +10,11 @@ import (
 )
 
 func ReadCategoriesCSV(root, categoriesFile string) ([]types.Category, error) {
-    r, err := utils.ReadFile(root, categoriesFile)
+    r, f, err := utils.ReadFile(root, categoriesFile)
+    if err != nil {
+        return nil, fmt.Errorf("read categories.csv: %v", err)
+    }
+    defer f.Close()
 
     header, err := r.Read()
     if err != nil {

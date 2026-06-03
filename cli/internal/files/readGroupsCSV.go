@@ -10,7 +10,11 @@ import (
 )
 
 func ReadGroupCSV(root, groupFile string) ([]types.Group, error) {
-    r, err := utils.ReadFile(root, groupFile)
+    r, f, err := utils.ReadFile(root, groupFile)
+    if err != nil {
+        return nil, fmt.Errorf("read group csv: %v", err)
+    }
+    defer f.Close()
 
     header, err := r.Read()
     if err != nil {
