@@ -41,6 +41,7 @@ func ReadGroupCSV(root, groupFile string) ([]types.Group, error) {
 
         group := types.Group{
             Name:  strings.TrimSpace(record[colIndex["name"]]),
+            Description: strings.TrimSpace(record[colIndex["description"]]),
         }
 
         groups = append(groups, group)
