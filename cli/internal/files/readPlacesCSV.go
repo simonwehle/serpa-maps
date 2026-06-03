@@ -1,27 +1,20 @@
 package files
 
 import (
-	"encoding/csv"
 	"fmt"
 	"io"
-	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
 
 	"serpa-cli/internal/types"
+	"serpa-cli/internal/utils"
 )
 
 func ReadPlacesCSV(root, placesFile string) ([]types.Place, error) {
-	path := filepath.Join(root, placesFile)
-	f, err := os.Open(path)
-	if err != nil {
-		return nil, fmt.Errorf("error opening places file: %v", err)
+	r, err := utils.ReadFile(root, placesFile)
+		if err != nil {
+		return nil, fmt.Errorf("error reading places csv file: %v", err)
 	}
-	defer f.Close()
-
-	r := csv.NewReader(f)
-	r.FieldsPerRecord = -1
 
 	header, err := r.Read()
 	if err != nil {

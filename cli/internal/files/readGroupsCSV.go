@@ -1,25 +1,16 @@
 package files
 
 import (
-	"encoding/csv"
 	"fmt"
 	"io"
-	"os"
-	"path/filepath"
 	"strings"
 
 	"serpa-cli/internal/types"
+	"serpa-cli/internal/utils"
 )
 
 func ReadGroupCSV(root, groupFile string) ([]types.Group, error) {
-    path := filepath.Join(root, groupFile)
-    f, err := os.Open(path)
-    if err != nil {
-        return nil, fmt.Errorf("error opening group file: %v", err)
-    }
-    defer f.Close()
-
-    r := csv.NewReader(f)
+    r, err := utils.ReadFile(root, groupFile)
 
     header, err := r.Read()
     if err != nil {
