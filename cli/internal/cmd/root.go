@@ -58,6 +58,8 @@ func Execute() {
 
 	utils.FileExistsOrExit(categoriesFile)
 	utils.FileExistsOrExit(placesFile)
+	// TODO: make groups file optional
+	utils.FileExistsOrExit(groupsFile)
 	fmt.Println("Files categories.csv and places.csv exist; scanning for images ...")
 
 	root := "."
@@ -113,10 +115,16 @@ func Execute() {
 	if categoriesDefined && groupsDefined{
 		apiCategories, err := api.CreateCategories(fullUrl, csvCategories, *accessToken)
 		if err != nil {
-			fmt.Println("Error during add categories api call:", err)
+			fmt.Println("Error during create categories api call:", err)
 		}
-		//apiGroups, err := api.CreateGroups(fullUrl, csvGroups, *accessToken)
-		matchedPlaces := utils.MatchPlaces(apiCategories, csvPlaces)
+		matchedPlacesToCategories := utils.MatchCategoriesToPlaces(apiCategories, csvPlaces)
+
+		apiGroups, err := api.CreateGroups(fullUrl, csvGroups, *accessToken)
+		if err != nil {
+			fmt.Println("Error during create groups api call:", err)
+		}
+
+		matchedPlaces := utils.MatchGroupsToPlaces(apiGroups, matchedPlacesToCategories)
 
 		apiPlaces, err := api.CreatePlaces(fullUrl, matchedPlaces, *accessToken)
 		if err != nil {
