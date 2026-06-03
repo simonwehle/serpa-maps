@@ -12,4 +12,5 @@ type CreatePlaceRequest struct {
 	Latitude    float64 `json:"latitude"`
 	Longitude   float64 `json:"longitude"`
 	CategoryID  string  `json:"category_id"`
+	GroupIDs    string  `json:"group_ids"`
 }
