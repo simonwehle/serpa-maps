@@ -27,7 +27,7 @@ func ReadPlacesCSV(root, placesFile string) ([]types.Place, error) {
 		colIndex[strings.ToLower(strings.TrimSpace(colName))] = i
 	}
 
-	requiredCols := []string{"name", "description", "latitude", "longitude", "category", "group"}
+	requiredCols := []string{"name", "description", "latitude", "longitude", "category"}
 	for _, c := range requiredCols {
 		if _, ok := colIndex[c]; !ok {
 			return nil, fmt.Errorf("places file missing required column '%s'", c)
@@ -49,6 +49,10 @@ func ReadPlacesCSV(root, placesFile string) ([]types.Place, error) {
 				return nil, fmt.Errorf("places file row missing required column '%s'", c)
 			}
 		}
+		groupName := ""
+		if groupIndex, ok := colIndex["group"]; ok && groupIndex < len(record) {
+			groupName = strings.TrimSpace(record[groupIndex])
+		}
 
 		lat, err := strconv.ParseFloat(strings.TrimSpace(record[colIndex["latitude"]]), 64)
 		if err != nil {
@@ -66,7 +70,7 @@ func ReadPlacesCSV(root, placesFile string) ([]types.Place, error) {
 			Latitude:     lat,
 			Longitude:    lon,
 			CategoryName: strings.TrimSpace(record[colIndex["category"]]),
-			GroupName: strings.TrimSpace(record[colIndex["group"]]),
+			GroupName:    groupName,
 		}
 
 		places = append(places, place)
