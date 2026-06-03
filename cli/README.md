@@ -23,7 +23,7 @@ name,icon,color
 landmark,camera_alt,#9c27b0
 ```
 
-`groups.csv` should container the following columns (description can be empty)
+`groups.csv` should contain the following columns (description can be empty)
 
 ```csv
 name,description
