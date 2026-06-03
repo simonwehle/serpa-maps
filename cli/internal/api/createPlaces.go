@@ -13,8 +13,10 @@ func CreatePlaces(fullUrl string, matchedPlaces []types.Place, accessToken strin
 	queryUrl := fmt.Sprintf("%s/place", fullUrl)
 
 	for _, place := range matchedPlaces {
-		// groupID to list
-		groupID := fmt.Sprintf(`["%s"]`, place.GroupID)
+		var groupIDs []string
+		if place.GroupID != "" {
+			groupIDs = []string{place.GroupID}
+		}
 
 		payload := types.CreatePlaceRequest{
 			Name:        place.Name,
@@ -22,7 +24,7 @@ func CreatePlaces(fullUrl string, matchedPlaces []types.Place, accessToken strin
 			Latitude:    place.Latitude,
 			Longitude:   place.Longitude,
 			CategoryID:  place.CategoryID,
-			GroupIDs: 	 groupID,
+			GroupIDs:    groupIDs,
 		}
 
 		createdPlace, err := utils.DoPostRequest[types.Place](queryUrl, payload, accessToken)

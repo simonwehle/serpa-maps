@@ -12,8 +12,9 @@ func CreateGroups(fullUrl string, csvGroups []types.Group, accessToken string) (
     queryUrl := fmt.Sprintf("%s/group", fullUrl)
 
     for _, category := range csvGroups {
-        payload := types.Group{
-            Name:  category.Name,
+        payload := types.CreateGroupRequest{
+            Name:        category.Name,
+            Description: category.Description,
         }
 
         createdGroup, err := utils.DoPostRequest[types.Group](queryUrl, payload, accessToken)

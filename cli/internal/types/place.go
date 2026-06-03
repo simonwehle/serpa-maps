@@ -8,6 +8,7 @@ type Place struct {
 	Longitude    float64 `json:"longitude"`
 	CategoryID   string  `json:"category_id"`
 	CategoryName string
-	GroupID      string `json:"group_ids"`
+	GroupIDs     []string `json:"group_ids"`
+	GroupID      string   `json:"-"`
 	GroupName    string
 }
