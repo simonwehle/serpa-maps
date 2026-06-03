@@ -18,7 +18,7 @@ func GroupsDefined(csvGroups []types.Group, csvPlaces []types.Place) (bool, erro
 		if !ok {
 			return false, fmt.Errorf("group not found for place '%s': %s", csvPlaces[i].Name, groupName)
 		}
-		csvPlaces[i].GroupID = id
+		csvPlaces[i].GroupIDs = []string{id}
 	}
 	return true, nil
 }

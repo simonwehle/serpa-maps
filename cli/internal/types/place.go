@@ -9,6 +9,5 @@ type Place struct {
 	CategoryID   string  `json:"category_id"`
 	CategoryName string
 	GroupIDs     []string `json:"group_ids"`
-	GroupID      string   `json:"-"`
 	GroupName    string
 }

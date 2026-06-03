@@ -14,8 +14,8 @@ func CreatePlaces(fullUrl string, matchedPlaces []types.Place, accessToken strin
 
 	for _, place := range matchedPlaces {
 		var groupIDs []string
-		if place.GroupID != "" {
-			groupIDs = []string{place.GroupID}
+		if len(place.GroupIDs) > 0 {
+			groupIDs = place.GroupIDs
 		}
 
 		payload := types.CreatePlaceRequest{

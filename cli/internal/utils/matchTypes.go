@@ -21,7 +21,8 @@ func MatchGroupsToPlaces(apiGroups []types.Group, csvPlaces []types.Place) []typ
 	for i, place := range csvPlaces {
 		for _, group := range apiGroups {
 			if group.Name == place.GroupName {
-				csvPlaces[i].GroupID = group.GroupID
+				csvPlaces[i].GroupIDs = []string{group.GroupID}
+				// or append: append(csvPlaces[i].GroupIDs, group.GroupID) and remove break
 				break
 			}
 		}
