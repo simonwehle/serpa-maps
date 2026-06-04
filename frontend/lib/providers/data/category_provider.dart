@@ -11,7 +11,7 @@ class CategoryNotifier extends AsyncNotifier<List<Category>> {
   @override
   Future<List<Category>> build() async {
     final api = ref.read(apiServiceProvider);
-    return await api.fetchCategories();
+    return api.fetchCategories();
   }
 
   Future<Category?> addCategory({

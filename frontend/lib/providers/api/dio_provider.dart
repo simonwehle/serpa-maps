@@ -23,7 +23,9 @@ final dioProvider = Provider<Dio>((ref) {
   dio.interceptors.add(
     InterceptorsWrapper(
       onRequest: (options, handler) {
-        if (!options.path.contains('/logout') &&
+        if (!options.path.contains('/login') &&
+            !options.path.contains('/register') &&
+            !options.path.contains('/logout') &&
             !options.path.contains('/refresh')) {
           final authToken = ref.read(accessTokenProvider);
           if (authToken != null) {
@@ -34,6 +36,8 @@ final dioProvider = Provider<Dio>((ref) {
       },
       onError: (error, handler) async {
         if (error.response?.statusCode == 401 &&
+            !error.requestOptions.path.contains('/login') &&
+            !error.requestOptions.path.contains('/register') &&
             !error.requestOptions.path.contains('/refresh') &&
             !error.requestOptions.path.contains('/logout')) {
           final refreshToken = ref.read(refreshTokenProvider);

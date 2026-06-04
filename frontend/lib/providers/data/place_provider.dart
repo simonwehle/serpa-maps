@@ -12,7 +12,7 @@ class PlaceNotifier extends AsyncNotifier<List<Place>> {
   @override
   Future<List<Place>> build() async {
     final api = ref.read(apiServiceProvider);
-    return await api.fetchPlaces();
+    return api.fetchPlaces();
   }
 
   Future<Place?> addPlace({

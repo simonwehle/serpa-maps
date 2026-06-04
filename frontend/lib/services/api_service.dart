@@ -190,7 +190,13 @@ class ApiService {
   Future<void> logout({required String refreshToken}) async {
     final Map<String, dynamic> logoutRequest = {'refresh_token': refreshToken};
 
-    await _dio.post('/logout', data: logoutRequest);
+    try {
+      await _dio.post('/logout', data: logoutRequest);
+    } on DioException catch (error) {
+      if (error.response?.statusCode != 401) {
+        rethrow;
+      }
+    }
   }
 
   Future<List<Group>> fetchGroups() async {
