@@ -153,6 +153,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get password => 'Password';
 
   @override
+  String get photonURL => 'Photon URL';
+
+  @override
   String get placeNotFound => 'Place not found';
 
   @override

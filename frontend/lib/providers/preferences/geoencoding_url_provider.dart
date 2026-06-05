@@ -10,7 +10,7 @@ class GeoencodingUrlNotifier extends Notifier<String> {
     return 'https://photon.komoot.io/';
   }
 
-  void updateBaseUrl(String newUrl) {
+  void updateGeoencodingUrl(String newUrl) {
     state = newUrl;
   }
 }

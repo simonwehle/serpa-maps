@@ -386,6 +386,12 @@ abstract class AppLocalizations {
   /// **'Password'**
   String get password;
 
+  /// No description provided for @photonURL.
+  ///
+  /// In en, this message translates to:
+  /// **'Photon URL'**
+  String get photonURL;
+
   /// No description provided for @placeNotFound.
   ///
   /// In en, this message translates to:
