@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
+import 'package:serpa_maps/providers/preferences/geoencoding_url_provider.dart';
 import 'package:serpa_maps/widgets/form/form_text_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:serpa_maps/providers/preferences/base_url_provider.dart';
@@ -23,6 +24,7 @@ class _UrlTextFieldsState extends ConsumerState<UrlTextFields> {
   late TextEditingController mapStyleUrlController;
   late TextEditingController darkMapStyleUrlController;
   late TextEditingController overlayUrlController;
+  late TextEditingController geoencodingUrlController;
 
   @override
   void initState() {
@@ -31,6 +33,7 @@ class _UrlTextFieldsState extends ConsumerState<UrlTextFields> {
     mapStyleUrlController = TextEditingController();
     darkMapStyleUrlController = TextEditingController();
     overlayUrlController = TextEditingController();
+    geoencodingUrlController = TextEditingController();
   }
 
   @override
@@ -39,6 +42,7 @@ class _UrlTextFieldsState extends ConsumerState<UrlTextFields> {
     mapStyleUrlController.dispose();
     darkMapStyleUrlController.dispose();
     overlayUrlController.dispose();
+    geoencodingUrlController.dispose();
     super.dispose();
   }
 
@@ -81,6 +85,10 @@ class _UrlTextFieldsState extends ConsumerState<UrlTextFields> {
         overlayUrlController,
         ref.read(overlayUrlProvider.notifier).updateOverlayUrl,
       ),
+      'geoencodingUrl': (
+        geoencodingUrlController,
+        ref.read(geoencodingUrlProvider.notifier).updateGeoencodingUrl,
+      ),
     };
 
     for (final entry in urlConfigs.entries) {
@@ -95,11 +103,13 @@ class _UrlTextFieldsState extends ConsumerState<UrlTextFields> {
     final styleUrl = ref.read(styleUrlProvider);
     final styleDarkUrl = ref.read(styleDarkUrlProvider);
     final overlayUrl = ref.read(overlayUrlProvider);
+    final geoencodingUrl = ref.read(geoencodingUrlProvider);
 
     setUrlIfEmpty(serverUrlController, serverUrl);
     setUrlIfEmpty(mapStyleUrlController, styleUrl);
     setUrlIfEmpty(darkMapStyleUrlController, styleDarkUrl);
     setUrlIfEmpty(overlayUrlController, overlayUrl);
+    setUrlIfEmpty(geoencodingUrlController, geoencodingUrl);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.persistChanges?.call(persistAllUrls);
@@ -118,6 +128,11 @@ class _UrlTextFieldsState extends ConsumerState<UrlTextFields> {
           FormTextField(
             label: i10n.darkMapStyleURL,
             controller: darkMapStyleUrlController,
+          ),
+          const SizedBox(height: 8),
+          FormTextField(
+            label: i10n.photonURL,
+            controller: geoencodingUrlController,
           ),
           const SizedBox(height: 8),
           FormTextField(

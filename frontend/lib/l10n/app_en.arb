@@ -48,6 +48,7 @@
   "optional": "(optional)",
   "overlayURL": "Overlay URL",
   "password": "Password",
+  "photonURL": "Photon URL",
   "placeNotFound": "Place not found",
   "register": "Register",
   "satellite": "Satellite",

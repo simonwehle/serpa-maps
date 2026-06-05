@@ -5,6 +5,7 @@ import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/pages/login_screen.dart';
 import 'package:serpa_maps/pages/map_screen.dart';
 import 'package:serpa_maps/pages/welcome_screen.dart';
+import 'package:serpa_maps/providers/preferences/geoencoding_url_provider.dart';
 import 'package:serpa_maps/providers/preferences/theme_mode_provider.dart';
 import 'package:serpa_maps/providers/token/access_token_provider.dart';
 import 'package:serpa_maps/providers/token/refresh_token_provider.dart';
@@ -31,6 +32,9 @@ void main() async {
         .read(styleDarkUrlProvider.notifier)
         .updateStyleDarkUrl,
     'overlayUrl': container.read(overlayUrlProvider.notifier).updateOverlayUrl,
+    'geoencodingUrl': container
+        .read(geoencodingUrlProvider.notifier)
+        .updateGeoencodingUrl,
   };
 
   for (final entry in urlConfigs.entries) {
