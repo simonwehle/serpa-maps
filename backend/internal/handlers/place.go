@@ -3,7 +3,6 @@ package handlers
 import (
 	"fmt"
 	"net/http"
-	"strings"
 
 	"serpa-maps/internal/models"
 
@@ -89,9 +88,14 @@ func AddPlace(db *gorm.DB) gin.HandlerFunc {
             GroupIDs []string `json:"group_ids"`
         }
 
+        groupIDs := payload.GroupIDs
+        if groupIDs == nil {
+            groupIDs = []string{}
+        }
+
         response := PlaceWithGroups{
             Place:    payload.Place,
-            GroupIDs: payload.GroupIDs,
+            GroupIDs: groupIDs,
         }
 
         c.JSON(http.StatusCreated, response)
@@ -150,15 +154,23 @@ func GetPlaces(db *gorm.DB) gin.HandlerFunc {
 func UpdatePlace(db *gorm.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
         id := c.Param("id")
-        var payload map[string]interface{}
+
+        var payload struct {
+            models.Place
+            GroupIDs []string `json:"group_ids"`
+        }
 
         if err := c.ShouldBindJSON(&payload); err != nil {
             c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON payload"})
             return
         }
 
-        if len(payload) == 0 {
-            c.JSON(http.StatusBadRequest, gin.H{"error": "No fields to update"})
+        if err := validatePlaceInput(payload.Name, payload.Latitude, payload.Longitude); err != nil {
+            c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+            return
+        }
+        if payload.CategoryID == uuid.Nil {
+            c.JSON(http.StatusBadRequest, gin.H{"error": "category_id is required"})
             return
         }
 
@@ -184,43 +196,33 @@ func UpdatePlace(db *gorm.DB) gin.HandlerFunc {
             return
         }
 
-		if name, ok := payload["name"].(string); ok {
-			if strings.TrimSpace(name) == "" {
-				c.JSON(http.StatusBadRequest, gin.H{"error": "name cannot be empty"})
-				return
-			}
-		}
-		if lat, ok := payload["latitude"].(float64); ok {
-			if lat < -90 || lat > 90 {
-				c.JSON(http.StatusBadRequest, gin.H{"error": "invalid latitude"})
-				return
-			}
-		}
-		if lng, ok := payload["longitude"].(float64); ok {
-			if lng < -180 || lng > 180 {
-				c.JSON(http.StatusBadRequest, gin.H{"error": "invalid longitude"})
-				return
-			}
-		}
-
-		var groupIDs []interface{}
-		if ids, ok := payload["group_ids"].([]interface{}); ok {
-			groupIDs = ids
-			delete(payload, "group_ids")
-		}
-
-        if lat, ok := payload["latitude"].(float64); ok {
-            payload["latitude"] = round6(lat)
+        if payload.Latitude < -90 || payload.Latitude > 90 {
+            c.JSON(http.StatusBadRequest, gin.H{"error": "invalid latitude"})
+            return
         }
-        if lng, ok := payload["longitude"].(float64); ok {
-            payload["longitude"] = round6(lng)
+
+        if payload.Longitude < -180 || payload.Longitude > 180 {
+            c.JSON(http.StatusBadRequest, gin.H{"error": "invalid longitude"})
+            return
         }
-        if err := db.Model(&models.Place{}).Where("place_id = ? AND user_id = ?", id, parsedUserID).Updates(payload).Error; err != nil {
+
+        payload.Latitude = round6(payload.Latitude)
+        payload.Longitude = round6(payload.Longitude)
+
+        updates := map[string]interface{}{
+            "name":        payload.Name,
+            "description": payload.Description,
+            "latitude":    payload.Latitude,
+            "longitude":   payload.Longitude,
+            "category_id": payload.CategoryID,
+        }
+
+        if err := db.Model(&models.Place{}).Where("place_id = ? AND user_id = ?", id, parsedUserID).Updates(updates).Error; err != nil {
             c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update place", "details": err.Error()})
             return
         }
 
-		if groupIDs != nil {
+        if payload.GroupIDs != nil {
 			var currentShares []models.PlaceShare
 			db.Where("place_id = ?", id).Find(&currentShares)
 			currentGroupIDs := make(map[string]bool)
@@ -229,8 +231,7 @@ func UpdatePlace(db *gorm.DB) gin.HandlerFunc {
 			}
 
 			newGroupIDs := make(map[string]bool)
-			for _, item := range groupIDs {
-				gid := item.(string)
+            for _, gid := range payload.GroupIDs {
 				newGroupIDs[gid] = true
 
 				if _, exists := currentGroupIDs[gid]; !exists {

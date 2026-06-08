@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -77,15 +78,15 @@ func GetCategories(db *gorm.DB) gin.HandlerFunc {
 func UpdateCategory(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id := c.Param("id")
-		var payload map[string]interface{}
+		var payload models.Category
 
 		if err := c.ShouldBindJSON(&payload); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON payload"})
 			return
 		}
 
-		if len(payload) == 0 {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "No fields to update"})
+		if strings.TrimSpace(payload.Name) == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "name is required"})
 			return
 		}
 
@@ -111,7 +112,13 @@ func UpdateCategory(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		if err := db.Model(&models.Category{}).Where("category_id = ? AND user_id = ?", id, parsedUserID).Updates(payload).Error; err != nil {
+		updates := map[string]interface{}{
+			"name":  payload.Name,
+			"icon":  payload.Icon,
+			"color": payload.Color,
+		}
+
+		if err := db.Model(&models.Category{}).Where("category_id = ? AND user_id = ?", id, parsedUserID).Updates(updates).Error; err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update category", "details": err.Error()})
 			return
 		}

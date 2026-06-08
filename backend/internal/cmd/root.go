@@ -49,17 +49,17 @@ func Execute() {
 
 	protected.GET("/categories", handlers.GetCategories(postgres))
 	protected.POST("/category", handlers.AddCategory(postgres))
-	protected.PATCH("/category/:id", handlers.UpdateCategory(postgres))
+	protected.PUT("/category/:id", handlers.UpdateCategory(postgres))
 	protected.DELETE("/category/:id", handlers.DeleteCategory(postgres))
 
 	protected.GET("/places", handlers.GetPlaces(postgres))
 	protected.POST("/place", handlers.AddPlace(postgres))
-	protected.PATCH("/place/:id", handlers.UpdatePlace(postgres))
+	protected.PUT("/place/:id", handlers.UpdatePlace(postgres))
 	protected.DELETE("/place/:id", handlers.DeletePlace(postgres))
 
 	protected.GET("/place/:id/asset/:asset_id", handlers.ServePlaceAsset(postgres, assetStorageDir))
 	protected.POST("/place/:id/assets", handlers.UploadPlaceAssets(postgres, assetStorageDir))
-	protected.PATCH("/place/:id/assets/positions", handlers.UpdateAssetPositions(postgres))
+	protected.PUT("/place/:id/assets/positions", handlers.UpdateAssetPositions(postgres))
 	protected.DELETE("/place/:id/asset/:asset_id", handlers.DeletePlaceAsset(postgres, assetStorageDir))
 
 	protected.POST("/group", handlers.CreateGroup(postgres))
