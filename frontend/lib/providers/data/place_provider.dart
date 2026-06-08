@@ -40,12 +40,12 @@ class PlaceNotifier extends AsyncNotifier<List<Place>> {
 
   Future<Place> updatePlace({
     required String id,
-    String? name,
-    String? description,
-    double? latitude,
-    double? longitude,
-    String? categoryId,
-    List<String>? groups,
+    required String name,
+    required String description,
+    required double latitude,
+    required double longitude,
+    required String categoryId,
+    required List<String> groups,
   }) async {
     final api = ref.read(apiServiceProvider);
     final updatedPlace = await api.updatePlace(

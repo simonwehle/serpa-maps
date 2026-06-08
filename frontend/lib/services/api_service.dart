@@ -28,27 +28,24 @@ class ApiService {
 
   Future<Place> updatePlace({
     required String id,
-    String? name,
-    String? description,
-    double? latitude,
-    double? longitude,
-    String? categoryId,
-    List<String>? groups,
+    required String name,
+    required String description,
+    required double latitude,
+    required double longitude,
+    required String categoryId,
+    required List<String> groups,
   }) async {
-    final Map<String, dynamic> updates = {};
-
-    if (name != null) updates['name'] = name;
-    if (description != null) updates['description'] = description;
-    if (latitude != null) updates['latitude'] = latitude;
-    if (longitude != null) updates['longitude'] = longitude;
-    if (categoryId != null) updates['category_id'] = categoryId;
-    if (groups != null) updates['group_ids'] = groups;
-
-    if (updates.isEmpty) {
-      throw Exception('No fields to update');
-    }
-
-    final res = await _dio.patch('/place/$id', data: updates);
+    final res = await _dio.put(
+      '/place/$id',
+      data: {
+        'name': name,
+        'description': description,
+        'latitude': latitude,
+        'longitude': longitude,
+        'category_id': categoryId,
+        'group_ids': groups,
+      },
+    );
     return Place.fromJson(res.data);
   }
 
@@ -130,21 +127,14 @@ class ApiService {
 
   Future<Category> updateCategory({
     required String id,
-    String? name,
-    String? icon,
-    String? color,
+    required String name,
+    required String icon,
+    required String color,
   }) async {
-    final Map<String, dynamic> updates = {};
-
-    if (name != null) updates['name'] = name;
-    if (icon != null) updates['icon'] = icon;
-    if (color != null) updates['color'] = color;
-
-    if (updates.isEmpty) {
-      throw Exception('No fields to update');
-    }
-
-    final res = await _dio.patch('/category/$id', data: updates);
+    final res = await _dio.put(
+      '/category/$id',
+      data: {'name': name, 'icon': icon, 'color': color},
+    );
     return Category.fromJson(res.data);
   }
 

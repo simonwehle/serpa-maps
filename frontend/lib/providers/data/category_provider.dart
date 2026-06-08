@@ -33,9 +33,9 @@ class CategoryNotifier extends AsyncNotifier<List<Category>> {
 
   Future<Category> updateCategory({
     required String id,
-    String? name,
-    String? icon,
-    String? color,
+    required String name,
+    required String icon,
+    required String color,
   }) async {
     final api = ref.read(apiServiceProvider);
     final updatedCategory = await api.updateCategory(
