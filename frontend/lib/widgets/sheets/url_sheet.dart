@@ -41,7 +41,6 @@ class UrlSheet extends ConsumerWidget {
               }
             },
           ),
-          SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
         ],
       ),
     );

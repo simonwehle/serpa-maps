@@ -22,6 +22,7 @@ class SerpaStaticSheet extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: child,
               ),
+              SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
             ],
           ),
         ),
