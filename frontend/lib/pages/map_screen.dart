@@ -19,7 +19,6 @@ import 'package:serpa_maps/widgets/map/serpa_search_bar.dart';
 import 'package:serpa_maps/widgets/sheets/add_place_bottom_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/category_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/place_bottom_sheet.dart';
-import 'package:serpa_maps/widgets/sheets/serpa_draggable_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/layer_bottom_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/settings_sheet.dart';
@@ -35,6 +34,21 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   bool _mapReady = false;
   bool _listenerAdded = false;
   double _currentBearing = 0.0;
+  Widget? _activeDraggableSheet;
+
+  void _showDraggableSheet(Widget sheet) {
+    setState(() {
+      _activeDraggableSheet = sheet;
+    });
+  }
+
+  void _closeDraggableSheet() {
+    if (!mounted) return;
+
+    setState(() {
+      _activeDraggableSheet = null;
+    });
+  }
 
   void openAddPlaceOrCategorySheet({double? latitude, double? longitude}) {
     final categories = ref.read(categoryProvider).value ?? [];
@@ -42,17 +56,19 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     if (categories.isEmpty) {
       showSerpaStaticSheet(context: context, child: const CategorySheet());
     } else {
-      showSerpaDraggableSheet(
-        context: context,
-        child: AddPlaceBottomSheet(latitude: latitude, longitude: longitude),
+      _showDraggableSheet(
+        AddPlaceBottomSheet(
+          latitude: latitude,
+          longitude: longitude,
+          onClose: _closeDraggableSheet,
+        ),
       );
     }
   }
 
   void openPlaceBottomSheet({required String placeId}) {
-    showSerpaDraggableSheet(
-      context: context,
-      child: PlaceBottomSheet(placeId: placeId),
+    _showDraggableSheet(
+      PlaceBottomSheet(placeId: placeId, onClose: _closeDraggableSheet),
     );
   }
 
@@ -246,9 +262,16 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               },
               bearing: _currentBearing,
             ),
+          if (_activeDraggableSheet != null)
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: _activeDraggableSheet!,
+            ),
         ],
       ),
       floatingActionButton: !_mapReady
+          ? null
+          : _activeDraggableSheet != null
           ? null
           : SerpaFab(
               mapController: _controller,

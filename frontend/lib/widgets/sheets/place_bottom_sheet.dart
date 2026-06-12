@@ -14,8 +14,9 @@ import 'package:serpa_maps/widgets/place/place_form.dart';
 
 class PlaceBottomSheet extends ConsumerStatefulWidget {
   final String placeId;
+  final VoidCallback? onClose;
 
-  const PlaceBottomSheet({super.key, required this.placeId});
+  const PlaceBottomSheet({super.key, required this.placeId, this.onClose});
 
   @override
   ConsumerState<PlaceBottomSheet> createState() => _PlaceBottomSheetState();
@@ -129,6 +130,7 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
 
         return SerpaDraggableSheet(
           initialChildSize: 0.39,
+          onClose: widget.onClose,
           bottomActions: isEditing
               ? PlaceFormActions(
                   onSave: () => _saveChanges(place.id),
@@ -140,6 +142,7 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
                   toggleEditing: toggleEditing,
                   category: category,
                   place: place,
+                  onClose: widget.onClose,
                 )
               : PlaceForm(
                   place: place,

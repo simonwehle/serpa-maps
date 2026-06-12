@@ -6,12 +6,14 @@ class SerpaDraggableSheet extends StatefulWidget {
   final Widget child;
   final Widget? bottomActions;
   final double initialChildSize;
+  final VoidCallback? onClose;
 
   const SerpaDraggableSheet({
     super.key,
     required this.child,
     this.bottomActions,
     this.initialChildSize = 0.6,
+    this.onClose,
   });
 
   @override
@@ -64,7 +66,7 @@ class _SerpaDraggableSheetState extends State<SerpaDraggableSheet> {
     });
 
     return TapRegion(
-      onTapOutside: (_) => Navigator.of(context).pop(),
+      onTapOutside: (_) => widget.onClose?.call(),
       child: Stack(
         children: [
           DraggableScrollableSheet(
@@ -134,6 +136,7 @@ void showSerpaDraggableSheet({
     backgroundColor: backgroundColor,
     barrierColor: barrierColor,
     isDismissible: isDismissible,
+    enableDrag: false,
     builder: (_) => child,
   );
 }

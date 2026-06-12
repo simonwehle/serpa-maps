@@ -11,7 +11,14 @@ import 'package:serpa_maps/widgets/sheets/serpa_draggable_sheet.dart';
 class AddPlaceBottomSheet extends ConsumerStatefulWidget {
   final double? latitude;
   final double? longitude;
-  const AddPlaceBottomSheet({super.key, this.latitude, this.longitude});
+  final VoidCallback? onClose;
+
+  const AddPlaceBottomSheet({
+    super.key,
+    this.latitude,
+    this.longitude,
+    this.onClose,
+  });
 
   @override
   ConsumerState<AddPlaceBottomSheet> createState() =>
@@ -79,7 +86,11 @@ class _AddPlaceBottomSheetState extends ConsumerState<AddPlaceBottomSheet> {
           );
 
       if (mounted && addPlace != null) {
-        Navigator.of(context).pop(addPlace);
+        if (widget.onClose != null) {
+          widget.onClose!();
+        } else {
+          Navigator.of(context).pop(addPlace);
+        }
       } else {
         throw 'Failed to add place: Response was null';
       }
@@ -102,8 +113,9 @@ class _AddPlaceBottomSheetState extends ConsumerState<AddPlaceBottomSheet> {
           return Text(AppLocalizations.of(context)!.noCategories);
         }
         return SerpaDraggableSheet(
+          onClose: widget.onClose,
           bottomActions: PlaceFormActions(
-            onCancel: () => Navigator.pop(context),
+            onCancel: widget.onClose ?? () => Navigator.pop(context),
             isNew: true,
             onSave: _saveChanges,
           ),

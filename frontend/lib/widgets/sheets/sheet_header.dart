@@ -5,8 +5,14 @@ import 'package:serpa_maps/widgets/sheets/sheet_button.dart';
 class SheetHeader extends StatelessWidget {
   final String title;
   final VoidCallback? onPressed;
+  final VoidCallback? onClose;
 
-  const SheetHeader({super.key, required this.title, this.onPressed});
+  const SheetHeader({
+    super.key,
+    required this.title,
+    this.onPressed,
+    this.onClose,
+  });
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -20,7 +26,7 @@ class SheetHeader extends StatelessWidget {
             const SizedBox(width: 12),
             SheetButton(
               icon: Icons.close,
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => (onClose ?? () => Navigator.pop(context))(),
             ),
           ],
         ),

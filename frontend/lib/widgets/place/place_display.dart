@@ -13,12 +13,14 @@ class PlaceDisplay extends ConsumerWidget {
   final Category category;
   final Place place;
   final Function toggleEditing;
+  final VoidCallback? onClose;
 
   const PlaceDisplay({
     super.key,
     required this.category,
     required this.place,
     required this.toggleEditing,
+    this.onClose,
   });
 
   @override
@@ -54,7 +56,11 @@ class PlaceDisplay extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SheetHeader(title: place.name, onPressed: () => toggleEditing()),
+          SheetHeader(
+            title: place.name,
+            onPressed: () => toggleEditing(),
+            onClose: onClose,
+          ),
           const SizedBox(height: 8),
           Row(
             children: [
