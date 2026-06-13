@@ -267,11 +267,26 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               },
               bearing: _currentBearing,
             ),
-          if (_activeDraggableSheet != null)
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: _activeDraggableSheet!,
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            transitionBuilder: (child, animation) => SlideTransition(
+              position:
+                  Tween<Offset>(
+                    begin: const Offset(0, 1),
+                    end: Offset.zero,
+                  ).animate(
+                    CurvedAnimation(parent: animation, curve: Curves.easeOut),
+                  ),
+              child: child,
             ),
+            child: _activeDraggableSheet != null
+                ? Align(
+                    key: ValueKey(_activeDraggableSheet.runtimeType),
+                    alignment: Alignment.bottomCenter,
+                    child: _activeDraggableSheet,
+                  )
+                : const SizedBox.shrink(),
+          ),
         ],
       ),
       floatingActionButton: !_mapReady
