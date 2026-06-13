@@ -31,10 +31,12 @@ class GroupMemberNotifier extends AsyncNotifier<List<Member>> {
   //   await future;
   // }
 
-  Future<void> removeMember(String memberId) async {
+  Future<void> removeMember(String userId) async {
     final api = ref.read(apiServiceProvider);
-    await api.removeGroupMember(groupId: groupId, memberId: memberId);
-    ref.invalidateSelf();
+    await api.removeGroupMember(groupId: groupId, memberId: userId);
+    state = state.whenData(
+      (members) => members.where((m) => m.userId != userId).toList(),
+    );
     await future;
   }
 }

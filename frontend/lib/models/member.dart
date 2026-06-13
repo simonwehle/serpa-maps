@@ -13,7 +13,7 @@ class Member {
 
   factory Member.fromJson(Map<String, dynamic> json) {
     return Member(
-      userId: (json['userId']).toString(),
+      userId: (json['user_id']).toString(),
       username: (json['username']).toString(),
       role: (json['role']).toString(),
       joinedAt: DateTime.parse(json['joined_at']),
