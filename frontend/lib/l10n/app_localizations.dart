@@ -245,7 +245,7 @@ abstract class AppLocalizations {
   /// No description provided for @inviteGroupMember.
   ///
   /// In en, this message translates to:
-  /// **'Invite group memnber'**
+  /// **'Invite group member'**
   String get inviteGroupMember;
 
   /// No description provided for @invites.
