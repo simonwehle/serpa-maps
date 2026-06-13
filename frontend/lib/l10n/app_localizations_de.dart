@@ -144,9 +144,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get noGroupInvites => 'Keine Gruppeneinladungen verfügbar';
 
   @override
-  String get noGroupMembers => 'Keine Gruppenmitglieder';
-
-  @override
   String get optional => '(Optional)';
 
   @override

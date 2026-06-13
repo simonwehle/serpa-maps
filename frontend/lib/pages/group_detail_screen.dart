@@ -56,51 +56,42 @@ class GroupDetailScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           ...groupMembersAsync.when(
-            data: (members) => members.isEmpty
-                ? [
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      child: Center(child: Text(i10n.noGroupMembers)),
-                    ),
-                  ]
-                : members
-                      .map(
-                        (member) => ListTile(
-                          leading: Icon(switch (member.role) {
-                            'member' => Icons.visibility,
-                            'editor' => Icons.edit,
-                            'admin' => Icons.security,
-                            _ => Icons.person,
-                          }),
-                          title: Text(member.username),
-                          // subtitle: Text(member.role),
-                          trailing: currentUser?.userId != member.userId
-                              ? IconButton(
-                                  icon: const Icon(Icons.person_remove),
-                                  onPressed: () async {
-                                    final confirmed =
-                                        await showConfirmationDialog(
-                                          context,
-                                          title: i10n.removeGroupMember,
-                                          message:
-                                              i10n.removeGroupMemberQuestion,
-                                        );
+            data: (members) => members
+                .map(
+                  (member) => ListTile(
+                    leading: Icon(switch (member.role) {
+                      'member' => Icons.visibility,
+                      'editor' => Icons.edit,
+                      'admin' => Icons.security,
+                      _ => Icons.person,
+                    }),
+                    title: Text(member.username),
+                    // subtitle: Text(member.role),
+                    trailing: currentUser?.userId != member.userId
+                        ? IconButton(
+                            icon: const Icon(Icons.person_remove),
+                            onPressed: () async {
+                              final confirmed = await showConfirmationDialog(
+                                context,
+                                title: i10n.removeGroupMember,
+                                message: i10n.removeGroupMemberQuestion,
+                              );
 
-                                    if (confirmed) {
-                                      await ref
-                                          .read(
-                                            groupMemberProvider(
-                                              group.groupId,
-                                            ).notifier,
-                                          )
-                                          .removeMember(member.userId);
-                                    }
-                                  },
-                                )
-                              : null,
-                        ),
-                      )
-                      .toList(),
+                              if (confirmed) {
+                                await ref
+                                    .read(
+                                      groupMemberProvider(
+                                        group.groupId,
+                                      ).notifier,
+                                    )
+                                    .removeMember(member.userId);
+                              }
+                            },
+                          )
+                        : null,
+                  ),
+                )
+                .toList(),
             loading: () => [Center(child: CircularProgressIndicator())],
             error: (e, _) => [Center(child: Text(e.toString()))],
           ),

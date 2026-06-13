@@ -368,12 +368,6 @@ abstract class AppLocalizations {
   /// **'No group invites available'**
   String get noGroupInvites;
 
-  /// No description provided for @noGroupMembers.
-  ///
-  /// In en, this message translates to:
-  /// **'No group members'**
-  String get noGroupMembers;
-
   /// No description provided for @optional.
   ///
   /// In en, this message translates to:
