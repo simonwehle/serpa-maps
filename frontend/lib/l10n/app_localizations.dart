@@ -245,7 +245,7 @@ abstract class AppLocalizations {
   /// No description provided for @inviteGroupMember.
   ///
   /// In en, this message translates to:
-  /// **'Invite group memnber'**
+  /// **'Invite group member'**
   String get inviteGroupMember;
 
   /// No description provided for @invites.
@@ -403,6 +403,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Register'**
   String get register;
+
+  /// No description provided for @removeGroupMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove group member'**
+  String get removeGroupMember;
+
+  /// No description provided for @removeGroupMemberQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to remove this group member?'**
+  String get removeGroupMemberQuestion;
 
   /// No description provided for @satellite.
   ///

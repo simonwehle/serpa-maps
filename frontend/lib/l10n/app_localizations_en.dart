@@ -81,7 +81,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get groups => 'Groups';
 
   @override
-  String get inviteGroupMember => 'Invite group memnber';
+  String get inviteGroupMember => 'Invite group member';
 
   @override
   String get invites => 'Invites';
@@ -160,6 +160,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get register => 'Register';
+
+  @override
+  String get removeGroupMember => 'Remove group member';
+
+  @override
+  String get removeGroupMemberQuestion =>
+      'Do you want to remove this group member?';
 
   @override
   String get satellite => 'Satellite';

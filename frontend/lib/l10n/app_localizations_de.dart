@@ -162,6 +162,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get register => 'Registrieren';
 
   @override
+  String get removeGroupMember => 'Gruppenmitglied entfernen';
+
+  @override
+  String get removeGroupMemberQuestion =>
+      'Möchten Sie das Gruppenmitglied entfernen?';
+
+  @override
   String get satellite => 'Satellit';
 
   @override
