@@ -276,17 +276,21 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       ),
       floatingActionButton: !_mapReady
           ? null
-          : _activeDraggableSheet != null
-          ? null
-          : SerpaFab(
-              mapController: _controller,
-              openAddPlaceBottomSheet: () {
-                final cameraTarget = _controller.cameraPosition?.target;
-                openAddPlaceOrCategorySheet(
-                  latitude: cameraTarget?.latitude,
-                  longitude: cameraTarget?.longitude,
-                );
-              },
+          : Visibility(
+              visible: _activeDraggableSheet == null,
+              maintainState: true,
+              maintainAnimation: true,
+              maintainSize: true,
+              child: SerpaFab(
+                mapController: _controller,
+                openAddPlaceBottomSheet: () {
+                  final cameraTarget = _controller.cameraPosition?.target;
+                  openAddPlaceOrCategorySheet(
+                    latitude: cameraTarget?.latitude,
+                    longitude: cameraTarget?.longitude,
+                  );
+                },
+              ),
             ),
     );
   }
