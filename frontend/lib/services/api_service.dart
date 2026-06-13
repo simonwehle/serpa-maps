@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/group.dart';
 import 'package:serpa_maps/models/invite.dart';
-import 'package:serpa_maps/models/member.dart';
+// import 'package:serpa_maps/models/member.dart';
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/models/auth.dart';
 import 'package:serpa_maps/models/user.dart';
@@ -245,9 +245,9 @@ class ApiService {
     await _dio.post('/group/$groupId/invite', data: payload);
   }
 
-  Future<List<Member>> getGroupMembers({required String groupId}) async {
-    final res = await _dio.get('/group/$groupId/members');
-    final List data = res.data;
-    return data.map((json) => Member.fromJson(json)).toList();
-  }
+  // Future<List<Member>> getGroupMembers({required String groupId}) async {
+  //   final res = await _dio.get('/group/$groupId/members');
+  //   final List data = res.data;
+  //   return data.map((json) => Member.fromJson(json)).toList();
+  // }
 }
