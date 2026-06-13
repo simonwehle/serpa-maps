@@ -1,15 +1,40 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:serpa_maps/models/group.dart';
+import 'package:serpa_maps/models/member.dart';
 import 'package:serpa_maps/providers/api/api_provider.dart';
 
-final groupProvider = AsyncNotifierProvider<GroupNotifier, List<Group>>(
-  GroupNotifier.new,
-);
+final groupMemberProvider =
+    AsyncNotifierProvider.family<GroupMemberNotifier, List<Member>, String>(
+      GroupMemberNotifier.new,
+    );
 
-class GroupNotifier extends AsyncNotifier<List<Group>> {
+class GroupMemberNotifier extends AsyncNotifier<List<Member>> {
+  GroupMemberNotifier(this.groupId);
+
+  final String groupId;
+
   @override
-  Future<List<Group>> build() async {
+  Future<List<Member>> build() async {
+    ref.keepAlive();
     final api = ref.read(apiServiceProvider);
-    return await api.fetchGroups();
+    return await api.getGroupMembers(groupId: groupId);
+  }
+
+  Future<void> refresh() async {
+    ref.invalidateSelf();
+    await future;
+  }
+
+  // Future<void> addMember(Member member) async {
+  //   final api = ref.read(apiServiceProvider);
+  //   await api.addGroupMember(groupId: groupId, member: member);
+  //   ref.invalidateSelf();
+  //   await future;
+  // }
+
+  Future<void> removeMember(String memberId) async {
+    final api = ref.read(apiServiceProvider);
+    await api.removeGroupMember(groupId: groupId, memberId: memberId);
+    ref.invalidateSelf();
+    await future;
   }
 }
