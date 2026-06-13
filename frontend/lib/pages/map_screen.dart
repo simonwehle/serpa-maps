@@ -226,6 +226,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               zoom: 2,
             ),
             onStyleLoadedCallback: _onStyleLoaded,
+            onMapClick: (_, _) {
+              if (_activeDraggableSheet != null) {
+                _closeDraggableSheet();
+              }
+            },
             onMapLongClick: (point, latLng) {
               openAddPlaceOrCategorySheet(
                 latitude: latLng.latitude,
