@@ -16,7 +16,7 @@ class Member {
       userId: (json['userId']).toString(),
       username: (json['username']).toString(),
       role: (json['role']).toString(),
-      joinedAt: DateTime.parse(json['created_at']),
+      joinedAt: DateTime.parse(json['joined_at']),
     );
   }
 }
