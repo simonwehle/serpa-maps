@@ -144,6 +144,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noGroupInvites => 'No group invites available';
 
   @override
+  String get noGroupMembers => 'No group members';
+
+  @override
   String get optional => '(optional)';
 
   @override
@@ -160,6 +163,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get register => 'Register';
+
+  @override
+  String get removeGroupMember => 'Remove group member';
+
+  @override
+  String get removeGroupMemberQuestion =>
+      'Do you want to remove this group member?';
 
   @override
   String get satellite => 'Satellite';

@@ -368,6 +368,12 @@ abstract class AppLocalizations {
   /// **'No group invites available'**
   String get noGroupInvites;
 
+  /// No description provided for @noGroupMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'No group members'**
+  String get noGroupMembers;
+
   /// No description provided for @optional.
   ///
   /// In en, this message translates to:
@@ -403,6 +409,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Register'**
   String get register;
+
+  /// No description provided for @removeGroupMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove group member'**
+  String get removeGroupMember;
+
+  /// No description provided for @removeGroupMemberQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to remove this group member?'**
+  String get removeGroupMemberQuestion;
 
   /// No description provided for @satellite.
   ///
