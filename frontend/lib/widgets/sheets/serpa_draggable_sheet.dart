@@ -65,59 +65,56 @@ class _SerpaDraggableSheetState extends State<SerpaDraggableSheet> {
       _handleKeyboardChange(keyboardHeight);
     });
 
-    return TapRegion(
-      onTapOutside: (_) => widget.onClose?.call(),
-      child: Stack(
-        children: [
-          DraggableScrollableSheet(
-            controller: _controller,
-            initialChildSize: widget.initialChildSize,
-            maxChildSize: 1,
-            builder: (context, scrollController) {
-              return SerpaBottomSheet(
-                child: ListView(
-                  controller: scrollController,
-                  padding: EdgeInsets.only(bottom: keyboardHeight),
-                  children: [
-                    Center(
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(vertical: 8),
-                        width: 40,
-                        height: 4,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).dividerColor,
-                          borderRadius: BorderRadius.circular(2),
-                        ),
+    return Stack(
+      children: [
+        DraggableScrollableSheet(
+          controller: _controller,
+          initialChildSize: widget.initialChildSize,
+          maxChildSize: 1,
+          builder: (context, scrollController) {
+            return SerpaBottomSheet(
+              child: ListView(
+                controller: scrollController,
+                padding: EdgeInsets.only(bottom: keyboardHeight),
+                children: [
+                  Center(
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).dividerColor,
+                        borderRadius: BorderRadius.circular(2),
                       ),
                     ),
-                    widget.child,
-                  ],
-                ),
-              );
-            },
-          ),
-          if (widget.bottomActions != null)
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Column(
-                children: [
-                  SerpaDivider(),
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                    color: Theme.of(context).colorScheme.surface,
-                    child: widget.bottomActions,
                   ),
-                  Container(
-                    height: 16,
-                    color: Theme.of(context).colorScheme.surface,
-                  ),
+                  widget.child,
                 ],
               ),
+            );
+          },
+        ),
+        if (widget.bottomActions != null)
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Column(
+              children: [
+                SerpaDivider(),
+                Container(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                  color: Theme.of(context).colorScheme.surface,
+                  child: widget.bottomActions,
+                ),
+                Container(
+                  height: 16,
+                  color: Theme.of(context).colorScheme.surface,
+                ),
+              ],
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 }
