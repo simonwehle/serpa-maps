@@ -4,8 +4,8 @@ import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/models/group.dart';
 import 'package:serpa_maps/providers/data/group_member_provider.dart';
 import 'package:serpa_maps/providers/data/group_provider.dart';
+import 'package:serpa_maps/providers/data/user_prodiver.dart';
 import 'package:serpa_maps/utils/dialogs.dart';
-import 'package:serpa_maps/widgets/group/group_header.dart';
 import 'package:serpa_maps/widgets/sheets/group_invite_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
 
@@ -17,6 +17,7 @@ class GroupDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final i10n = Localizations.of(context, AppLocalizations)!;
     final groupMembersAsync = ref.watch(groupMemberProvider(group.groupId));
+    final currentUser = ref.watch(userProvider).value;
     return Scaffold(
       appBar: AppBar(
         title: Text(group.name),
@@ -65,27 +66,38 @@ class GroupDetailScreen extends ConsumerWidget {
                 : members
                       .map(
                         (member) => ListTile(
+                          leading: Icon(switch (member.role) {
+                            'member' => Icons.visibility,
+                            'editor' => Icons.edit,
+                            'admin' => Icons.security,
+                            _ => Icons.person,
+                          }),
                           title: Text(member.username),
-                          trailing: IconButton(
-                            icon: Icon(Icons.person_remove),
-                            onPressed: () async {
-                              final confirmed = await showConfirmationDialog(
-                                context,
-                                title: i10n.removeGroupMember,
-                                message: i10n.removeGroupMemberQuestion,
-                              );
-                              if (confirmed) {
-                                await ref
-                                    .read(
-                                      groupMemberProvider(
-                                        group.groupId,
-                                      ).notifier,
-                                    )
-                                    .removeMember(member.userId);
-                              }
-                            },
-                          ),
-                          //: null,
+                          // subtitle: Text(member.role),
+                          trailing: currentUser?.userId != member.userId
+                              ? IconButton(
+                                  icon: const Icon(Icons.person_remove),
+                                  onPressed: () async {
+                                    final confirmed =
+                                        await showConfirmationDialog(
+                                          context,
+                                          title: i10n.removeGroupMember,
+                                          message:
+                                              i10n.removeGroupMemberQuestion,
+                                        );
+
+                                    if (confirmed) {
+                                      await ref
+                                          .read(
+                                            groupMemberProvider(
+                                              group.groupId,
+                                            ).notifier,
+                                          )
+                                          .removeMember(member.userId);
+                                    }
+                                  },
+                                )
+                              : null,
                         ),
                       )
                       .toList(),
