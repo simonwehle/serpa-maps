@@ -64,7 +64,10 @@ class _SerpaDraggableSheetState extends State<SerpaDraggableSheet> {
     });
 
     return TapRegion(
-      onTapOutside: (_) => Navigator.of(context).pop(),
+      onTapOutside: (_) {
+        if (!FocusScope.of(context).hasPrimaryFocus) return;
+        Navigator.of(context).pop();
+      },
       child: Stack(
         children: [
           DraggableScrollableSheet(
