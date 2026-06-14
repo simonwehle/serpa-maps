@@ -7,6 +7,7 @@ import 'package:serpa_maps/providers/data/group_member_provider.dart';
 import 'package:serpa_maps/providers/data/group_provider.dart';
 import 'package:serpa_maps/providers/data/user_prodiver.dart';
 import 'package:serpa_maps/utils/dialogs.dart';
+import 'package:serpa_maps/widgets/group/role_dropdown.dart';
 import 'package:serpa_maps/widgets/sheets/group_invite_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
 
@@ -60,49 +61,8 @@ class GroupDetailScreen extends ConsumerWidget {
             data: (members) => members
                 .map(
                   (member) => ListTile(
-                    leading:
-                        member.role != Role.pending &&
-                            currentUser?.userId != member.userId
-                        ? PopupMenuButton<Role>(
-                            padding: EdgeInsets.zero,
-                            iconSize: 24,
-                            style: const ButtonStyle(
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              visualDensity: VisualDensity.compact,
-                            ),
-                            icon: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(member.role.icon),
-                                const Icon(Icons.arrow_drop_down),
-                              ],
-                            ),
-                            onSelected: (newRole) async {
-                              await ref
-                                  .read(
-                                    groupMemberProvider(group.groupId).notifier,
-                                  )
-                                  .updateGroupMemberRole(
-                                    memberId: member.userId,
-                                    role: newRole,
-                                  );
-                            },
-                            itemBuilder: (_) =>
-                                [Role.admin, Role.editor, Role.member]
-                                    .map(
-                                      (role) => PopupMenuItem(
-                                        value: role,
-                                        child: Row(
-                                          children: [
-                                            Icon(role.icon),
-                                            const SizedBox(width: 8),
-                                            Text(role.label),
-                                          ],
-                                        ),
-                                      ),
-                                    )
-                                    .toList(),
-                          )
+                    leading: currentUser?.userId != member.userId
+                        ? RoleDropdown(member: member, groupId: group.groupId)
                         : Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
