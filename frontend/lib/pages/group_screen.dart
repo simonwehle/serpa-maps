@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
+import 'package:serpa_maps/models/role.dart';
 import 'package:serpa_maps/pages/group_detail_screen.dart';
 import 'package:serpa_maps/providers/data/group_provider.dart';
 import 'package:serpa_maps/providers/data/invite_provider.dart';
@@ -100,16 +101,11 @@ class GroupScreen extends ConsumerWidget {
                         .map(
                           (group) => ListTile(
                             title: Text(group.name),
-                            leading: Icon(switch (group.role) {
-                              'member' => Icons.visibility,
-                              'editor' => Icons.edit,
-                              'admin' => Icons.security,
-                              _ => Icons.person,
-                            }),
+                            leading: Icon(group.role.icon),
                             // subtitle: group.description != ""
                             //     ? Text(group.description!)
                             //     : null,
-                            onTap: group.role == 'member'
+                            onTap: group.role == Role.member
                                 ? null
                                 : () {
                                     Navigator.of(context).push(
@@ -119,7 +115,7 @@ class GroupScreen extends ConsumerWidget {
                                       ),
                                     );
                                   },
-                            trailing: group.role == 'member'
+                            trailing: group.role == Role.member
                                 ? IconButton(
                                     icon: Icon(Icons.logout),
                                     onPressed: () async {

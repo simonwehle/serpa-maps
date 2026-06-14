@@ -1,7 +1,9 @@
+import 'package:serpa_maps/models/role.dart';
+
 class Member {
   final String userId;
   final String username;
-  final String role;
+  final Role role;
   final DateTime? joinedAt;
 
   Member({
@@ -15,7 +17,7 @@ class Member {
     return Member(
       userId: (json['user_id']).toString(),
       username: (json['username']).toString(),
-      role: (json['role']).toString(),
+      role: Role.fromString(json['role'] as String),
       joinedAt: DateTime.tryParse(json['joined_at'] ?? ''),
     );
   }

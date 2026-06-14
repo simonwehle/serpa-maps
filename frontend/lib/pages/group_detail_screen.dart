@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/models/group.dart';
+import 'package:serpa_maps/models/role.dart';
 import 'package:serpa_maps/providers/data/group_member_provider.dart';
 import 'package:serpa_maps/providers/data/group_provider.dart';
 import 'package:serpa_maps/providers/data/user_prodiver.dart';
@@ -59,18 +60,12 @@ class GroupDetailScreen extends ConsumerWidget {
             data: (members) => members
                 .map(
                   (member) => ListTile(
-                    leading: Icon(switch (member.role) {
-                      'member' => Icons.visibility,
-                      'editor' => Icons.edit,
-                      'admin' => Icons.security,
-                      'pending' => Icons.send,
-                      _ => Icons.person,
-                    }),
+                    leading: Icon(member.role.icon),
                     title: Text(member.username),
                     // subtitle: Text(member.role),
                     trailing:
                         currentUser?.userId != member.userId &&
-                            member.role != 'pending'
+                            member.role != Role.pending
                         ? IconButton(
                             icon: const Icon(Icons.person_remove),
                             onPressed: () async {

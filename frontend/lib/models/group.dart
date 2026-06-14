@@ -1,7 +1,9 @@
+import 'package:serpa_maps/models/role.dart';
+
 class Group {
   final String groupId;
   final String name;
-  final String role;
+  final Role role;
   final String? description;
   final DateTime createdAt;
 
@@ -19,7 +21,7 @@ class Group {
     return Group(
       groupId: (json['group_id'] ?? json['id'] ?? '').toString(),
       name: (json['name'] ?? '').toString(),
-      role: (json['role'] ?? 'member').toString(),
+      role: Role.fromString(json['role'] as String),
       description: json['description']?.toString(),
       createdAt: createdAtRaw is String && createdAtRaw.isNotEmpty
           ? DateTime.parse(createdAtRaw)

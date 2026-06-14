@@ -4,6 +4,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serpa_maps/models/role.dart';
 import 'package:serpa_maps/providers/data/group_provider.dart';
 import 'package:serpa_maps/providers/data/place_provider.dart';
 
@@ -105,7 +106,9 @@ class PlaceForm extends ConsumerWidget {
           groupsAsync.when(
             data: (groups) => SerpaMultiDropdown(
               items: groups
-                  .where((group) => {'admin', 'editor'}.contains(group.role))
+                  .where(
+                    (group) => {Role.admin, Role.editor}.contains(group.role),
+                  )
                   .map(
                     (group) => DropdownItem(
                       label: group.name,
