@@ -60,7 +60,56 @@ class GroupDetailScreen extends ConsumerWidget {
             data: (members) => members
                 .map(
                   (member) => ListTile(
-                    leading: Icon(member.role.icon),
+                    leading:
+                        member.role != Role.pending &&
+                            currentUser?.userId != member.userId
+                        ? PopupMenuButton<Role>(
+                            padding: EdgeInsets.zero,
+                            iconSize: 24,
+                            style: const ButtonStyle(
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              visualDensity: VisualDensity.compact,
+                            ),
+                            icon: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(member.role.icon),
+                                const Icon(Icons.arrow_drop_down),
+                              ],
+                            ),
+                            onSelected: (newRole) async {
+                              await ref
+                                  .read(
+                                    groupMemberProvider(group.groupId).notifier,
+                                  )
+                                  .updateGroupMemberRole(
+                                    memberId: member.userId,
+                                    role: newRole,
+                                  );
+                            },
+                            itemBuilder: (_) =>
+                                [Role.admin, Role.editor, Role.member]
+                                    .map(
+                                      (role) => PopupMenuItem(
+                                        value: role,
+                                        child: Row(
+                                          children: [
+                                            Icon(role.icon),
+                                            const SizedBox(width: 8),
+                                            Text(role.label),
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
+                          )
+                        : Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(member.role.icon),
+                              const SizedBox(width: 24),
+                            ],
+                          ),
                     title: Text(member.username),
                     // subtitle: Text(member.role),
                     trailing:

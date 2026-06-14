@@ -8,6 +8,7 @@ import 'package:serpa_maps/models/invite.dart';
 import 'package:serpa_maps/models/member.dart';
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/models/auth.dart';
+import 'package:serpa_maps/models/role.dart';
 import 'package:serpa_maps/models/user.dart';
 
 class ApiService {
@@ -249,5 +250,14 @@ class ApiService {
     final res = await _dio.get('/group/$groupId/members');
     final List data = res.data;
     return data.map((json) => Member.fromJson(json)).toList();
+  }
+
+  Future<void> updateGroupMemberRole({
+    required String groupId,
+    required String memberId,
+    required Role role,
+  }) async {
+    final Map<String, dynamic> newRole = {'role': role.name};
+    await _dio.patch('/group/$groupId/member/$memberId', data: newRole);
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/models/member.dart';
+import 'package:serpa_maps/models/role.dart';
 import 'package:serpa_maps/providers/api/api_provider.dart';
 
 final groupMemberProvider =
@@ -38,5 +39,31 @@ class GroupMemberNotifier extends AsyncNotifier<List<Member>> {
       (members) => members.where((m) => m.userId != userId).toList(),
     );
     await future;
+  }
+
+  Future<void> updateGroupMemberRole({
+    required String memberId,
+    required Role role,
+  }) async {
+    final api = ref.read(apiServiceProvider);
+    await api.updateGroupMemberRole(
+      groupId: groupId,
+      memberId: memberId,
+      role: role,
+    );
+    state = state.whenData(
+      (members) => members
+          .map(
+            (m) => m.userId == memberId
+                ? Member(
+                    userId: m.userId,
+                    username: m.username,
+                    role: role,
+                    joinedAt: m.joinedAt,
+                  )
+                : m,
+          )
+          .toList(),
+    );
   }
 }
