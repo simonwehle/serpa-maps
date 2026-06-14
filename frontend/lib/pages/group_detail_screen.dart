@@ -68,8 +68,11 @@ class GroupDetailScreen extends ConsumerWidget {
                     }),
                     title: Text(member.username),
                     // subtitle: Text(member.role),
-                    trailing: currentUser?.userId != member.userId
-                        ? IconButton(
+                    trailing:
+                        currentUser?.userId == member.userId ||
+                            member.role == 'pending'
+                        ? null
+                        : IconButton(
                             icon: const Icon(Icons.person_remove),
                             onPressed: () async {
                               final confirmed = await showConfirmationDialog(
@@ -88,8 +91,7 @@ class GroupDetailScreen extends ConsumerWidget {
                                     .removeMember(member.userId);
                               }
                             },
-                          )
-                        : null,
+                          ),
                   ),
                 )
                 .toList(),
