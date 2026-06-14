@@ -24,6 +24,7 @@ class UrlSheet extends ConsumerWidget {
               persistChanges: (callback) {
                 persistUrlsCallback = callback;
               },
+              moreOptions: true,
             ),
           ),
           PlaceFormActions(

@@ -11,15 +11,20 @@ import 'package:serpa_maps/providers/preferences/style_provider.dart';
 
 class UrlTextFields extends ConsumerStatefulWidget {
   final ValueChanged<Future<void> Function()>? persistChanges;
+  final bool moreOptions;
 
-  const UrlTextFields({super.key, this.persistChanges});
+  const UrlTextFields({
+    super.key,
+    this.persistChanges,
+    this.moreOptions = false,
+  });
 
   @override
   ConsumerState<UrlTextFields> createState() => _UrlTextFieldsState();
 }
 
 class _UrlTextFieldsState extends ConsumerState<UrlTextFields> {
-  bool moreOptions = false;
+  late bool moreOptions;
   late TextEditingController serverUrlController;
   late TextEditingController mapStyleUrlController;
   late TextEditingController darkMapStyleUrlController;
@@ -29,6 +34,7 @@ class _UrlTextFieldsState extends ConsumerState<UrlTextFields> {
   @override
   void initState() {
     super.initState();
+    moreOptions = widget.moreOptions;
     serverUrlController = TextEditingController();
     mapStyleUrlController = TextEditingController();
     darkMapStyleUrlController = TextEditingController();
