@@ -73,7 +73,7 @@ func UpdateGroupMemberRole(db *gorm.DB) gin.HandlerFunc {
 		}
 
 		groupID := c.Param("id")
-		targetUserID := c.Param("user_id")
+		targetUserID := c.Param("memberId")
 
 		var requester models.GroupMember
 		if err := db.Where("group_id = ? AND user_id = ?", groupID, userID).First(&requester).Error; err != nil {
