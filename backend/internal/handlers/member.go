@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+
 	"serpa-maps/internal/models"
 
 	"github.com/gin-gonic/gin"
@@ -61,6 +62,63 @@ func GetGroupMembers(db *gorm.DB) gin.HandlerFunc {
 					})
 				}
 				c.JSON(http.StatusOK, responses)
+	}
+}
+
+func UpdateGroupMemberRole(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		userID, ok := parseUserID(c)
+		if !ok {
+			return
+		}
+
+		groupID := c.Param("id")
+		targetUserID := c.Param("user_id")
+
+		var requester models.GroupMember
+		if err := db.Where("group_id = ? AND user_id = ?", groupID, userID).First(&requester).Error; err != nil {
+			c.JSON(http.StatusForbidden, gin.H{"error": "You are not a member of this group"})
+			return
+		}
+
+		if requester.Role != "admin" {
+			c.JSON(http.StatusForbidden, gin.H{"error": "Only admins can update roles"})
+			return
+		}
+
+		var body struct {
+			Role string `json:"role" binding:"required"`
+		}
+		if err := c.ShouldBindJSON(&body); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+			return
+		}
+
+		validRoles := map[string]bool{"admin": true, "editor": true, "member": true}
+		if !validRoles[body.Role] {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid role, must be admin, editor, or member"})
+			return
+		}
+
+		if fmt.Sprintf("%v", userID) == targetUserID {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "You cannot change your own role"})
+			return
+		}
+
+		result := db.Model(&models.GroupMember{}).
+			Where("group_id = ? AND user_id = ?", groupID, targetUserID).
+			Update("role", body.Role)
+
+		if result.Error != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update role"})
+			return
+		}
+		if result.RowsAffected == 0 {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Member not found"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "Role updated successfully"})
 	}
 }
 

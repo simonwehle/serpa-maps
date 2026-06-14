@@ -67,6 +67,7 @@ func Execute() {
 	protected.DELETE("/group/:id", handlers.DeleteGroup(postgres))
 
 	protected.GET("/group/:id/members", handlers.GetGroupMembers(postgres))
+	protected.PATCH("group/:id/member/:memberId", handlers.UpdateGroupMemberRole(postgres))
 	protected.DELETE("/group/:id/member/:user_id", handlers.RemoveGroupMember(postgres))
 
 	protected.POST("/group/:id/invite", handlers.InviteToGroup(postgres))
