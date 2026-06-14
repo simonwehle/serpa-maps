@@ -40,11 +40,20 @@ func InviteToGroup(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		var existing models.GroupInvite
-		if err := db.Where("group_id = ? AND invitee_id = ?", groupID, invitee.UserID).First(&existing).Error; err == nil {
-			c.JSON(http.StatusConflict, gin.H{"error": "User already invited or a member"})
+		var existingMember models.GroupMember
+		if err := db.Where("group_id = ? AND user_id = ?", groupID, invitee.UserID).First(&existingMember).Error; err == nil {
+			c.JSON(http.StatusConflict, gin.H{"error": "User is already a member of this group"})
 			return
 		}
+
+		var existing models.GroupInvite
+		err := db.Where("group_id = ? AND invitee_id = ? AND status = ?", groupID, invitee.UserID, "pending").First(&existing).Error
+		if err == nil {
+			c.JSON(http.StatusConflict, gin.H{"error": "User already has a pending invite"})
+			return
+		}
+
+		db.Where("group_id = ? AND invitee_id = ?", groupID, invitee.UserID).Delete(&models.GroupInvite{})
 
 		invite := models.GroupInvite{
 			GroupID:     uuid.MustParse(groupID),
@@ -56,15 +65,16 @@ func InviteToGroup(db *gorm.DB) gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create invite", "details": err.Error()})
 			return
 		}
-			       c.JSON(http.StatusCreated, models.GroupInviteResponse{
-				       GroupInviteID:   invite.GroupInviteID,
-				       GroupID:         invite.GroupID,
-				       InvitedByID:     invite.InvitedByID,
-				       InviteeID:       invite.InviteeID,
-				       InviteeUsername: invitee.Username,
-				       Status:          invite.Status,
-				       CreatedAt:       invite.CreatedAt,
-			       })
+
+		c.JSON(http.StatusCreated, models.GroupInviteResponse{
+			GroupInviteID:   invite.GroupInviteID,
+			GroupID:         invite.GroupID,
+			InvitedByID:     invite.InvitedByID,
+			InviteeID:       invite.InviteeID,
+			InviteeUsername: invitee.Username,
+			Status:          invite.Status,
+			CreatedAt:       invite.CreatedAt,
+		})
 	}
 }
 
