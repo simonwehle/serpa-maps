@@ -110,6 +110,12 @@ abstract class AppLocalizations {
   /// **'Add group'**
   String get addGroup;
 
+  /// No description provided for @addPlaceToGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Add place to group'**
+  String get addPlaceToGroup;
+
   /// No description provided for @anonymousUser.
   ///
   /// In en, this message translates to:

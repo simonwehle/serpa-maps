@@ -15,6 +15,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get addGroup => 'Gruppe hinzufügen';
 
   @override
+  String get addPlaceToGroup => 'Ort zu Gruppe hinzufügen';
+
+  @override
   String get anonymousUser => 'Anonymer Benutzer';
 
   @override

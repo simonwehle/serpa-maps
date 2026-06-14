@@ -15,6 +15,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addGroup => 'Add group';
 
   @override
+  String get addPlaceToGroup => 'Add place to group';
+
+  @override
   String get anonymousUser => 'Anonymous User';
 
   @override

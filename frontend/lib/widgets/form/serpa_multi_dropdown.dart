@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
+import 'package:serpa_maps/l10n/app_localizations.dart';
 
 class SerpaMultiDropdown extends StatelessWidget {
   final List<DropdownItem<String>> items;
@@ -14,6 +15,7 @@ class SerpaMultiDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final i10n = Localizations.of(context, AppLocalizations)!;
     return MultiDropdown<String>(
       chipDecoration: ChipDecoration(
         backgroundColor: colorScheme.surfaceContainer,
@@ -31,7 +33,7 @@ class SerpaMultiDropdown extends StatelessWidget {
         selectedBackgroundColor: colorScheme.surfaceContainerHighest,
       ),
       fieldDecoration: FieldDecoration(
-        hintText: 'Add place to group',
+        hintText: i10n.addPlaceToGroup,
         border: OutlineInputBorder(
           borderSide: BorderSide(color: colorScheme.outline),
         ),
