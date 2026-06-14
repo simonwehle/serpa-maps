@@ -105,6 +105,7 @@ class PlaceForm extends ConsumerWidget {
           groupsAsync.when(
             data: (groups) => SerpaMultiDropdown(
               items: groups
+                  .where((group) => {'admin', 'editor'}.contains(group.role))
                   .map(
                     (group) => DropdownItem(
                       label: group.name,
