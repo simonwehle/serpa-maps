@@ -100,6 +100,12 @@ class GroupScreen extends ConsumerWidget {
                         .map(
                           (group) => ListTile(
                             title: Text(group.name),
+                            leading: Icon(switch (group.role) {
+                              'member' => Icons.visibility,
+                              'editor' => Icons.edit,
+                              'admin' => Icons.security,
+                              _ => Icons.person,
+                            }),
                             // subtitle: group.description != ""
                             //     ? Text(group.description!)
                             //     : null,
