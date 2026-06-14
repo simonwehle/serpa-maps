@@ -63,6 +63,7 @@ class GroupDetailScreen extends ConsumerWidget {
                       'member' => Icons.visibility,
                       'editor' => Icons.edit,
                       'admin' => Icons.security,
+                      'pending' => Icons.send,
                       _ => Icons.person,
                     }),
                     title: Text(member.username),
