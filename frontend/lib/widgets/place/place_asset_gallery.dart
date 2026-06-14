@@ -56,11 +56,15 @@ class PlaceAssetGallery extends ConsumerWidget {
               return GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => PlaceAssetsFullscreen(
+                    PageRouteBuilder(
+                      opaque: false,
+                      pageBuilder: (_, _, _) => PlaceAssetsFullscreen(
                         assets: assets,
                         initialIndex: index,
                       ),
+                      transitionsBuilder: (_, animation, _, child) {
+                        return FadeTransition(opacity: animation, child: child);
+                      },
                     ),
                   );
                 },
