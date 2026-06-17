@@ -104,21 +104,24 @@ func AddPlace(db *gorm.DB) gin.HandlerFunc {
 
 func GetPlaces(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		parsedUserID, ok := parseUserID(c)
-		if !ok {
-			return
-		}
+        var places []models.Place
 
-		sharedPlaceIDs := getSharedPlaceIDs(db, parsedUserID)
-		query := db.Where("user_id = ?", parsedUserID)
-		if len(sharedPlaceIDs) > 0 {
-			query = query.Or("place_id IN ?", sharedPlaceIDs)
-		}
-		var places []models.Place
-		if err := query.Order("place_id").Find(&places).Error; err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
+        userID, exists := c.Get("user_id")
+        if !exists {
+            c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+            return
+        }
+        userIDStr := fmt.Sprintf("%v", userID)
+        parsedUserID, err := uuid.Parse(userIDStr)
+        if err != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID format"})
+            return
+        }
+
+        if err = db.Where("user_id = ?", parsedUserID).Order("place_id").Find(&places).Error; err != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+            return
+        }
 
         type PlaceWithGroups struct {
             models.Place

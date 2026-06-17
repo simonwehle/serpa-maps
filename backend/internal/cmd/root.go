@@ -64,6 +64,7 @@ func Execute() {
 
 	protected.POST("/group", handlers.CreateGroup(postgres))
 	protected.GET("/groups", handlers.GetGroups(postgres))
+	protected.GET("/group/:id/places", handlers.GetGroupPlaces(postgres))
 	protected.DELETE("/group/:id", handlers.DeleteGroup(postgres))
 
 	protected.GET("/group/:id/members", handlers.GetGroupMembers(postgres))
