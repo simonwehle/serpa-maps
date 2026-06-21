@@ -177,15 +177,19 @@ func UpdatePlace(db *gorm.DB) gin.HandlerFunc {
             return
         }
 
-        userID, exists := c.Get("user_id")
-        if !exists {
-            c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+        parsedUserID, ok := parseUserID(c)
+        if !ok {
             return
         }
-        userIDStr := fmt.Sprintf("%v", userID)
-        parsedUserID, err := uuid.Parse(userIDStr)
+
+        placeID, err := uuid.Parse(id)
         if err != nil {
-            c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID format"})
+            c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid place ID"})
+            return
+        }
+
+        if err := hasPlacePermission(db, parsedUserID, placeID, "editor"); err != nil {
+            c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
             return
         }
 
@@ -310,6 +314,17 @@ func DeletePlace(db *gorm.DB) gin.HandlerFunc {
         parsedUserID, err := uuid.Parse(userIDStr)
         if err != nil {
             c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID format"})
+            return
+        }
+
+        parsedPlaceID, err := uuid.Parse(placeID)
+        if err != nil {
+            c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid place ID"})
+            return
+        }
+
+        if err := hasPlacePermission(db, parsedUserID, parsedPlaceID, "admin"); err != nil {
+            c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
             return
         }
 
