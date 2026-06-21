@@ -4,6 +4,7 @@ import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/utils/create_marker_image.dart';
 import 'package:serpa_maps/utils/icon_color_utils.dart';
+import 'package:flutter/services.dart';
 
 Future<void> _addSingleMarkerImage({
   required Category category,
@@ -140,20 +141,19 @@ Future<void> updatePlacesSource({
   };
 
   try {
-    await mapController.setGeoJsonSource("places", placesGeoJson);
-  } catch (e) {
-    try {
-      await mapController.addSource(
-        "places",
-        GeojsonSourceProperties(
-          data: placesGeoJson,
-          cluster: true,
-          clusterMaxZoom: 18,
-          clusterRadius: 30,
-        ),
-      );
-    } catch (e) {
-      debugPrint('Failed to add places source: $e');
+    await mapController.addSource(
+      "places",
+      GeojsonSourceProperties(
+        data: placesGeoJson,
+        cluster: true,
+        clusterMaxZoom: 18,
+        clusterRadius: 30,
+      ),
+    );
+  } on PlatformException catch (e) {
+    if (e.code == 'sourceAlreadyExists') {
+      await mapController.setGeoJsonSource("places", placesGeoJson);
+    } else {
       rethrow;
     }
   }

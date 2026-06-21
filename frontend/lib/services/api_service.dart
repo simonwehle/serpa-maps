@@ -260,4 +260,10 @@ class ApiService {
     final Map<String, dynamic> newRole = {'role': role.name};
     await _dio.patch('/group/$groupId/member/$memberId', data: newRole);
   }
+
+  Future<List<Place>> fetchGroupPlaces({required String groupId}) async {
+    final res = await _dio.get('/group/$groupId/places');
+    final List data = res.data ?? [];
+    return data.map((json) => Place.fromJson(json)).toList();
+  }
 }

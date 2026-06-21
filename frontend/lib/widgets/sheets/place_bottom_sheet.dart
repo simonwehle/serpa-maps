@@ -4,6 +4,7 @@ import 'package:serpa_maps/l10n/app_localizations.dart';
 
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
+import 'package:serpa_maps/models/role.dart';
 import 'package:serpa_maps/providers/data/category_provider.dart';
 import 'package:serpa_maps/providers/data/item_by_id_providers.dart';
 import 'package:serpa_maps/providers/data/place_provider.dart';
@@ -14,8 +15,9 @@ import 'package:serpa_maps/widgets/place/place_form.dart';
 
 class PlaceBottomSheet extends ConsumerStatefulWidget {
   final String placeId;
+  final Role? role;
 
-  const PlaceBottomSheet({super.key, required this.placeId});
+  const PlaceBottomSheet({super.key, required this.placeId, this.role});
 
   @override
   ConsumerState<PlaceBottomSheet> createState() => _PlaceBottomSheetState();
@@ -140,6 +142,10 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
                   toggleEditing: toggleEditing,
                   category: category,
                   place: place,
+                  canEdit:
+                      widget.role == null ||
+                      widget.role == Role.admin ||
+                      widget.role == Role.editor,
                 )
               : PlaceForm(
                   place: place,

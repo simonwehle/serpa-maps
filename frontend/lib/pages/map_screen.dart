@@ -2,8 +2,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
+import 'package:serpa_maps/models/group.dart';
 
 import 'package:serpa_maps/models/place.dart';
+import 'package:serpa_maps/providers/data/all_places_provider.dart';
 import 'package:serpa_maps/providers/data/category_provider.dart';
 import 'package:serpa_maps/providers/map/location_permission_provider.dart';
 import 'package:serpa_maps/providers/map/map_layer_provider.dart';
@@ -35,6 +37,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   bool _mapReady = false;
   bool _listenerAdded = false;
   double _currentBearing = 0.0;
+  Map<String, Group> _placeIdToGroup = {};
 
   void openAddPlaceOrCategorySheet({double? latitude, double? longitude}) {
     final categories = ref.read(categoryProvider).value ?? [];
@@ -50,9 +53,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   void openPlaceBottomSheet({required String placeId}) {
+    final group = _placeIdToGroup[placeId];
+
     showSerpaDraggableSheet(
       context: context,
-      child: PlaceBottomSheet(placeId: placeId),
+      child: PlaceBottomSheet(placeId: placeId, role: group?.role),
     );
   }
 
@@ -66,10 +71,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   Future<void> _updatePlaces(List<Place>? places) async {
     if (!_mapReady) return;
-
+    final allPlacesData = await ref.read(allPlacesProvider.future);
     await updatePlacesSource(
       mapController: _controller,
-      places: places,
+      places: allPlacesData.places,
       markersVisible: ref.read(markersVisibleProvider),
     );
   }
@@ -99,13 +104,17 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   Future<void> _onStyleLoaded() async {
     try {
       final categories = await ref.read(categoryProvider.future);
-      final places = await ref.read(placeProvider.future);
+      final allPlaces = await ref.read(allPlacesProvider.future);
+
+      setState(() {
+        _placeIdToGroup = allPlaces.placeIdToGroup;
+      });
 
       await addMarkerImage(categories: categories, mapController: _controller);
 
       await updatePlacesSource(
         mapController: _controller,
-        places: places,
+        places: allPlaces.places,
         markersVisible: ref.read(markersVisibleProvider),
       );
 
