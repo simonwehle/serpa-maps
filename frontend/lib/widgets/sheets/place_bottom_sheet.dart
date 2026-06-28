@@ -7,6 +7,7 @@ import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/providers/data/category_provider.dart';
 import 'package:serpa_maps/providers/data/item_by_id_providers.dart';
 import 'package:serpa_maps/providers/data/place_provider.dart';
+import 'package:serpa_maps/widgets/banner/top_banner.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_draggable_sheet.dart';
 import 'package:serpa_maps/widgets/place/place_display.dart';
 import 'package:serpa_maps/widgets/place/place_form_actions.dart';
@@ -58,7 +59,7 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
         text: place.longitude.toString(),
       );
 
-      categories = categories;
+      this.categories = categories;
       selectedCategory = currentCategory;
 
       controllersInitialized = true;
@@ -94,13 +95,12 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
             categoryId: selectedCategory!.id,
             groups: selectedGroups, // .map((g) => g.groupId).toList()
           );
+      if (!mounted) return;
       toggleEditing();
+      showTopBanner(context, 'Updated place successfully');
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Update failed: $e')));
-      }
+      if (!mounted) return;
+      showTopBanner(context, 'Update failed: $e');
     }
   }
 
@@ -115,7 +115,9 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final place = ref.watch(placeByIdProvider(widget.placeId));
-    if (place == null) return Text(AppLocalizations.of(context)!.placeNotFound);
+    if (place == null) {
+      return Text(AppLocalizations.of(context)!.placeNotFound);
+    }
 
     final category = ref.watch(categoryByIdProvider(place.categoryId));
     if (category == null) {

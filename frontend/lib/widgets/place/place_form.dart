@@ -11,6 +11,7 @@ import 'package:serpa_maps/providers/data/place_provider.dart';
 //import 'package:serpa_maps/models/asset.dart';
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
+import 'package:serpa_maps/widgets/banner/top_banner.dart';
 //import 'package:serpa_maps/utils/extract_gps.dart';
 import 'package:serpa_maps/widgets/form/delete_button.dart';
 import 'package:serpa_maps/widgets/form/form_text_field.dart';
@@ -202,9 +203,10 @@ class PlaceForm extends ConsumerWidget {
               child: DeleteButton(
                 deleteFunction: () async {
                   await deletePlace!();
-                  if (context.mounted) {
-                    await Navigator.maybePop(context);
-                  }
+                  if (!context.mounted) return;
+
+                  showTopBanner(context, 'Deleted place successfully');
+                  await Navigator.maybePop(context);
                 },
                 title: i10n.deletePlace,
                 question: i10n.deletePlaceQuestion,

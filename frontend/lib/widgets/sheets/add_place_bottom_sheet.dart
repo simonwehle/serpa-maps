@@ -4,6 +4,7 @@ import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/providers/data/category_provider.dart';
 import 'package:serpa_maps/providers/data/place_provider.dart';
+import 'package:serpa_maps/widgets/banner/top_banner.dart';
 import 'package:serpa_maps/widgets/place/place_form_actions.dart';
 import 'package:serpa_maps/widgets/place/place_form.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_draggable_sheet.dart';
@@ -80,15 +81,12 @@ class _AddPlaceBottomSheetState extends ConsumerState<AddPlaceBottomSheet> {
 
       if (mounted && addPlace != null) {
         Navigator.of(context).pop(addPlace);
+        showTopBanner(context, 'Added place successfully');
       } else {
         throw 'Failed to add place: Response was null';
       }
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Add place failed: $e')));
-      }
+      showTopBanner(context, 'Add place failed: $e');
     }
   }
 
