@@ -191,9 +191,9 @@ func UpdatePlace(db *gorm.DB) gin.HandlerFunc {
         }
 
         var existingPlace models.Place
-        if err = db.Where("place_id = ? AND user_id = ?", id, parsedUserID).First(&existingPlace).Error; err != nil {
+        if err = db.Where("place_id = ?", id).First(&existingPlace).Error; err != nil {
             if err == gorm.ErrRecordNotFound {
-                c.JSON(http.StatusNotFound, gin.H{"error": "Place not found or you don't have permission"})
+                c.JSON(http.StatusNotFound, gin.H{"error": "Place not found"})
             } else {
                 c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
             }
@@ -221,7 +221,7 @@ func UpdatePlace(db *gorm.DB) gin.HandlerFunc {
             "category_id": payload.CategoryID,
         }
 
-        if err := db.Model(&models.Place{}).Where("place_id = ? AND user_id = ?", id, parsedUserID).Updates(updates).Error; err != nil {
+        if err := db.Model(&models.Place{}).Where("place_id = ?", id).Updates(updates).Error; err != nil {
             c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update place", "details": err.Error()})
             return
         }
