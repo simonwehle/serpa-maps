@@ -76,6 +76,7 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
   }
 
   Future<void> _saveChanges(String placeId) async {
+    final l10n = AppLocalizations.of(context)!;
     try {
       final latitude = double.tryParse(latitudeController!.text);
       final longitude = double.tryParse(longitudeController!.text);
@@ -97,7 +98,10 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
           );
       if (!mounted) return;
       toggleEditing();
-      showTopBanner(context, 'Updated place successfully');
+      showTopBanner(
+        context,
+        l10n.updatePlaceConfirmation(nameController!.text),
+      );
     } catch (e) {
       if (!mounted) return;
       showTopBanner(context, 'Update failed: $e');
@@ -114,6 +118,7 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final place = ref.watch(placeByIdProvider(widget.placeId));
     if (place == null) {
       return Text(AppLocalizations.of(context)!.placeNotFound);
@@ -165,6 +170,8 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
                     await ref
                         .read(placeProvider.notifier)
                         .deletePlace(id: place.id);
+                    if (!context.mounted) return;
+                    showTopBanner(context, l10n.deletePlaceConfirmation(place.name));
                   },
                 ),
         );

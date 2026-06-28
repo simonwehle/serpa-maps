@@ -107,8 +107,26 @@ abstract class AppLocalizations {
   /// No description provided for @addGroup.
   ///
   /// In en, this message translates to:
-  /// **'Add group'**
+  /// **'Group added'**
   String get addGroup;
+
+  /// No description provided for @addAssetConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Asset added'**
+  String get addAssetConfirmation;
+
+  /// Shown after a category is successfully added
+  ///
+  /// In en, this message translates to:
+  /// **'Category {name} added'**
+  String addCategoryConfirmation(String name);
+
+  /// Shown after a place is successfully added
+  ///
+  /// In en, this message translates to:
+  /// **'Place {name} added'**
+  String addPlaceConfirmation(String name);
 
   /// No description provided for @addPlaceToGroup.
   ///
@@ -170,6 +188,12 @@ abstract class AppLocalizations {
   /// **'Delete Asset'**
   String get deleteAsset;
 
+  /// No description provided for @deleteAssetConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Asset deleted'**
+  String get deleteAssetConfirmation;
+
   /// No description provided for @deleteAssetQuestion.
   ///
   /// In en, this message translates to:
@@ -181,6 +205,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete Category'**
   String get deleteCategory;
+
+  /// Shown after a category is successfully deleted
+  ///
+  /// In en, this message translates to:
+  /// **'Category {name} deleted'**
+  String deleteCategoryConfirmation(String name);
 
   /// No description provided for @deleteCategoryQuestion.
   ///
@@ -194,6 +224,12 @@ abstract class AppLocalizations {
   /// **'Delete Group'**
   String get deleteGroup;
 
+  /// Shown after a group is successfully deleted
+  ///
+  /// In en, this message translates to:
+  /// **'Group {name} deleted'**
+  String deleteGroupConfirmation(String name);
+
   /// No description provided for @deleteGroupQuestion.
   ///
   /// In en, this message translates to:
@@ -205,6 +241,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete Place'**
   String get deletePlace;
+
+  /// Shown after a place is successfully deleted
+  ///
+  /// In en, this message translates to:
+  /// **'Place {name} deleted'**
+  String deletePlaceConfirmation(String name);
 
   /// No description provided for @deletePlaceQuestion.
   ///
@@ -272,6 +314,12 @@ abstract class AppLocalizations {
   /// **'Leave group'**
   String get leaveGroup;
 
+  /// Shown after user left a group successfully
+  ///
+  /// In en, this message translates to:
+  /// **'Left group {name}'**
+  String leaveGroupConfirmation(String name);
+
   /// No description provided for @leaveGroupQuestion.
   ///
   /// In en, this message translates to:
@@ -307,6 +355,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Logout'**
   String get logout;
+
+  /// No description provided for @logoutConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Successfully logged out'**
+  String get logoutConfirmation;
 
   /// No description provided for @logoutQuestion.
   ///
@@ -416,6 +470,12 @@ abstract class AppLocalizations {
   /// **'Remove group member'**
   String get removeGroupMember;
 
+  /// Shown after a group member is successfully removed
+  ///
+  /// In en, this message translates to:
+  /// **'Removed {name} from group'**
+  String removeGroupMemberConfirmation(String name);
+
   /// No description provided for @removeGroupMemberQuestion.
   ///
   /// In en, this message translates to:
@@ -475,6 +535,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'System'**
   String get system;
+
+  /// Shown after a category is successfully updated
+  ///
+  /// In en, this message translates to:
+  /// **'Category {name} updated'**
+  String updateCategoryConfirmation(String name);
+
+  /// Shown after a place is successfully updated
+  ///
+  /// In en, this message translates to:
+  /// **'Place {name} updated'**
+  String updatePlaceConfirmation(String name);
 
   /// No description provided for @username.
   ///

@@ -203,10 +203,9 @@ class PlaceForm extends ConsumerWidget {
               child: DeleteButton(
                 deleteFunction: () async {
                   await deletePlace!();
-                  if (!context.mounted) return;
-
-                  showTopBanner(context, 'Deleted place successfully');
-                  await Navigator.maybePop(context);
+                  if (context.mounted) {
+                    await Navigator.maybePop(context);
+                  }
                 },
                 title: i10n.deletePlace,
                 question: i10n.deletePlaceQuestion,

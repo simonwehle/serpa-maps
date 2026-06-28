@@ -15,6 +15,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String get addGroup => 'Gruppe hinzufügen';
 
   @override
+  String get addAssetConfirmation => 'Asset added';
+
+  @override
+  String addCategoryConfirmation(String name) {
+    return 'Kategorie $name hinzugefügt';
+  }
+
+  @override
+  String addPlaceConfirmation(String name) {
+    return 'Ort $name hinzugefügt';
+  }
+
+  @override
   String get addPlaceToGroup => 'Ort zu Gruppe hinzufügen';
 
   @override
@@ -45,10 +58,18 @@ class AppLocalizationsDe extends AppLocalizations {
   String get deleteAsset => 'Inhalt löschen';
 
   @override
+  String get deleteAssetConfirmation => 'Inhalt gelöscht';
+
+  @override
   String get deleteAssetQuestion => 'Möchten Sie diesen Inhalt löschen?';
 
   @override
   String get deleteCategory => 'Kategorie löschen';
+
+  @override
+  String deleteCategoryConfirmation(String name) {
+    return 'Kategorie $name gelöscht';
+  }
 
   @override
   String get deleteCategoryQuestion => 'Möchten Sie diese Kategorie löschen?';
@@ -57,10 +78,20 @@ class AppLocalizationsDe extends AppLocalizations {
   String get deleteGroup => 'Gruppe löschen';
 
   @override
+  String deleteGroupConfirmation(String name) {
+    return 'Gruppe $name gelöscht';
+  }
+
+  @override
   String get deleteGroupQuestion => 'Möchten Sie diese Gruppe löschen?';
 
   @override
   String get deletePlace => 'Ort löschen';
+
+  @override
+  String deletePlaceConfirmation(String name) {
+    return 'Ort $name gelöscht';
+  }
 
   @override
   String get deletePlaceQuestion => 'Möchten Sie diesen Ort löschen?';
@@ -96,6 +127,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get leaveGroup => 'Gruppe verlassen';
 
   @override
+  String leaveGroupConfirmation(String name) {
+    return 'Gruppe $name verlassen';
+  }
+
+  @override
   String get leaveGroupQuestion => 'Möchten Sie die Gruppe verlassen?';
 
   @override
@@ -112,6 +148,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get logout => 'Ausloggen';
+
+  @override
+  String get logoutConfirmation => 'Erfolgreich ausgeloggt';
 
   @override
   String get logoutQuestion => 'Möchten Sie sich ausloggen?';
@@ -168,6 +207,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get removeGroupMember => 'Gruppenmitglied entfernen';
 
   @override
+  String removeGroupMemberConfirmation(String name) {
+    return 'Gruppenmitglied $name entfernt';
+  }
+
+  @override
   String get removeGroupMemberQuestion =>
       'Möchten Sie das Gruppenmitglied entfernen?';
 
@@ -197,6 +241,16 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get system => 'System';
+
+  @override
+  String updateCategoryConfirmation(String name) {
+    return 'Kategorie $name aktualisiert';
+  }
+
+  @override
+  String updatePlaceConfirmation(String name) {
+    return 'Ort $name aktualisiert';
+  }
 
   @override
   String get username => 'Nutzername';

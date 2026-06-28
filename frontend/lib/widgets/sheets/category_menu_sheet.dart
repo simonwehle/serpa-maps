@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/providers/data/category_provider.dart';
+import 'package:serpa_maps/widgets/banner/top_banner.dart';
 import 'package:serpa_maps/widgets/form/delete_button.dart';
 import 'package:serpa_maps/widgets/form/form_text_field.dart';
 import 'package:serpa_maps/widgets/form/serpa_divider.dart';
@@ -45,6 +46,7 @@ class _CategoryMenuSheetState extends ConsumerState<CategoryMenuSheet> {
   }
 
   Future<void> _updateCategory(String categoryId) async {
+    final l10n = AppLocalizations.of(context)!;
     try {
       await ref
           .read(categoryProvider.notifier)
@@ -54,16 +56,20 @@ class _CategoryMenuSheetState extends ConsumerState<CategoryMenuSheet> {
             icon: stringFromIcon(_selectedIcon),
             color: colorToHex(_selectedColor),
           );
+      if (!mounted) return;
+      showTopBanner(
+        context,
+        l10n.updateCategoryConfirmation(_nameController.text),
+      );
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Update failed: $e')));
+        showTopBanner(context, 'Update failed: $e');
       }
     }
   }
 
   Future<void> _addCategory() async {
+    final l10n = AppLocalizations.of(context)!;
     try {
       await ref
           .read(categoryProvider.notifier)
@@ -72,13 +78,22 @@ class _CategoryMenuSheetState extends ConsumerState<CategoryMenuSheet> {
             icon: stringFromIcon(_selectedIcon),
             color: colorToHex(_selectedColor),
           );
+      if (!mounted) return;
+      showTopBanner(
+        context,
+        l10n.addCategoryConfirmation(_nameController.text),
+      );
     } catch (e) {
-      //
+      if (!mounted) return;
+      showTopBanner(context, 'Error during category creation: $e');
     }
   }
 
-  Future<void> _deleteCategory(String categoryId) async {
-    await ref.read(categoryProvider.notifier).deleteCategory(id: categoryId);
+  Future<void> _deleteCategory(Category category) async {
+    final l10n = AppLocalizations.of(context)!;
+    await ref.read(categoryProvider.notifier).deleteCategory(id: category.id);
+    if (!mounted) return;
+    showTopBanner(context, l10n.deleteCategoryConfirmation(category.name));
   }
 
   @override
@@ -157,7 +172,7 @@ class _CategoryMenuSheetState extends ConsumerState<CategoryMenuSheet> {
               padding: const EdgeInsets.all(16),
               child: DeleteButton(
                 deleteFunction: () async {
-                  await _deleteCategory(widget.category.id);
+                  await _deleteCategory(widget.category);
                   if (context.mounted) {
                     await Navigator.maybePop(context);
                   }

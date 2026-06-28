@@ -1,7 +1,26 @@
 {
   "@@locale": "en",
   "add": "Add",
-  "addGroup": "Add group",
+  "addGroup": "Group added",
+  "addAssetConfirmation": "Asset added",
+  "addCategoryConfirmation": "Category {name} added",
+  "@addCategoryConfirmation": {
+    "description": "Shown after a category is successfully added",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "addPlaceConfirmation": "Place {name} added",
+  "@addPlaceConfirmation": {
+    "description": "Shown after a place is successfully added",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "addPlaceToGroup": "Add place to group",
   "anonymousUser": "Anonymous User",
   "appearance": "Appearance",
@@ -12,12 +31,40 @@
   "dark": "Dark",
   "defaultMap": "Default",
   "deleteAsset": "Delete Asset",
+  "deleteAssetConfirmation": "Asset deleted",
   "deleteAssetQuestion": "Do you want to delete this asset?",
   "deleteCategory": "Delete Category",
+  "deleteCategoryConfirmation": "Category {name} deleted",
+  "@deleteCategoryConfirmation": {
+    "description": "Shown after a category is successfully deleted",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "deleteCategoryQuestion": "Do you want to delete this category?",
   "deleteGroup": "Delete Group",
+  "deleteGroupConfirmation": "Group {name} deleted",
+  "@deleteGroupConfirmation": {
+    "description": "Shown after a group is successfully deleted",
+    "placeholders": {
+      "name":{
+        "type": "String"
+      }
+    }
+  },
   "deleteGroupQuestion": "Do you want to delete this group?",
   "deletePlace": "Delete Place",
+  "deletePlaceConfirmation": "Place {name} deleted",
+  "@deletePlaceConfirmation": {
+    "description": "Shown after a place is successfully deleted",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "deletePlaceQuestion": "Do you want to delete this place?",
   "description": "Description",
   "directions": "Directions",
@@ -29,12 +76,22 @@
   "invites": "Invites",
   "latitude": "Latitude",
   "leaveGroup": "Leave group",
+  "leaveGroupConfirmation": "Left group {name}",
+  "@leaveGroupConfirmation": {
+    "description": "Shown after user left a group successfully",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "leaveGroupQuestion": "Do you want to leave this group?",
   "lessOptions": "less options",
   "light": "Light",
   "loading": "Loading...",
   "login": "Login",
   "logout": "Logout",
+  "logoutConfirmation": "Successfully logged out",
   "logoutQuestion": "Do you want to logout?",
   "longitude": "Longitude",
   "mapLayer": "Map Layer",
@@ -53,6 +110,15 @@
   "placeNotFound": "Place not found",
   "register": "Register",
   "removeGroupMember": "Remove group member",
+  "removeGroupMemberConfirmation": "Removed {name} from group",
+  "@removeGroupMemberConfirmation":{
+    "description": "Shown after a group member is successfully removed",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "removeGroupMemberQuestion": "Do you want to remove this group member?",
   "satellite": "Satellite",
   "save": "Save",
@@ -63,6 +129,24 @@
   "showMarkers": "Show markers",
   "showOverlay": "Show overlay",
   "system": "System",
+  "updateCategoryConfirmation": "Category {name} updated",
+  "@updateCategoryConfirmation": {
+    "description": "Shown after a category is successfully updated",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "updatePlaceConfirmation": "Place {name} updated",
+  "@updatePlaceConfirmation": {
+    "description": "Shown after a place is successfully updated",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "username": "Username",
   "yes": "Yes"
 }

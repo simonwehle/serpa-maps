@@ -53,6 +53,7 @@ class _AddPlaceBottomSheetState extends ConsumerState<AddPlaceBottomSheet> {
   }
 
   Future<void> _saveChanges() async {
+    final l10n = AppLocalizations.of(context)!;
     try {
       final name = nameController.text.trim().replaceAll(RegExp(r'\s+'), ' ');
       final description = descriptionController.text.trim();
@@ -81,7 +82,7 @@ class _AddPlaceBottomSheetState extends ConsumerState<AddPlaceBottomSheet> {
 
       if (mounted && addPlace != null) {
         Navigator.of(context).pop(addPlace);
-        showTopBanner(context, 'Added place successfully');
+        showTopBanner(context, l10n.addPlaceConfirmation(name));
       } else {
         throw 'Failed to add place: Response was null';
       }
