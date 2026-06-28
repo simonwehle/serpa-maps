@@ -105,7 +105,9 @@ class GroupScreen extends ConsumerWidget {
                             // subtitle: group.description != ""
                             //     ? Text(group.description!)
                             //     : null,
-                            onTap: group.role == Role.member
+                            onTap:
+                                group.role == Role.member ||
+                                    group.role == Role.editor
                                 ? null
                                 : () {
                                     Navigator.of(context).push(
@@ -115,7 +117,9 @@ class GroupScreen extends ConsumerWidget {
                                       ),
                                     );
                                   },
-                            trailing: group.role == Role.member
+                            trailing:
+                                group.role == Role.member ||
+                                    group.role == Role.editor
                                 ? IconButton(
                                     icon: Icon(Icons.logout),
                                     onPressed: () async {
