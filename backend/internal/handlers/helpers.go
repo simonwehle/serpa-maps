@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"fmt"
 	"math"
 	"net/http"
@@ -11,6 +12,12 @@ import (
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
+
+var roleRank = map[string]int{
+	"viewer": 1,
+	"editor": 2,
+	"admin":  3,
+}
 
 func validatePlaceInput(name string, latitude, longitude float64) error {
 	if strings.TrimSpace(name) == "" {
@@ -78,5 +85,51 @@ func validateGroupInput(name string) error {
 	if len(name) > 255 {
 		return fmt.Errorf("name too long (max 255 characters)")
 	}
+	return nil
+}
+
+func hasPlacePermission(db *gorm.DB, userID uuid.UUID, placeID uuid.UUID, minRole string) error {
+	var place models.Place
+	if err := db.Where("place_id = ?", placeID).First(&place).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return errors.New("place not found")
+		}
+		return err
+	}
+
+	if place.UserID == userID {
+		return nil
+	}
+
+	var shares []models.PlaceShare
+	if err := db.Where("place_id = ?", placeID).Find(&shares).Error; err != nil {
+		return err
+	}
+	if len(shares) == 0 {
+		return errors.New("insufficient permissions")
+	}
+
+	groupIDs := make([]uuid.UUID, len(shares))
+	for i, s := range shares {
+		groupIDs[i] = s.GroupID
+	}
+
+	var member models.GroupMember
+	if err := db.Where("user_id = ? AND group_id IN ?", userID, groupIDs).First(&member).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return errors.New("insufficient permissions")
+		}
+		return err
+	}
+
+	minRank, ok := roleRank[minRole]
+	if !ok {
+		return errors.New("invalid role specified")
+	}
+
+	if roleRank[member.Role] < minRank {
+		return errors.New("insufficient permissions")
+	}
+
 	return nil
 }

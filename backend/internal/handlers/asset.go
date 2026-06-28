@@ -36,6 +36,16 @@ func UploadPlaceAssets(db *gorm.DB, mediaStorageDir string) gin.HandlerFunc {
         }
         userID := place.UserID
 
+        parsedRequestUserID, ok := parseUserID(c)
+        if !ok {
+            return
+        }
+
+        if err := hasPlacePermission(db, parsedRequestUserID, placeID, "editor"); err != nil {
+            c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+            return
+        }
+
         form, err := c.MultipartForm()
         if err != nil {
             c.JSON(http.StatusBadRequest, gin.H{"error": "Error reading uploaded files"})
