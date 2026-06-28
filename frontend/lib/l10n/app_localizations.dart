@@ -107,7 +107,7 @@ abstract class AppLocalizations {
   /// No description provided for @addGroup.
   ///
   /// In en, this message translates to:
-  /// **'Group added'**
+  /// **'Add Group'**
   String get addGroup;
 
   /// No description provided for @addAssetConfirmation.
@@ -163,6 +163,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Category not found'**
   String get categoryNotFound;
+
+  /// Shown after a group is successfully created
+  ///
+  /// In en, this message translates to:
+  /// **'Group {name} created'**
+  String createGroupConfirmation(String name);
 
   /// No description provided for @darkMapStyleURL.
   ///
@@ -314,7 +320,7 @@ abstract class AppLocalizations {
   /// **'Leave group'**
   String get leaveGroup;
 
-  /// Shown after user left a group successfully
+  /// Shown after user left a group successfully deleted
   ///
   /// In en, this message translates to:
   /// **'Left group {name}'**

@@ -31,12 +31,12 @@ class _GroupInviteSheetState extends ConsumerState<GroupInviteSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final i10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
     return SerpaStaticSheet(
-      title: i10n.inviteGroupMember,
+      title: l10n.inviteGroupMember,
       child: Column(
         children: [
-          FormTextField(label: i10n.username, controller: usernameController),
+          FormTextField(label: l10n.username, controller: usernameController),
           const SizedBox(height: 16),
           PlaceFormActions(
             onCancel: () => Navigator.pop(context),

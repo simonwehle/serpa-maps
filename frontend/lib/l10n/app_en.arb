@@ -1,7 +1,7 @@
 {
   "@@locale": "en",
   "add": "Add",
-  "addGroup": "Group added",
+  "addGroup": "Add Group",
   "addAssetConfirmation": "Asset added",
   "addCategoryConfirmation": "Category {name} added",
   "@addCategoryConfirmation": {
@@ -27,6 +27,15 @@
   "cancel": "Cancel",
   "categories": "Categories",
   "categoryNotFound": "Category not found",
+  "createGroupConfirmation": "Group {name} created",
+  "@createGroupConfirmation": {
+    "description": "Shown after a group is successfully created",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "darkMapStyleURL": "Dark map style URL",
   "dark": "Dark",
   "defaultMap": "Default",
@@ -49,7 +58,7 @@
   "@deleteGroupConfirmation": {
     "description": "Shown after a group is successfully deleted",
     "placeholders": {
-      "name":{
+      "name": {
         "type": "String"
       }
     }
@@ -78,7 +87,7 @@
   "leaveGroup": "Leave group",
   "leaveGroupConfirmation": "Left group {name}",
   "@leaveGroupConfirmation": {
-    "description": "Shown after user left a group successfully",
+    "description": "Shown after user left a group successfully deleted",
     "placeholders": {
       "name": {
         "type": "String"
@@ -111,7 +120,7 @@
   "register": "Register",
   "removeGroupMember": "Remove group member",
   "removeGroupMemberConfirmation": "Removed {name} from group",
-  "@removeGroupMemberConfirmation":{
+  "@removeGroupMemberConfirmation": {
     "description": "Shown after a group member is successfully removed",
     "placeholders": {
       "name": {

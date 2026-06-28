@@ -12,7 +12,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get add => 'Add';
 
   @override
-  String get addGroup => 'Group added';
+  String get addGroup => 'Add Group';
 
   @override
   String get addAssetConfirmation => 'Asset added';
@@ -44,6 +44,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get categoryNotFound => 'Category not found';
+
+  @override
+  String createGroupConfirmation(String name) {
+    return 'Group $name created';
+  }
 
   @override
   String get darkMapStyleURL => 'Dark map style URL';

@@ -10,6 +10,7 @@
   "cancel": "Abbrechen",
   "categories": "Kategorien",
   "categoryNotFound": "Kategorie nicht gefunden",
+  "createGroupConfirmation": "Gruppe {name} erstellt",
   "darkMapStyleURL": "Dunkler Kartenstil URL",
   "dark": "Dunkel",
   "defaultMap": "Standard",

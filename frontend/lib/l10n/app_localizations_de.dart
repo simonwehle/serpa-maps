@@ -46,6 +46,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get categoryNotFound => 'Kategorie nicht gefunden';
 
   @override
+  String createGroupConfirmation(String name) {
+    return 'Gruppe $name erstellt';
+  }
+
+  @override
   String get darkMapStyleURL => 'Dunkler Kartenstil URL';
 
   @override
