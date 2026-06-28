@@ -136,27 +136,28 @@ func ServePlaceAsset(db *gorm.DB, mediaStorageDir string) gin.HandlerFunc {
             c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid place id"})
             return
         }
-
+        
         assetID, err := uuid.Parse(assetIDStr)
         if err != nil {
             c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid asset id"})
             return
         }
 
-        var count int64
-        if err := db.Model(&models.Place{}).Where("place_id = ?", placeID).Count(&count).Error; err != nil || count == 0 {
-            c.JSON(http.StatusNotFound, gin.H{"error": "Place not found"})
-            return
-        }
-
         var asset models.Asset
-        if err := db.Select("asset_filename").
-            Where("asset_id = ? AND place_id = ?", assetID, placeID).
+        if err := db.Select("assets.asset_filename").
+            Joins("JOIN places ON places.place_id = assets.place_id").
+            Where("assets.asset_id = ? AND assets.place_id = ?", assetID, placeID).
             First(&asset).Error; err != nil {
             c.JSON(http.StatusNotFound, gin.H{"error": "Asset not found"})
             return
         }
 
+        c.Header("Cache-Control", "public, max-age=31536000, immutable")
+        c.Header("ETag", `"`+assetID.String()+`"`)
+        if match := c.GetHeader("If-None-Match"); match == `"`+assetID.String()+`"` {
+            c.Status(http.StatusNotModified)
+            return
+        }
         c.File(filepath.Join(mediaStorageDir, asset.AssetFilename))
     }
 }
