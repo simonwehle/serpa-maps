@@ -124,7 +124,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String inviteGroupMemberConfirmation(String user, String group) {
-    return 'Invited $user to group $group';
+    return 'Nutzer $user zur Gruppe $group eingeladen';
   }
 
   @override
@@ -217,8 +217,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get removeGroupMember => 'Gruppenmitglied entfernen';
 
   @override
-  String removeGroupMemberConfirmation(String name) {
-    return 'Gruppenmitglied $name entfernt';
+  String removeGroupMemberConfirmation(String user, String group) {
+    return 'Gruppenmitglied $user aus $group entfernt';
   }
 
   @override

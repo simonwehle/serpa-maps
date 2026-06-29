@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/models/group.dart';
-import 'package:serpa_maps/providers/api/api_provider.dart';
 import 'package:serpa_maps/providers/data/group_member_provider.dart';
-import 'package:serpa_maps/widgets/banner/top_banner.dart';
 import 'package:serpa_maps/widgets/form/form_text_field.dart';
 import 'package:serpa_maps/widgets/place/place_form_actions.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
@@ -48,10 +46,14 @@ class _GroupInviteSheetState extends ConsumerState<GroupInviteSheet> {
                   .read(groupMemberProvider(widget.group.groupId).notifier)
                   .inviteToGroup(usernameController.text);
               Navigator.pop(context);
-              showTopBanner(
-                l10n.inviteGroupMemberConfirmation(
-                  usernameController.text,
-                  widget.group.name,
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    l10n.inviteGroupMemberConfirmation(
+                      usernameController.text,
+                      widget.group.name,
+                    ),
+                  ),
                 ),
               );
             },

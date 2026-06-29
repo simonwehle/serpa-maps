@@ -485,8 +485,8 @@ abstract class AppLocalizations {
   /// Shown after a group member is successfully removed
   ///
   /// In en, this message translates to:
-  /// **'Removed {name} from group'**
-  String removeGroupMemberConfirmation(String name);
+  /// **'Removed {user} from group {group}'**
+  String removeGroupMemberConfirmation(String user, String group);
 
   /// No description provided for @removeGroupMemberQuestion.
   ///

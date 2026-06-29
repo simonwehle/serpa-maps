@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/providers/data/group_provider.dart';
-import 'package:serpa_maps/widgets/banner/top_banner.dart';
 import 'package:serpa_maps/widgets/form/form_text_field.dart';
 import 'package:serpa_maps/widgets/place/place_form_actions.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
@@ -58,8 +57,12 @@ class _AddGroupBottomSheetState extends ConsumerState<AddGroupBottomSheet> {
                     description: descriptionController.text,
                   );
               Navigator.pop(context);
-              showTopBanner(
-                l10n.createGroupConfirmation(nameController.text),
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    l10n.createGroupConfirmation(nameController.text),
+                  ),
+                ),
               );
             },
           ),

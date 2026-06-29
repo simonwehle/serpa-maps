@@ -7,7 +7,6 @@ import 'package:serpa_maps/providers/data/group_member_provider.dart';
 import 'package:serpa_maps/providers/data/group_provider.dart';
 import 'package:serpa_maps/providers/data/user_prodiver.dart';
 import 'package:serpa_maps/utils/dialogs.dart';
-import 'package:serpa_maps/widgets/banner/top_banner.dart';
 import 'package:serpa_maps/widgets/group/role_dropdown.dart';
 import 'package:serpa_maps/widgets/sheets/group_invite_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
@@ -39,8 +38,12 @@ class GroupDetailScreen extends ConsumerWidget {
                     .deleteGroup(id: group.groupId);
                 if (context.mounted) {
                   Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text((l10n.deleteGroupConfirmation(group.name))),
+                    ),
+                  );
                 }
-                showTopBanner(l10n.deleteGroupConfirmation(group.name));
               }
             },
           ),
@@ -96,9 +99,14 @@ class GroupDetailScreen extends ConsumerWidget {
                                       ).notifier,
                                     )
                                     .removeMember(member.userId);
-                                showTopBanner(
-                                  l10n.removeGroupMemberConfirmation(
-                                    member.username,
+                                if (!context.mounted) return;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      l10n.removeGroupMemberConfirmation(
+                                        member.username,
+                                      ),
+                                    ),
                                   ),
                                 );
                               }

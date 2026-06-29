@@ -131,11 +131,14 @@
   "placeNotFound": "Place not found",
   "register": "Register",
   "removeGroupMember": "Remove group member",
-  "removeGroupMemberConfirmation": "Removed {name} from group",
+  "removeGroupMemberConfirmation": "Removed {user} from group {group}",
   "@removeGroupMemberConfirmation": {
     "description": "Shown after a group member is successfully removed",
     "placeholders": {
-      "name": {
+      "user": {
+        "type": "String"
+      },
+      "group": {
         "type": "String"
       }
     }

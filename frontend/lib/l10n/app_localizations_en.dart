@@ -217,8 +217,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get removeGroupMember => 'Remove group member';
 
   @override
-  String removeGroupMemberConfirmation(String name) {
-    return 'Removed $name from group';
+  String removeGroupMemberConfirmation(String user, String group) {
+    return 'Removed $user from group $group';
   }
 
   @override
