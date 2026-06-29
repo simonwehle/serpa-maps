@@ -147,8 +147,7 @@ class PlaceForm extends ConsumerWidget {
                                 assetBytes: bytes,
                                 filename: filename,
                               );
-                          if (!context.mounted) return;
-                          showTopBanner(context, l10n.addAssetConfirmation);
+                          showTopBanner(l10n.addAssetConfirmation);
                         }
                       }
 

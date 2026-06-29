@@ -140,9 +140,7 @@ class GroupScreen extends ConsumerWidget {
                                                   memberId: user.userId,
                                                 );
                                             ref.invalidate(groupProvider);
-                                            if (!context.mounted) return;
                                             showTopBanner(
-                                              context,
                                               l10n.leaveGroupConfirmation(
                                                 group.name,
                                               ),

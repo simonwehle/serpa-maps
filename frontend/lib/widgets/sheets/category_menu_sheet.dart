@@ -56,15 +56,9 @@ class _CategoryMenuSheetState extends ConsumerState<CategoryMenuSheet> {
             icon: stringFromIcon(_selectedIcon),
             color: colorToHex(_selectedColor),
           );
-      if (!mounted) return;
-      showTopBanner(
-        context,
-        l10n.updateCategoryConfirmation(_nameController.text),
-      );
+      showTopBanner(l10n.updateCategoryConfirmation(_nameController.text));
     } catch (e) {
-      if (mounted) {
-        showTopBanner(context, 'Update failed: $e');
-      }
+      showTopBanner('Update failed: $e');
     }
   }
 
@@ -78,22 +72,16 @@ class _CategoryMenuSheetState extends ConsumerState<CategoryMenuSheet> {
             icon: stringFromIcon(_selectedIcon),
             color: colorToHex(_selectedColor),
           );
-      if (!mounted) return;
-      showTopBanner(
-        context,
-        l10n.addCategoryConfirmation(_nameController.text),
-      );
+      showTopBanner(l10n.addCategoryConfirmation(_nameController.text));
     } catch (e) {
-      if (!mounted) return;
-      showTopBanner(context, 'Error during category creation: $e');
+      showTopBanner('Error during category creation: $e');
     }
   }
 
   Future<void> _deleteCategory(Category category) async {
     final l10n = AppLocalizations.of(context)!;
     await ref.read(categoryProvider.notifier).deleteCategory(id: category.id);
-    if (!mounted) return;
-    showTopBanner(context, l10n.deleteCategoryConfirmation(category.name));
+    showTopBanner(l10n.deleteCategoryConfirmation(category.name));
   }
 
   @override

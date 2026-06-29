@@ -82,12 +82,12 @@ class _AddPlaceBottomSheetState extends ConsumerState<AddPlaceBottomSheet> {
 
       if (mounted && addPlace != null) {
         Navigator.of(context).pop(addPlace);
-        showTopBanner(context, l10n.addPlaceConfirmation(name));
+        showTopBanner(l10n.addPlaceConfirmation(name));
       } else {
         throw 'Failed to add place: Response was null';
       }
     } catch (e) {
-      showTopBanner(context, 'Add place failed: $e');
+      showTopBanner('Add place failed: $e');
     }
   }
 

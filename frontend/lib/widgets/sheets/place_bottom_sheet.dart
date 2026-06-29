@@ -96,15 +96,10 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
             categoryId: selectedCategory!.id,
             groups: selectedGroups, // .map((g) => g.groupId).toList()
           );
-      if (!mounted) return;
       toggleEditing();
-      showTopBanner(
-        context,
-        l10n.updatePlaceConfirmation(nameController!.text),
-      );
+      showTopBanner(l10n.updatePlaceConfirmation(nameController!.text));
     } catch (e) {
-      if (!mounted) return;
-      showTopBanner(context, 'Update failed: $e');
+      showTopBanner('Update failed: $e');
     }
   }
 
@@ -171,7 +166,7 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
                         .read(placeProvider.notifier)
                         .deletePlace(id: place.id);
                     if (!context.mounted) return;
-                    showTopBanner(context, l10n.deletePlaceConfirmation(place.name));
+                    showTopBanner(l10n.deletePlaceConfirmation(place.name));
                   },
                 ),
         );

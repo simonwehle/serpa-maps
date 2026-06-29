@@ -59,7 +59,6 @@ class _AddGroupBottomSheetState extends ConsumerState<AddGroupBottomSheet> {
                   );
               Navigator.pop(context);
               showTopBanner(
-                context,
                 l10n.createGroupConfirmation(nameController.text),
               );
             },

@@ -84,7 +84,7 @@ class PlaceAssetGallery extends ConsumerWidget {
                           assetId: asset.assetId,
                         )
                         .catchError((_) {});
-                        showTopBanner(context, l10n.deleteAssetConfirmation);
+                        showTopBanner(l10n.deleteAssetConfirmation);
                   },
                 ),
               );

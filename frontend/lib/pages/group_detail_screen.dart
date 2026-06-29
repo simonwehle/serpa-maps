@@ -39,11 +39,8 @@ class GroupDetailScreen extends ConsumerWidget {
                     .deleteGroup(id: group.groupId);
                 if (context.mounted) {
                   Navigator.pop(context);
-                  showTopBanner(
-                    context,
-                    l10n.deleteGroupConfirmation(group.name),
-                  );
                 }
+                showTopBanner(l10n.deleteGroupConfirmation(group.name));
               }
             },
           ),
@@ -99,9 +96,7 @@ class GroupDetailScreen extends ConsumerWidget {
                                       ).notifier,
                                     )
                                     .removeMember(member.userId);
-                                if (!context.mounted) return;
                                 showTopBanner(
-                                  context,
                                   l10n.removeGroupMemberConfirmation(
                                     member.username,
                                   ),
