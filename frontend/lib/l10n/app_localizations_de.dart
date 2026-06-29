@@ -15,7 +15,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get addGroup => 'Gruppe hinzufügen';
 
   @override
-  String get addAssetConfirmation => 'Asset added';
+  String get addAssetConfirmation => 'Inhalt hinzugefügt';
 
   @override
   String addCategoryConfirmation(String name) {

@@ -1,6 +1,7 @@
 {
   "@@locale": "de",
   "add": "Hinzufügen",
+  "addAssetConfirmation": "Inhalt hinzugefügt",
   "addGroup": "Gruppe hinzufügen",
   "addCategoryConfirmation": "Kategorie {name} hinzugefügt",
   "addPlaceConfirmation": "Ort {name} hinzugefügt",

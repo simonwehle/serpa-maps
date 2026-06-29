@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serpa_maps/l10n/app_localizations.dart';
 
 import 'package:serpa_maps/models/asset.dart';
 import 'package:serpa_maps/providers/data/place_provider.dart';
 import 'package:serpa_maps/pages/place_assets_fullscreen.dart';
+import 'package:serpa_maps/widgets/banner/top_banner.dart';
 import 'package:serpa_maps/widgets/place/place_image.dart';
 
 class PlaceAssetGallery extends ConsumerWidget {
@@ -22,6 +24,7 @@ class PlaceAssetGallery extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final showAddButton = onAddImage != null;
     final itemCount = assets.length + (showAddButton ? 1 : 0);
+    final l10n = AppLocalizations.of(context)!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,6 +84,7 @@ class PlaceAssetGallery extends ConsumerWidget {
                           assetId: asset.assetId,
                         )
                         .catchError((_) {});
+                        showTopBanner(context, l10n.deleteAssetConfirmation);
                   },
                 ),
               );
