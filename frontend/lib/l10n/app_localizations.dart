@@ -302,6 +302,12 @@ abstract class AppLocalizations {
   /// **'Invite group member'**
   String get inviteGroupMember;
 
+  /// Shown after user is invited to a group
+  ///
+  /// In en, this message translates to:
+  /// **'Invited {user} to group {group}'**
+  String inviteGroupMemberConfirmation(String user, String group);
+
   /// No description provided for @invites.
   ///
   /// In en, this message translates to:

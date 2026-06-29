@@ -123,6 +123,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get inviteGroupMember => 'Invite group member';
 
   @override
+  String inviteGroupMemberConfirmation(String user, String group) {
+    return 'Invited $user to group $group';
+  }
+
+  @override
   String get invites => 'Invites';
 
   @override

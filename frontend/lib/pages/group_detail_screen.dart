@@ -54,7 +54,7 @@ class GroupDetailScreen extends ConsumerWidget {
               onPressed: () {
                 showSerpaStaticSheet(
                   context: context,
-                  child: GroupInviteSheet(groupId: group.groupId),
+                  child: GroupInviteSheet(group: group),
                 );
               },
               child: Text(l10n.inviteGroupMember),

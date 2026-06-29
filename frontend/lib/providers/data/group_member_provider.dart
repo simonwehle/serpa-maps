@@ -25,6 +25,16 @@ class GroupMemberNotifier extends AsyncNotifier<List<Member>> {
     await future;
   }
 
+  Future<Member> inviteToGroup(String username) async {
+    final api = ref.read(apiServiceProvider);
+    final invitedMember = await api.inviteToGroup(
+      groupId: groupId,
+      username: username,
+    );
+    state = state.whenData((member) => [...member, invitedMember]);
+    return invitedMember;
+  }
+
   // Future<void> addMember(Member member) async {
   //   final api = ref.read(apiServiceProvider);
   //   await api.addGroupMember(groupId: groupId, member: member);
