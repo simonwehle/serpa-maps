@@ -72,7 +72,7 @@ class _RegisterFieldsState extends ConsumerState<RegisterFields> {
 
   @override
   Widget build(BuildContext context) {
-    final i10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.persistChanges.call(performRegister);
@@ -81,12 +81,12 @@ class _RegisterFieldsState extends ConsumerState<RegisterFields> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        FormTextField(label: i10n.email, controller: emailController),
+        FormTextField(label: l10n.email, controller: emailController),
         const SizedBox(height: 8),
-        FormTextField(label: i10n.username, controller: usernameController),
+        FormTextField(label: l10n.username, controller: usernameController),
         const SizedBox(height: 8),
         FormTextField(
-          label: i10n.password,
+          label: l10n.password,
           controller: passwordController,
           passwordField: true,
         ),
@@ -97,7 +97,7 @@ class _RegisterFieldsState extends ConsumerState<RegisterFields> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               Text(
-                i10n.login,
+                l10n.login,
                 style: TextStyle(color: Theme.of(context).colorScheme.primary),
               ),
             ],

@@ -104,7 +104,7 @@ class _UrlTextFieldsState extends ConsumerState<UrlTextFields> {
 
   @override
   Widget build(BuildContext context) {
-    final i10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
     final serverUrl = ref.read(baseUrlProvider);
     final styleUrl = ref.read(styleUrlProvider);
     final styleDarkUrl = ref.read(styleDarkUrlProvider);
@@ -123,26 +123,26 @@ class _UrlTextFieldsState extends ConsumerState<UrlTextFields> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        FormTextField(label: i10n.serverURL, controller: serverUrlController),
+        FormTextField(label: l10n.serverURL, controller: serverUrlController),
         const SizedBox(height: 8),
         if (moreOptions) ...[
           FormTextField(
-            label: i10n.mapStyleURL,
+            label: l10n.mapStyleURL,
             controller: mapStyleUrlController,
           ),
           const SizedBox(height: 8),
           FormTextField(
-            label: i10n.darkMapStyleURL,
+            label: l10n.darkMapStyleURL,
             controller: darkMapStyleUrlController,
           ),
           const SizedBox(height: 8),
           FormTextField(
-            label: i10n.photonURL,
+            label: l10n.photonURL,
             controller: geoencodingUrlController,
           ),
           const SizedBox(height: 8),
           FormTextField(
-            label: i10n.overlayURL,
+            label: l10n.overlayURL,
             controller: overlayUrlController,
             optional: true,
           ),
@@ -153,7 +153,7 @@ class _UrlTextFieldsState extends ConsumerState<UrlTextFields> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               Text(
-                moreOptions ? i10n.lessOptions : i10n.moreOptions,
+                moreOptions ? l10n.lessOptions : l10n.moreOptions,
                 style: TextStyle(color: Theme.of(context).colorScheme.primary),
               ),
             ],

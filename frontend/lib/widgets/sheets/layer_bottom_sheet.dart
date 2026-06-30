@@ -14,17 +14,17 @@ class LayerBottomSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final activeLayer = ref.watch(activeLayerProvider);
-    final i10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     return SerpaStaticSheet(
-      title: i10n.mapLayer,
+      title: l10n.mapLayer,
       child: Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               LayerImage(
-                name: i10n.defaultMap,
+                name: l10n.defaultMap,
                 assetImage: AssetImage('assets/layers/default.jpg'),
                 isActive: activeLayer == MapLayer.vector,
                 onTap: () => ref
@@ -32,7 +32,7 @@ class LayerBottomSheet extends ConsumerWidget {
                     .setActiveLayer(MapLayer.vector),
               ),
               LayerImage(
-                name: i10n.satellite,
+                name: l10n.satellite,
                 assetImage: AssetImage('assets/layers/satellite.jpg'),
                 isActive: activeLayer == MapLayer.satellite,
                 onTap: () => ref
@@ -40,7 +40,7 @@ class LayerBottomSheet extends ConsumerWidget {
                     .setActiveLayer(MapLayer.satellite),
               ),
               LayerImage(
-                name: i10n.explore,
+                name: l10n.explore,
                 assetImage: AssetImage('assets/layers/explore.jpg'),
                 isActive: activeLayer == MapLayer.osm,
                 onTap: () => ref
@@ -53,7 +53,7 @@ class LayerBottomSheet extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(i10n.showMarkers),
+              Text(l10n.showMarkers),
               Switch(
                 value: ref.watch(markersVisibleProvider),
                 onChanged: ref
@@ -66,7 +66,7 @@ class LayerBottomSheet extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(i10n.showOverlay),
+                Text(l10n.showOverlay),
                 Switch(
                   value: ref.watch(overlayActiveProvider),
                   onChanged: ref

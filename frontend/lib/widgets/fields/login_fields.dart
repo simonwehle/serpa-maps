@@ -54,7 +54,7 @@ class _LoginFieldsState extends ConsumerState<LoginFields> {
 
   @override
   Widget build(BuildContext context) {
-    final i10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.persistChanges.call(performLogin);
@@ -63,10 +63,10 @@ class _LoginFieldsState extends ConsumerState<LoginFields> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        FormTextField(label: i10n.email, controller: emailController),
+        FormTextField(label: l10n.email, controller: emailController),
         const SizedBox(height: 8),
         FormTextField(
-          label: i10n.password,
+          label: l10n.password,
           controller: passwordController,
           passwordField: true,
         ),
@@ -77,7 +77,7 @@ class _LoginFieldsState extends ConsumerState<LoginFields> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               Text(
-                i10n.register,
+                l10n.register,
                 style: TextStyle(color: Theme.of(context).colorScheme.primary),
               ),
             ],

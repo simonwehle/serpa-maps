@@ -15,7 +15,7 @@ class SerpaMultiDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final i10n = Localizations.of(context, AppLocalizations)!;
+    final l10n = Localizations.of(context, AppLocalizations)!;
     return MultiDropdown<String>(
       chipDecoration: ChipDecoration(
         backgroundColor: colorScheme.surfaceContainer,
@@ -33,7 +33,7 @@ class SerpaMultiDropdown extends StatelessWidget {
         selectedBackgroundColor: colorScheme.surfaceContainerHighest,
       ),
       fieldDecoration: FieldDecoration(
-        hintText: i10n.addPlaceToGroup,
+        hintText: l10n.addPlaceToGroup,
         border: OutlineInputBorder(
           borderSide: BorderSide(color: colorScheme.outline),
         ),

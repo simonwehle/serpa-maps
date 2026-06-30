@@ -11,7 +11,7 @@ class AppearanceSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-    final i10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
     final themeModes = [ThemeMode.system, ThemeMode.light, ThemeMode.dark];
     final themeMode = ref.watch(themeModeProvider);
     final isSelected = themeModes.map((m) => m == themeMode).toList();
@@ -22,7 +22,7 @@ class AppearanceSheet extends ConsumerWidget {
     }
 
     return SerpaStaticSheet(
-      title: i10n.appearance,
+      title: l10n.appearance,
       child: ToggleButtons(
         direction: Axis.horizontal,
         onPressed: (index) {
@@ -38,7 +38,7 @@ class AppearanceSheet extends ConsumerWidget {
         color: colorScheme.primary,
         constraints: const BoxConstraints(minHeight: 40.0, minWidth: 80.0),
         isSelected: isSelected,
-        children: [Text(i10n.system), Text(i10n.light), Text(i10n.dark)],
+        children: [Text(l10n.system), Text(l10n.light), Text(l10n.dark)],
       ),
     );
   }

@@ -86,13 +86,13 @@ class _CategoryMenuSheetState extends ConsumerState<CategoryMenuSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final i10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
     final icons = iconMap.values.toList();
     return SerpaStaticSheet(
       title: "Category Menu",
       child: Column(
         children: [
-          FormTextField(label: i10n.name, controller: _nameController),
+          FormTextField(label: l10n.name, controller: _nameController),
           const SizedBox(height: 16),
           Wrap(
             spacing: 8.0,
@@ -165,8 +165,8 @@ class _CategoryMenuSheetState extends ConsumerState<CategoryMenuSheet> {
                     await Navigator.maybePop(context);
                   }
                 },
-                title: i10n.deleteCategory,
-                question: i10n.deleteCategoryQuestion,
+                title: l10n.deleteCategory,
+                question: l10n.deleteCategoryQuestion,
               ),
             )
           else
