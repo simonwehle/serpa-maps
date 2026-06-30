@@ -23,12 +23,14 @@ class GroupScreen extends ConsumerWidget {
     final invitesAsync = ref.watch(inviteProvider);
     final user = ref.watch(userProvider);
 
-    acceptInvite({required String id}) {
+    acceptInvite({required String id, required String group}) {
       ref.read(inviteProvider.notifier).respondToInvite(id: id, accept: true);
+      showTopBanner(l10n.acceptGroupInvite(group));
     }
 
-    declineInvite({required String id}) {
+    declineInvite({required String id, required String group}) {
       ref.read(inviteProvider.notifier).respondToInvite(id: id, accept: false);
+      showTopBanner(l10n.declineGroupInvite(group));
     }
 
     return Scaffold(
@@ -61,14 +63,18 @@ class GroupScreen extends ConsumerWidget {
                               children: [
                                 IconButton(
                                   color: colorScheme.tertiary,
-                                  onPressed: () =>
-                                      acceptInvite(id: invite.groupInviteId),
+                                  onPressed: () => acceptInvite(
+                                    id: invite.groupInviteId,
+                                    group: invite.groupName,
+                                  ),
                                   icon: Icon(Icons.check),
                                 ),
                                 IconButton(
                                   color: colorScheme.error,
-                                  onPressed: () =>
-                                      declineInvite(id: invite.groupInviteId),
+                                  onPressed: () => declineInvite(
+                                    id: invite.groupInviteId,
+                                    group: invite.groupName,
+                                  ),
                                   icon: Icon(Icons.close),
                                 ),
                               ],

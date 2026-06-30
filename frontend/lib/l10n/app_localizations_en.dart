@@ -9,6 +9,11 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String acceptGroupInvite(String group) {
+    return 'Accepted invite to $group';
+  }
+
+  @override
   String get add => 'Add';
 
   @override
@@ -55,6 +60,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dark => 'Dark';
+
+  @override
+  String declineGroupInvite(String group) {
+    return 'Declined invite to $group';
+  }
 
   @override
   String get defaultMap => 'Default';
@@ -157,10 +167,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get login => 'Login';
 
   @override
+  String loginConfirmation(String user) {
+    return 'Logged in as $user';
+  }
+
+  @override
   String get logout => 'Logout';
 
   @override
-  String get logoutConfirmation => 'Successfully logged out';
+  String get logoutConfirmation => 'Logged out';
 
   @override
   String get logoutQuestion => 'Do you want to logout?';
@@ -214,6 +229,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get register => 'Register';
 
   @override
+  String registerConfirmation(String user) {
+    return 'Registered user $user';
+  }
+
+  @override
   String get removeGroupMember => 'Remove group member';
 
   @override
@@ -255,6 +275,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String updateCategoryConfirmation(String name) {
     return 'Category $name updated';
+  }
+
+  @override
+  String updateGroupMemberRole(String user, String role) {
+    return 'Updated $user\'s role to $role';
   }
 
   @override

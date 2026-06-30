@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/models/member.dart';
 import 'package:serpa_maps/models/role.dart';
 import 'package:serpa_maps/providers/data/group_member_provider.dart';
+import 'package:serpa_maps/widgets/banner/top_banner.dart';
 
 class RoleDropdown extends ConsumerWidget {
   const RoleDropdown({super.key, required this.member, required this.groupId});
@@ -12,6 +14,7 @@ class RoleDropdown extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     if (member.role == Role.pending) {
       return _staticIcon();
     }
@@ -31,6 +34,9 @@ class RoleDropdown extends ConsumerWidget {
         await ref
             .read(groupMemberProvider(groupId).notifier)
             .updateGroupMemberRole(memberId: member.userId, role: newRole);
+        showTopBanner(
+          l10n.updateGroupMemberRole(member.username, newRole.toString()),
+        );
       },
       itemBuilder: (_) => [Role.admin, Role.editor, Role.member]
           .map(

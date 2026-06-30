@@ -6,6 +6,7 @@ import 'package:serpa_maps/providers/token/access_token_provider.dart';
 import 'package:serpa_maps/providers/token/refresh_token_provider.dart';
 import 'package:serpa_maps/providers/data/category_provider.dart';
 import 'package:serpa_maps/providers/data/place_provider.dart';
+import 'package:serpa_maps/widgets/banner/top_banner.dart';
 import 'package:serpa_maps/widgets/form/form_text_field.dart';
 
 class RegisterFields extends ConsumerStatefulWidget {
@@ -44,6 +45,7 @@ class _RegisterFieldsState extends ConsumerState<RegisterFields> {
   }
 
   Future<void> performRegister() async {
+    final l10n = AppLocalizations.of(context)!;
     if (emailController.text.trim().isEmpty ||
         usernameController.text.trim().isEmpty ||
         passwordController.text.trim().isEmpty) {
@@ -65,6 +67,7 @@ class _RegisterFieldsState extends ConsumerState<RegisterFields> {
 
     ref.invalidate(categoryProvider);
     ref.invalidate(placeProvider);
+    showTopBanner(l10n.registerConfirmation(registerResponse.username));
   }
 
   @override

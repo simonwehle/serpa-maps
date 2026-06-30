@@ -9,6 +9,11 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
+  String acceptGroupInvite(String group) {
+    return 'Einladung zu $group angenommen';
+  }
+
+  @override
   String get add => 'Hinzufügen';
 
   @override
@@ -55,6 +60,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get dark => 'Dunkel';
+
+  @override
+  String declineGroupInvite(String group) {
+    return 'Einladung zu $group abgelehnt';
+  }
 
   @override
   String get defaultMap => 'Standard';
@@ -154,16 +164,21 @@ class AppLocalizationsDe extends AppLocalizations {
   String get loading => 'Laden...';
 
   @override
-  String get login => 'Einloggen';
+  String get login => 'Anmelden';
 
   @override
-  String get logout => 'Ausloggen';
+  String loginConfirmation(String user) {
+    return 'Angemeldet als $user';
+  }
 
   @override
-  String get logoutConfirmation => 'Erfolgreich ausgeloggt';
+  String get logout => 'Abmelden';
 
   @override
-  String get logoutQuestion => 'Möchten Sie sich ausloggen?';
+  String get logoutConfirmation => 'Abgemeldet';
+
+  @override
+  String get logoutQuestion => 'Möchten Sie sich abmelden?';
 
   @override
   String get longitude => 'Längengrad';
@@ -214,6 +229,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get register => 'Registrieren';
 
   @override
+  String registerConfirmation(String user) {
+    return 'Nutzer $user registriert';
+  }
+
+  @override
   String get removeGroupMember => 'Gruppenmitglied entfernen';
 
   @override
@@ -255,6 +275,11 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String updateCategoryConfirmation(String name) {
     return 'Kategorie $name aktualisiert';
+  }
+
+  @override
+  String updateGroupMemberRole(String user, String role) {
+    return 'Rolle von $user auf $role geändert';
   }
 
   @override

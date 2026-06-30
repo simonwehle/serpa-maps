@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/providers/data/user_prodiver.dart';
+import 'package:serpa_maps/widgets/banner/top_banner.dart';
 import 'package:serpa_maps/widgets/form/form_text_field.dart';
 
 class LoginFields extends ConsumerStatefulWidget {
@@ -37,16 +38,18 @@ class _LoginFieldsState extends ConsumerState<LoginFields> {
   }
 
   Future<void> performLogin() async {
+    final l10n = AppLocalizations.of(context)!;
     if (emailController.text.trim().isEmpty ||
         passwordController.text.trim().isEmpty) {
       throw Exception('All fields must be filled');
     }
-    await ref
+    final user = await ref
         .read(userProvider.notifier)
         .login(
           email: emailController.text.trim(),
           password: passwordController.text.trim(),
         );
+    showTopBanner(l10n.loginConfirmation(user.name));
   }
 
   @override

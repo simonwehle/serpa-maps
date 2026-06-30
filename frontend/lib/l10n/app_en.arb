@@ -1,5 +1,14 @@
 {
   "@@locale": "en",
+  "acceptGroupInvite": "Accepted invite to {group}",
+  "@acceptGroupInvite": {
+    "description": "Shown after a user accepted a group invitation",
+    "placeholders": {
+      "group": {
+        "type": "String"
+      }
+    }
+  },
   "add": "Add",
   "addGroup": "Add Group",
   "addAssetConfirmation": "Asset added",
@@ -38,6 +47,15 @@
   },
   "darkMapStyleURL": "Dark map style URL",
   "dark": "Dark",
+  "declineGroupInvite": "Declined invite to {group}",
+  "@declineGroupInvite": {
+    "description": "Shown after a user declined a group invite",
+    "placeholders": {
+      "group": {
+        "type": "String"
+      }
+    }
+  },
   "defaultMap": "Default",
   "deleteAsset": "Delete Asset",
   "deleteAssetConfirmation": "Asset deleted",
@@ -111,8 +129,20 @@
   "light": "Light",
   "loading": "Loading...",
   "login": "Login",
+  "loginConfirmation": "Logged in as {user}",
+  "@loginConfirmation": {
+    "description": "Shown after a user successfully logged in",
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
   "logout": "Logout",
-  "logoutConfirmation": "Successfully logged out",
+  "logoutConfirmation": "Logged out",
+  "@logoutConfirmation": {
+    "description": "Shown after a user successfully logged out"
+  },
   "logoutQuestion": "Do you want to logout?",
   "longitude": "Longitude",
   "mapLayer": "Map Layer",
@@ -130,6 +160,15 @@
   "photonURL": "Photon URL",
   "placeNotFound": "Place not found",
   "register": "Register",
+  "registerConfirmation": "Registered user {user}",
+  "@registerConfirmation": {
+    "description": "Shown after a user successfully registered",
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
   "removeGroupMember": "Remove group member",
   "removeGroupMemberConfirmation": "Removed {user} from group {group}",
   "@removeGroupMemberConfirmation": {
@@ -158,6 +197,18 @@
     "description": "Shown after a category is successfully updated",
     "placeholders": {
       "name": {
+        "type": "String"
+      }
+    }
+  },
+  "updateGroupMemberRole": "Updated {user}'s role to {role}",
+  "@updateGroupMemberRole":{
+    "description": "Shown after a group member role was updated",
+    "placeholders": {
+      "user":{
+        "type": "String"
+      },
+      "role":{
         "type": "String"
       }
     }

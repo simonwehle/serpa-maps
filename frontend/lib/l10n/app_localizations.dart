@@ -98,6 +98,12 @@ abstract class AppLocalizations {
     Locale('en'),
   ];
 
+  /// Shown after a user accepted a group invitation
+  ///
+  /// In en, this message translates to:
+  /// **'Accepted invite to {group}'**
+  String acceptGroupInvite(String group);
+
   /// No description provided for @add.
   ///
   /// In en, this message translates to:
@@ -181,6 +187,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Dark'**
   String get dark;
+
+  /// Shown after a user declined a group invite
+  ///
+  /// In en, this message translates to:
+  /// **'Declined invite to {group}'**
+  String declineGroupInvite(String group);
 
   /// No description provided for @defaultMap.
   ///
@@ -362,16 +374,22 @@ abstract class AppLocalizations {
   /// **'Login'**
   String get login;
 
+  /// Shown after a user successfully logged in
+  ///
+  /// In en, this message translates to:
+  /// **'Logged in as {user}'**
+  String loginConfirmation(String user);
+
   /// No description provided for @logout.
   ///
   /// In en, this message translates to:
   /// **'Logout'**
   String get logout;
 
-  /// No description provided for @logoutConfirmation.
+  /// Shown after a user successfully logged out
   ///
   /// In en, this message translates to:
-  /// **'Successfully logged out'**
+  /// **'Logged out'**
   String get logoutConfirmation;
 
   /// No description provided for @logoutQuestion.
@@ -476,6 +494,12 @@ abstract class AppLocalizations {
   /// **'Register'**
   String get register;
 
+  /// Shown after a user successfully registered
+  ///
+  /// In en, this message translates to:
+  /// **'Registered user {user}'**
+  String registerConfirmation(String user);
+
   /// No description provided for @removeGroupMember.
   ///
   /// In en, this message translates to:
@@ -553,6 +577,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Category {name} updated'**
   String updateCategoryConfirmation(String name);
+
+  /// Shown after a group member role was updated
+  ///
+  /// In en, this message translates to:
+  /// **'Updated {user}\'s role to {role}'**
+  String updateGroupMemberRole(String user, String role);
 
   /// Shown after a place is successfully updated
   ///
