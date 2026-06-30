@@ -23,10 +23,10 @@ class Category {
   );
 
   static Category dummyCategory(BuildContext context) {
-    final i10n = Localizations.of(context, AppLocalizations)!;
+    final l10n = Localizations.of(context, AppLocalizations)!;
     return Category(
       id: 'dummy',
-      name: i10n.newCategory,
+      name: l10n.newCategory,
       icon: 'add',
       color: colorToHex(Theme.of(context).colorScheme.primary),
     );

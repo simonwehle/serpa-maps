@@ -17,11 +17,11 @@ Future<bool> showDeleteConfirmationDialog(
 }
 
 Future<bool> showLogoutConfirmationDialog(BuildContext context) async {
-  final i10n = AppLocalizations.of(context)!;
+  final l10n = AppLocalizations.of(context)!;
   return showConfirmationDialog(
     context,
-    title: i10n.logout,
-    message: i10n.logoutQuestion,
+    title: l10n.logout,
+    message: l10n.logoutQuestion,
   );
 }
 
@@ -32,7 +32,7 @@ Future<bool> showConfirmationDialog(
   Color? backgroundColor,
   Color? foregroundColor,
 }) async {
-  final i10n = AppLocalizations.of(context)!;
+  final l10n = AppLocalizations.of(context)!;
   final colorScheme = Theme.of(context).colorScheme;
   final result = await showDialog<bool>(
     context: context,
@@ -48,7 +48,7 @@ Future<bool> showConfirmationDialog(
             ),
           ),
           onPressed: () => Navigator.pop(context, false),
-          child: Text(i10n.cancel),
+          child: Text(l10n.cancel),
         ),
         OutlinedButton(
           style: ButtonStyle(
@@ -63,7 +63,7 @@ Future<bool> showConfirmationDialog(
             ),
           ),
           onPressed: () => Navigator.pop(context, true),
-          child: Text(i10n.yes),
+          child: Text(l10n.yes),
         ),
       ],
     ),

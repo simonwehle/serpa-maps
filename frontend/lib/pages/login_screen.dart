@@ -12,10 +12,10 @@ class LoginScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final i10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     return TextFieldScreen(
-      title: i10n.login,
+      title: l10n.login,
       navigationBackTarget: WelcomeScreen(),
       childBuilder: (onRegisterSubmit) => LoginFields(
         persistChanges: onRegisterSubmit,

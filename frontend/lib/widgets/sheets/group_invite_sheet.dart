@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
-import 'package:serpa_maps/providers/api/api_provider.dart';
+import 'package:serpa_maps/models/group.dart';
+import 'package:serpa_maps/providers/data/group_member_provider.dart';
+import 'package:serpa_maps/widgets/banner/top_banner.dart';
 import 'package:serpa_maps/widgets/form/form_text_field.dart';
 import 'package:serpa_maps/widgets/place/place_form_actions.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
 
 class GroupInviteSheet extends ConsumerStatefulWidget {
-  final String groupId;
-  const GroupInviteSheet({super.key, required this.groupId});
+  final Group group;
+  const GroupInviteSheet({super.key, required this.group});
 
   @override
   ConsumerState<GroupInviteSheet> createState() => _GroupInviteSheetState();
@@ -31,23 +33,26 @@ class _GroupInviteSheetState extends ConsumerState<GroupInviteSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final i10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
     return SerpaStaticSheet(
-      title: i10n.inviteGroupMember,
+      title: l10n.inviteGroupMember,
       child: Column(
         children: [
-          FormTextField(label: i10n.username, controller: usernameController),
+          FormTextField(label: l10n.username, controller: usernameController),
           const SizedBox(height: 16),
           PlaceFormActions(
             onCancel: () => Navigator.pop(context),
             onSave: () {
               ref
-                  .read(apiServiceProvider)
-                  .inviteToGroup(
-                    groupId: widget.groupId,
-                    username: usernameController.text,
-                  );
+                  .read(groupMemberProvider(widget.group.groupId).notifier)
+                  .inviteToGroup(usernameController.text);
               Navigator.pop(context);
+              showTopBanner(
+                l10n.inviteGroupMemberConfirmation(
+                  usernameController.text,
+                  widget.group.name,
+                ),
+              );
             },
           ),
         ],

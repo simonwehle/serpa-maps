@@ -33,12 +33,12 @@ class _FormTextFieldState extends State<FormTextField> {
 
   @override
   Widget build(BuildContext context) {
-    final i10n = Localizations.of(context, AppLocalizations)!;
+    final l10n = Localizations.of(context, AppLocalizations)!;
     return TextFormField(
       controller: widget.controller,
       decoration: InputDecoration(
         labelText: widget.optional
-            ? [widget.label, i10n.optional].join(' ')
+            ? [widget.label, l10n.optional].join(' ')
             : widget.label,
         hintText: widget.hint,
         border: const OutlineInputBorder(),

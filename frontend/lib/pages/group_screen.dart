@@ -7,6 +7,7 @@ import 'package:serpa_maps/providers/data/group_provider.dart';
 import 'package:serpa_maps/providers/data/invite_provider.dart';
 import 'package:serpa_maps/providers/data/user_prodiver.dart';
 import 'package:serpa_maps/utils/dialogs.dart';
+import 'package:serpa_maps/widgets/banner/top_banner.dart';
 import 'package:serpa_maps/widgets/group/group_header.dart';
 import 'package:serpa_maps/widgets/sheets/add_group_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
@@ -17,27 +18,29 @@ class GroupScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-    final i10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
     final groupsAsync = ref.watch(groupProvider);
     final invitesAsync = ref.watch(inviteProvider);
     final user = ref.watch(userProvider);
 
-    acceptInvite({required String id}) {
+    acceptInvite({required String id, required String group}) {
       ref.read(inviteProvider.notifier).respondToInvite(id: id, accept: true);
+      showTopBanner(l10n.acceptGroupInvite(group));
     }
 
-    declineInvite({required String id}) {
+    declineInvite({required String id, required String group}) {
       ref.read(inviteProvider.notifier).respondToInvite(id: id, accept: false);
+      showTopBanner(l10n.declineGroupInvite(group));
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text(i10n.groups)),
+      appBar: AppBar(title: Text(l10n.groups)),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
             GroupHeader(
-              title: i10n.invites,
+              title: l10n.invites,
               icon: Icons.refresh,
               onPressed: () {
                 ref.invalidate(inviteProvider);
@@ -48,7 +51,7 @@ class GroupScreen extends ConsumerWidget {
                   ? [
                       Padding(
                         padding: EdgeInsets.symmetric(vertical: 16),
-                        child: Center(child: Text(i10n.noGroupInvites)),
+                        child: Center(child: Text(l10n.noGroupInvites)),
                       ),
                     ]
                   : invites
@@ -60,14 +63,18 @@ class GroupScreen extends ConsumerWidget {
                               children: [
                                 IconButton(
                                   color: colorScheme.tertiary,
-                                  onPressed: () =>
-                                      acceptInvite(id: invite.groupInviteId),
+                                  onPressed: () => acceptInvite(
+                                    id: invite.groupInviteId,
+                                    group: invite.groupName,
+                                  ),
                                   icon: Icon(Icons.check),
                                 ),
                                 IconButton(
                                   color: colorScheme.error,
-                                  onPressed: () =>
-                                      declineInvite(id: invite.groupInviteId),
+                                  onPressed: () => declineInvite(
+                                    id: invite.groupInviteId,
+                                    group: invite.groupName,
+                                  ),
                                   icon: Icon(Icons.close),
                                 ),
                               ],
@@ -80,7 +87,7 @@ class GroupScreen extends ConsumerWidget {
             ),
             Divider(),
             GroupHeader(
-              title: i10n.groups,
+              title: l10n.groups,
               icon: Icons.add,
               onPressed: () {
                 showSerpaStaticSheet(
@@ -94,7 +101,7 @@ class GroupScreen extends ConsumerWidget {
                   ? [
                       Padding(
                         padding: EdgeInsets.symmetric(vertical: 16),
-                        child: Center(child: Text(i10n.noGroups)),
+                        child: Center(child: Text(l10n.noGroups)),
                       ),
                     ]
                   : groups
@@ -126,8 +133,8 @@ class GroupScreen extends ConsumerWidget {
                                       final confirmed =
                                           await showConfirmationDialog(
                                             context,
-                                            title: i10n.leaveGroup,
-                                            message: i10n.leaveGroupQuestion,
+                                            title: l10n.leaveGroup,
+                                            message: l10n.leaveGroupQuestion,
                                           );
                                       if (confirmed) {
                                         user.whenData((user) async {
@@ -139,6 +146,11 @@ class GroupScreen extends ConsumerWidget {
                                                   memberId: user.userId,
                                                 );
                                             ref.invalidate(groupProvider);
+                                            showTopBanner(
+                                              l10n.leaveGroupConfirmation(
+                                                group.name,
+                                              ),
+                                            );
                                           }
                                         });
                                       }

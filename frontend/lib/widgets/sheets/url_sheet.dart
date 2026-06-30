@@ -12,10 +12,10 @@ class UrlSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final i10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
     Future<void> Function()? persistUrlsCallback;
     return SerpaStaticSheet(
-      title: i10n.settings,
+      title: l10n.settings,
       child: Column(
         children: [
           Padding(

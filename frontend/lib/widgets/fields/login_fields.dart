@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/providers/data/user_prodiver.dart';
+import 'package:serpa_maps/widgets/banner/top_banner.dart';
 import 'package:serpa_maps/widgets/form/form_text_field.dart';
 
 class LoginFields extends ConsumerStatefulWidget {
@@ -37,21 +38,23 @@ class _LoginFieldsState extends ConsumerState<LoginFields> {
   }
 
   Future<void> performLogin() async {
+    final l10n = AppLocalizations.of(context)!;
     if (emailController.text.trim().isEmpty ||
         passwordController.text.trim().isEmpty) {
       throw Exception('All fields must be filled');
     }
-    await ref
+    final user = await ref
         .read(userProvider.notifier)
         .login(
           email: emailController.text.trim(),
           password: passwordController.text.trim(),
         );
+    showTopBanner(l10n.loginConfirmation(user.name));
   }
 
   @override
   Widget build(BuildContext context) {
-    final i10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.persistChanges.call(performLogin);
@@ -60,10 +63,10 @@ class _LoginFieldsState extends ConsumerState<LoginFields> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        FormTextField(label: i10n.email, controller: emailController),
+        FormTextField(label: l10n.email, controller: emailController),
         const SizedBox(height: 8),
         FormTextField(
-          label: i10n.password,
+          label: l10n.password,
           controller: passwordController,
           passwordField: true,
         ),
@@ -74,7 +77,7 @@ class _LoginFieldsState extends ConsumerState<LoginFields> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               Text(
-                i10n.register,
+                l10n.register,
                 style: TextStyle(color: Theme.of(context).colorScheme.primary),
               ),
             ],

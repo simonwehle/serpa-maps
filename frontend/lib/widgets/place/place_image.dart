@@ -32,7 +32,7 @@ class PlaceImage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final i10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
     final assetAsync = ref.watch(
       assetProvider((placeId: asset.placeId, assetId: asset.assetId)),
     );
@@ -70,8 +70,8 @@ class PlaceImage extends ConsumerWidget {
                 onPressed: () async {
                   final confirmed = await showDeleteConfirmationDialog(
                     context,
-                    title: i10n.deleteAsset,
-                    message: i10n.deleteAssetQuestion,
+                    title: l10n.deleteAsset,
+                    message: l10n.deleteAssetQuestion,
                   );
                   if (confirmed && onDelete != null) {
                     onDelete!();

@@ -11,6 +11,7 @@ import 'package:serpa_maps/providers/data/place_provider.dart';
 //import 'package:serpa_maps/models/asset.dart';
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
+import 'package:serpa_maps/widgets/banner/top_banner.dart';
 //import 'package:serpa_maps/utils/extract_gps.dart';
 import 'package:serpa_maps/widgets/form/delete_button.dart';
 import 'package:serpa_maps/widgets/form/form_text_field.dart';
@@ -64,13 +65,13 @@ class PlaceForm extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final groupsAsync = ref.watch(groupProvider);
-    final i10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         children: [
           const SizedBox(height: 8),
-          FormTextField(label: i10n.name, controller: nameController),
+          FormTextField(label: l10n.name, controller: nameController),
           const SizedBox(height: 16),
           Row(
             children: [
@@ -146,6 +147,7 @@ class PlaceForm extends ConsumerWidget {
                                 assetBytes: bytes,
                                 filename: filename,
                               );
+                          showTopBanner(l10n.addAssetConfirmation);
                         }
                       }
 
@@ -163,7 +165,7 @@ class PlaceForm extends ConsumerWidget {
                 )
               : const SizedBox(height: 16),
           FormTextField(
-            label: i10n.description,
+            label: l10n.description,
             controller: descriptionController,
             optional: true,
             maxLines: null,
@@ -173,7 +175,7 @@ class PlaceForm extends ConsumerWidget {
             children: [
               Expanded(
                 child: FormTextField(
-                  label: i10n.latitude,
+                  label: l10n.latitude,
                   controller: latitudeController,
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
@@ -185,7 +187,7 @@ class PlaceForm extends ConsumerWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: FormTextField(
-                  label: i10n.longitude,
+                  label: l10n.longitude,
                   controller: longitudeController,
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
@@ -206,8 +208,8 @@ class PlaceForm extends ConsumerWidget {
                     await Navigator.maybePop(context);
                   }
                 },
-                title: i10n.deletePlace,
-                question: i10n.deletePlaceQuestion,
+                title: l10n.deletePlace,
+                question: l10n.deletePlaceQuestion,
               ),
             ),
         ],

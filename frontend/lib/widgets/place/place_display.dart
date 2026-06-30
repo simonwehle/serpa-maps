@@ -23,7 +23,7 @@ class PlaceDisplay extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final i10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
     final groupsAsync = ref.watch(groupProvider);
     final sharedWithText = groupsAsync.when<String?>(
       data: (groups) {
@@ -75,13 +75,13 @@ class PlaceDisplay extends ConsumerWidget {
           ElevatedButton(
             onPressed: () =>
                 openMaps(place.latitude, place.longitude, place.name),
-            child: Text(i10n.directions),
+            child: Text(l10n.directions),
           ),
           const SizedBox(height: 16),
           if (sharedWithText != null)
             Padding(
               padding: const EdgeInsets.only(bottom: 16),
-              child: Text(i10n.sharedWith + sharedWithText),
+              child: Text(l10n.sharedWith + sharedWithText),
             ),
           Text(
             place.description?.isNotEmpty == true

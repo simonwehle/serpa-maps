@@ -13,6 +13,7 @@ import 'package:serpa_maps/providers/preferences/base_url_provider.dart';
 import 'package:serpa_maps/providers/preferences/overlay_url_provider.dart';
 import 'package:serpa_maps/providers/preferences/style_dark_provider.dart';
 import 'package:serpa_maps/providers/preferences/style_provider.dart';
+import 'package:serpa_maps/utils/keys.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -86,6 +87,7 @@ class SerpaMaps extends ConsumerWidget {
     return MaterialApp(
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
+      scaffoldMessengerKey: rootMessengerKey,
       title: 'Serpa Maps',
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,

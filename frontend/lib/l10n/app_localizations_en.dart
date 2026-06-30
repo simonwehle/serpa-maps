@@ -9,10 +9,28 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String acceptGroupInvite(String group) {
+    return 'Accepted invite to $group';
+  }
+
+  @override
   String get add => 'Add';
 
   @override
-  String get addGroup => 'Add group';
+  String get addGroup => 'Group added';
+
+  @override
+  String get addAssetConfirmation => 'Asset added';
+
+  @override
+  String addCategoryConfirmation(String name) {
+    return 'Category $name added';
+  }
+
+  @override
+  String addPlaceConfirmation(String name) {
+    return 'Place $name added';
+  }
 
   @override
   String get addPlaceToGroup => 'Add place to group';
@@ -33,10 +51,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get categoryNotFound => 'Category not found';
 
   @override
+  String createGroupConfirmation(String name) {
+    return 'Group $name created';
+  }
+
+  @override
   String get darkMapStyleURL => 'Dark map style URL';
 
   @override
   String get dark => 'Dark';
+
+  @override
+  String declineGroupInvite(String group) {
+    return 'Declined invite to $group';
+  }
 
   @override
   String get defaultMap => 'Default';
@@ -45,10 +73,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteAsset => 'Delete Asset';
 
   @override
+  String get deleteAssetConfirmation => 'Asset deleted';
+
+  @override
   String get deleteAssetQuestion => 'Do you want to delete this asset?';
 
   @override
   String get deleteCategory => 'Delete Category';
+
+  @override
+  String deleteCategoryConfirmation(String name) {
+    return 'Category $name deleted';
+  }
 
   @override
   String get deleteCategoryQuestion => 'Do you want to delete this category?';
@@ -57,10 +93,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteGroup => 'Delete Group';
 
   @override
+  String deleteGroupConfirmation(String name) {
+    return 'Group $name deleted';
+  }
+
+  @override
   String get deleteGroupQuestion => 'Do you want to delete this group?';
 
   @override
   String get deletePlace => 'Delete Place';
+
+  @override
+  String deletePlaceConfirmation(String name) {
+    return 'Place $name deleted';
+  }
 
   @override
   String get deletePlaceQuestion => 'Do you want to delete this place?';
@@ -87,6 +133,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get inviteGroupMember => 'Invite group member';
 
   @override
+  String inviteGroupMemberConfirmation(String user, String group) {
+    return 'Invited $user to group $group';
+  }
+
+  @override
   String get invites => 'Invites';
 
   @override
@@ -94,6 +145,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get leaveGroup => 'Leave group';
+
+  @override
+  String leaveGroupConfirmation(String name) {
+    return 'Left group $name';
+  }
 
   @override
   String get leaveGroupQuestion => 'Do you want to leave this group?';
@@ -111,7 +167,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get login => 'Login';
 
   @override
+  String loginConfirmation(String user) {
+    return 'Logged in as $user';
+  }
+
+  @override
   String get logout => 'Logout';
+
+  @override
+  String get logoutConfirmation => 'Logged out';
 
   @override
   String get logoutQuestion => 'Do you want to logout?';
@@ -165,7 +229,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get register => 'Register';
 
   @override
+  String registerConfirmation(String user) {
+    return 'Registered user $user';
+  }
+
+  @override
   String get removeGroupMember => 'Remove group member';
+
+  @override
+  String removeGroupMemberConfirmation(String user, String group) {
+    return 'Removed $user from group $group';
+  }
 
   @override
   String get removeGroupMemberQuestion =>
@@ -197,6 +271,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get system => 'System';
+
+  @override
+  String updateCategoryConfirmation(String name) {
+    return 'Category $name updated';
+  }
+
+  @override
+  String updateGroupMemberRole(String user, String role) {
+    return 'Updated $user\'s role to $role';
+  }
+
+  @override
+  String updatePlaceConfirmation(String name) {
+    return 'Place $name updated';
+  }
 
   @override
   String get username => 'Username';

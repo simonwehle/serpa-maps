@@ -7,6 +7,7 @@ import 'package:serpa_maps/providers/data/group_member_provider.dart';
 import 'package:serpa_maps/providers/data/group_provider.dart';
 import 'package:serpa_maps/providers/data/user_prodiver.dart';
 import 'package:serpa_maps/utils/dialogs.dart';
+import 'package:serpa_maps/widgets/banner/top_banner.dart';
 import 'package:serpa_maps/widgets/group/role_dropdown.dart';
 import 'package:serpa_maps/widgets/sheets/group_invite_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
@@ -17,7 +18,7 @@ class GroupDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final i10n = Localizations.of(context, AppLocalizations)!;
+    final l10n = Localizations.of(context, AppLocalizations)!;
     final groupMembersAsync = ref.watch(groupMemberProvider(group.groupId));
     final currentUser = ref.watch(userProvider).value;
     return Scaffold(
@@ -29,14 +30,17 @@ class GroupDetailScreen extends ConsumerWidget {
             onPressed: () async {
               final confirmed = await showDeleteConfirmationDialog(
                 context,
-                title: i10n.deleteGroup,
-                message: i10n.deleteGroupQuestion,
+                title: l10n.deleteGroup,
+                message: l10n.deleteGroupQuestion,
               );
               if (confirmed) {
                 await ref
                     .read(groupProvider.notifier)
                     .deleteGroup(id: group.groupId);
-                if (context.mounted) Navigator.pop(context);
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
+                showTopBanner(l10n.deleteGroupConfirmation(group.name));
               }
             },
           ),
@@ -50,10 +54,10 @@ class GroupDetailScreen extends ConsumerWidget {
               onPressed: () {
                 showSerpaStaticSheet(
                   context: context,
-                  child: GroupInviteSheet(groupId: group.groupId),
+                  child: GroupInviteSheet(group: group),
                 );
               },
-              child: Text(i10n.inviteGroupMember),
+              child: Text(l10n.inviteGroupMember),
             ),
           ),
           const SizedBox(height: 16),
@@ -80,8 +84,8 @@ class GroupDetailScreen extends ConsumerWidget {
                             onPressed: () async {
                               final confirmed = await showConfirmationDialog(
                                 context,
-                                title: i10n.removeGroupMember,
-                                message: i10n.removeGroupMemberQuestion,
+                                title: l10n.removeGroupMember,
+                                message: l10n.removeGroupMemberQuestion,
                               );
 
                               if (confirmed) {
@@ -92,6 +96,11 @@ class GroupDetailScreen extends ConsumerWidget {
                                       ).notifier,
                                     )
                                     .removeMember(member.userId);
+                                showTopBanner(
+                                  l10n.removeGroupMemberConfirmation(
+                                    member.username,
+                                  ),
+                                );
                               }
                             },
                           )
