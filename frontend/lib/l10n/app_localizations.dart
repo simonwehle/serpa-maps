@@ -98,6 +98,12 @@ abstract class AppLocalizations {
     Locale('en'),
   ];
 
+  /// Shown after a user accepted a group invitation
+  ///
+  /// In en, this message translates to:
+  /// **'Accepted invite to {group}'**
+  String acceptGroupInvite(String group);
+
   /// No description provided for @add.
   ///
   /// In en, this message translates to:
@@ -107,8 +113,26 @@ abstract class AppLocalizations {
   /// No description provided for @addGroup.
   ///
   /// In en, this message translates to:
-  /// **'Add group'**
+  /// **'Group added'**
   String get addGroup;
+
+  /// No description provided for @addAssetConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Asset added'**
+  String get addAssetConfirmation;
+
+  /// Shown after a category is successfully added
+  ///
+  /// In en, this message translates to:
+  /// **'Category {name} added'**
+  String addCategoryConfirmation(String name);
+
+  /// Shown after a place is successfully added
+  ///
+  /// In en, this message translates to:
+  /// **'Place {name} added'**
+  String addPlaceConfirmation(String name);
 
   /// No description provided for @addPlaceToGroup.
   ///
@@ -146,6 +170,12 @@ abstract class AppLocalizations {
   /// **'Category not found'**
   String get categoryNotFound;
 
+  /// Shown after a group is successfully created
+  ///
+  /// In en, this message translates to:
+  /// **'Group {name} created'**
+  String createGroupConfirmation(String name);
+
   /// No description provided for @darkMapStyleURL.
   ///
   /// In en, this message translates to:
@@ -157,6 +187,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Dark'**
   String get dark;
+
+  /// Shown after a user declined a group invite
+  ///
+  /// In en, this message translates to:
+  /// **'Declined invite to {group}'**
+  String declineGroupInvite(String group);
 
   /// No description provided for @defaultMap.
   ///
@@ -170,6 +206,12 @@ abstract class AppLocalizations {
   /// **'Delete Asset'**
   String get deleteAsset;
 
+  /// No description provided for @deleteAssetConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Asset deleted'**
+  String get deleteAssetConfirmation;
+
   /// No description provided for @deleteAssetQuestion.
   ///
   /// In en, this message translates to:
@@ -181,6 +223,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete Category'**
   String get deleteCategory;
+
+  /// Shown after a category is successfully deleted
+  ///
+  /// In en, this message translates to:
+  /// **'Category {name} deleted'**
+  String deleteCategoryConfirmation(String name);
 
   /// No description provided for @deleteCategoryQuestion.
   ///
@@ -194,6 +242,12 @@ abstract class AppLocalizations {
   /// **'Delete Group'**
   String get deleteGroup;
 
+  /// Shown after a group is successfully deleted
+  ///
+  /// In en, this message translates to:
+  /// **'Group {name} deleted'**
+  String deleteGroupConfirmation(String name);
+
   /// No description provided for @deleteGroupQuestion.
   ///
   /// In en, this message translates to:
@@ -205,6 +259,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete Place'**
   String get deletePlace;
+
+  /// Shown after a place is successfully deleted
+  ///
+  /// In en, this message translates to:
+  /// **'Place {name} deleted'**
+  String deletePlaceConfirmation(String name);
 
   /// No description provided for @deletePlaceQuestion.
   ///
@@ -254,6 +314,12 @@ abstract class AppLocalizations {
   /// **'Invite group member'**
   String get inviteGroupMember;
 
+  /// Shown after user is invited to a group
+  ///
+  /// In en, this message translates to:
+  /// **'Invited {user} to group {group}'**
+  String inviteGroupMemberConfirmation(String user, String group);
+
   /// No description provided for @invites.
   ///
   /// In en, this message translates to:
@@ -271,6 +337,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Leave group'**
   String get leaveGroup;
+
+  /// Shown after user left a group successfully deleted
+  ///
+  /// In en, this message translates to:
+  /// **'Left group {name}'**
+  String leaveGroupConfirmation(String name);
 
   /// No description provided for @leaveGroupQuestion.
   ///
@@ -302,11 +374,23 @@ abstract class AppLocalizations {
   /// **'Login'**
   String get login;
 
+  /// Shown after a user successfully logged in
+  ///
+  /// In en, this message translates to:
+  /// **'Logged in as {user}'**
+  String loginConfirmation(String user);
+
   /// No description provided for @logout.
   ///
   /// In en, this message translates to:
   /// **'Logout'**
   String get logout;
+
+  /// Shown after a user successfully logged out
+  ///
+  /// In en, this message translates to:
+  /// **'Logged out'**
+  String get logoutConfirmation;
 
   /// No description provided for @logoutQuestion.
   ///
@@ -410,11 +494,23 @@ abstract class AppLocalizations {
   /// **'Register'**
   String get register;
 
+  /// Shown after a user successfully registered
+  ///
+  /// In en, this message translates to:
+  /// **'Registered user {user}'**
+  String registerConfirmation(String user);
+
   /// No description provided for @removeGroupMember.
   ///
   /// In en, this message translates to:
   /// **'Remove group member'**
   String get removeGroupMember;
+
+  /// Shown after a group member is successfully removed
+  ///
+  /// In en, this message translates to:
+  /// **'Removed {user} from group {group}'**
+  String removeGroupMemberConfirmation(String user, String group);
 
   /// No description provided for @removeGroupMemberQuestion.
   ///
@@ -475,6 +571,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'System'**
   String get system;
+
+  /// Shown after a category is successfully updated
+  ///
+  /// In en, this message translates to:
+  /// **'Category {name} updated'**
+  String updateCategoryConfirmation(String name);
+
+  /// Shown after a group member role was updated
+  ///
+  /// In en, this message translates to:
+  /// **'Updated {user}\'s role to {role}'**
+  String updateGroupMemberRole(String user, String role);
+
+  /// Shown after a place is successfully updated
+  ///
+  /// In en, this message translates to:
+  /// **'Place {name} updated'**
+  String updatePlaceConfirmation(String name);
 
   /// No description provided for @username.
   ///

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/providers/data/user_prodiver.dart';
+import 'package:serpa_maps/widgets/banner/top_banner.dart';
 import 'package:serpa_maps/widgets/form/form_text_field.dart';
 
 class RegisterFields extends ConsumerStatefulWidget {
@@ -40,24 +41,26 @@ class _RegisterFieldsState extends ConsumerState<RegisterFields> {
   }
 
   Future<void> performRegister() async {
+    final l10n = AppLocalizations.of(context)!;
     if (emailController.text.trim().isEmpty ||
         usernameController.text.trim().isEmpty ||
         passwordController.text.trim().isEmpty) {
       throw Exception('All fields must be filled');
     }
 
-    ref
+    final user = await ref
         .read(userProvider.notifier)
         .register(
           email: emailController.text.trim(),
           name: usernameController.text.trim(),
           password: passwordController.text.trim(),
         );
+    showTopBanner(l10n.registerConfirmation(user.name));
   }
 
   @override
   Widget build(BuildContext context) {
-    final i10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.persistChanges.call(performRegister);
@@ -66,12 +69,12 @@ class _RegisterFieldsState extends ConsumerState<RegisterFields> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        FormTextField(label: i10n.email, controller: emailController),
+        FormTextField(label: l10n.email, controller: emailController),
         const SizedBox(height: 8),
-        FormTextField(label: i10n.username, controller: usernameController),
+        FormTextField(label: l10n.username, controller: usernameController),
         const SizedBox(height: 8),
         FormTextField(
-          label: i10n.password,
+          label: l10n.password,
           controller: passwordController,
           passwordField: true,
         ),
@@ -82,7 +85,7 @@ class _RegisterFieldsState extends ConsumerState<RegisterFields> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               Text(
-                i10n.login,
+                l10n.login,
                 style: TextStyle(color: Theme.of(context).colorScheme.primary),
               ),
             ],

@@ -13,12 +13,12 @@ class CategorySheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final categoriesAsync = ref.watch(categoryProvider);
-    final i10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
     return categoriesAsync.when(
       data: (categories) {
         final allCategories = [...categories, Category.dummyCategory(context)];
         return SerpaStaticSheet(
-          title: i10n.categories,
+          title: l10n.categories,
           child: Wrap(
             spacing: 16.0,
             runSpacing: 16.0,

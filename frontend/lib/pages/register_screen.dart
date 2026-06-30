@@ -12,10 +12,10 @@ class RegisterScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final i10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     return TextFieldScreen(
-      title: i10n.register,
+      title: l10n.register,
       navigationBackTarget: WelcomeScreen(),
       childBuilder: (onRegisterSubmit) => RegisterFields(
         persistChanges: onRegisterSubmit,

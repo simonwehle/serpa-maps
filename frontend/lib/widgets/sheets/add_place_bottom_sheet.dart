@@ -4,6 +4,7 @@ import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/providers/data/category_provider.dart';
 import 'package:serpa_maps/providers/data/place_provider.dart';
+import 'package:serpa_maps/widgets/banner/top_banner.dart';
 import 'package:serpa_maps/widgets/place/place_form_actions.dart';
 import 'package:serpa_maps/widgets/place/place_form.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_draggable_sheet.dart';
@@ -52,6 +53,7 @@ class _AddPlaceBottomSheetState extends ConsumerState<AddPlaceBottomSheet> {
   }
 
   Future<void> _saveChanges() async {
+    final l10n = AppLocalizations.of(context)!;
     try {
       final name = nameController.text.trim().replaceAll(RegExp(r'\s+'), ' ');
       final description = descriptionController.text.trim();
@@ -80,15 +82,12 @@ class _AddPlaceBottomSheetState extends ConsumerState<AddPlaceBottomSheet> {
 
       if (mounted && addPlace != null) {
         Navigator.of(context).pop(addPlace);
+        showTopBanner(l10n.addPlaceConfirmation(name));
       } else {
         throw 'Failed to add place: Response was null';
       }
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Add place failed: $e')));
-      }
+      showTopBanner('Add place failed: $e');
     }
   }
 
