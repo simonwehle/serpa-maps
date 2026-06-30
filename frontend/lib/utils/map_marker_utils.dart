@@ -44,16 +44,6 @@ Future<void> addPlaceLayer({
   required List<Category> categories,
   required MapLibreMapController mapController,
 }) async {
-  final matchExpression = [
-    'match',
-    ['get', 'categoryId'],
-  ];
-  for (var category in categories) {
-    matchExpression.add(category.id);
-    matchExpression.add(category.id.toString());
-  }
-  matchExpression.add('default-marker');
-
   try {
     await mapController.removeLayer("places-layer");
   } catch (_) {}
@@ -87,7 +77,6 @@ Future<void> addPlaceLayer({
       filter: ['has', 'point_count'],
       enableInteraction: true,
     );
-
     await mapController.addSymbolLayer(
       "places",
       "places-cluster-count",
@@ -102,6 +91,20 @@ Future<void> addPlaceLayer({
       enableInteraction: true,
     );
   } catch (_) {}
+
+  if (categories.isEmpty) {
+    return;
+  }
+
+  final matchExpression = [
+    'match',
+    ['get', 'categoryId'],
+  ];
+  for (var category in categories) {
+    matchExpression.add(category.id);
+    matchExpression.add(category.id.toString());
+  }
+  matchExpression.add('default-marker');
 
   try {
     await mapController.addSymbolLayer(

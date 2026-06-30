@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
-import 'package:serpa_maps/providers/api/api_provider.dart';
-import 'package:serpa_maps/providers/token/access_token_provider.dart';
-import 'package:serpa_maps/providers/token/refresh_token_provider.dart';
-import 'package:serpa_maps/providers/data/category_provider.dart';
-import 'package:serpa_maps/providers/data/place_provider.dart';
+import 'package:serpa_maps/providers/data/user_prodiver.dart';
 import 'package:serpa_maps/widgets/banner/top_banner.dart';
 import 'package:serpa_maps/widgets/form/form_text_field.dart';
 
@@ -52,22 +48,14 @@ class _RegisterFieldsState extends ConsumerState<RegisterFields> {
       throw Exception('All fields must be filled');
     }
 
-    final api = ref.read(apiServiceProvider);
-    final registerResponse = await api.register(
-      email: emailController.text.trim(),
-      username: usernameController.text.trim(),
-      password: passwordController.text.trim(),
-    );
-    await ref
-        .read(accessTokenProvider.notifier)
-        .setToken(registerResponse.accessToken);
-    await ref
-        .read(refreshTokenProvider.notifier)
-        .setToken(registerResponse.refreshToken);
-
-    ref.invalidate(categoryProvider);
-    ref.invalidate(placeProvider);
-    showTopBanner(l10n.registerConfirmation(registerResponse.username));
+    final user = await ref
+        .read(userProvider.notifier)
+        .register(
+          email: emailController.text.trim(),
+          name: usernameController.text.trim(),
+          password: passwordController.text.trim(),
+        );
+    showTopBanner(l10n.registerConfirmation(user.name));
   }
 
   @override
