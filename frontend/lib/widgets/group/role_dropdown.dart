@@ -35,7 +35,7 @@ class RoleDropdown extends ConsumerWidget {
             .read(groupMemberProvider(groupId).notifier)
             .updateGroupMemberRole(memberId: member.userId, role: newRole);
         showTopBanner(
-          l10n.updateGroupMemberRole(member.username, newRole.toString()),
+          l10n.updateGroupMemberRole(member.username, newRole.label),
         );
       },
       itemBuilder: (_) => [Role.admin, Role.editor, Role.member]
