@@ -7,6 +7,7 @@ import 'package:serpa_maps/providers/data/group_provider.dart';
 import 'package:serpa_maps/providers/data/invite_provider.dart';
 import 'package:serpa_maps/providers/data/user_prodiver.dart';
 import 'package:serpa_maps/utils/dialogs.dart';
+import 'package:serpa_maps/widgets/banner/top_banner.dart';
 import 'package:serpa_maps/widgets/group/group_header.dart';
 import 'package:serpa_maps/widgets/sheets/add_group_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
@@ -139,16 +140,9 @@ class GroupScreen extends ConsumerWidget {
                                                   memberId: user.userId,
                                                 );
                                             ref.invalidate(groupProvider);
-                                            if (!context.mounted) return;
-                                            ScaffoldMessenger.of(
-                                              context,
-                                            ).showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                  l10n.leaveGroupConfirmation(
-                                                    group.name,
-                                                  ),
-                                                ),
+                                            showTopBanner(
+                                              l10n.leaveGroupConfirmation(
+                                                group.name,
                                               ),
                                             );
                                           }
