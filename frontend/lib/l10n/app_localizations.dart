@@ -113,7 +113,7 @@ abstract class AppLocalizations {
   /// No description provided for @addGroup.
   ///
   /// In en, this message translates to:
-  /// **'Add Group'**
+  /// **'Group added'**
   String get addGroup;
 
   /// No description provided for @addAssetConfirmation.

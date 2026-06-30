@@ -17,7 +17,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get add => 'Add';
 
   @override
-  String get addGroup => 'Add Group';
+  String get addGroup => 'Group added';
 
   @override
   String get addAssetConfirmation => 'Asset added';

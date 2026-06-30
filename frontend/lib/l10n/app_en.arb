@@ -10,7 +10,7 @@
     }
   },
   "add": "Add",
-  "addGroup": "Add Group",
+  "addGroup": "Group added",
   "addAssetConfirmation": "Asset added",
   "addCategoryConfirmation": "Category {name} added",
   "@addCategoryConfirmation": {
@@ -202,13 +202,13 @@
     }
   },
   "updateGroupMemberRole": "Updated {user}'s role to {role}",
-  "@updateGroupMemberRole":{
+  "@updateGroupMemberRole": {
     "description": "Shown after a group member role was updated",
     "placeholders": {
-      "user":{
+      "user": {
         "type": "String"
       },
-      "role":{
+      "role": {
         "type": "String"
       }
     }
