@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/providers/data/user_prodiver.dart';
-import 'package:serpa_maps/widgets/banner/top_banner.dart';
+import 'package:serpa_maps/widgets/banner/banner.dart';
 import 'package:serpa_maps/widgets/form/form_text_field.dart';
 
 class LoginFields extends ConsumerStatefulWidget {
@@ -49,7 +49,7 @@ class _LoginFieldsState extends ConsumerState<LoginFields> {
           email: emailController.text.trim(),
           password: passwordController.text.trim(),
         );
-    showTopBanner(l10n.loginConfirmation(user.name));
+    showBanner(l10n.loginConfirmation(user.name));
   }
 
   @override

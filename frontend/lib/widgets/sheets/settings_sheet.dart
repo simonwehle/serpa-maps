@@ -4,7 +4,7 @@ import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/pages/group_screen.dart';
 import 'package:serpa_maps/providers/data/user_prodiver.dart';
 import 'package:serpa_maps/utils/dialogs.dart';
-import 'package:serpa_maps/widgets/banner/top_banner.dart';
+import 'package:serpa_maps/widgets/banner/banner.dart';
 import 'package:serpa_maps/widgets/sheets/appearance_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/category_sheet.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_static_sheet.dart';
@@ -58,7 +58,7 @@ class SettingsSheet extends ConsumerWidget {
               final confirmed = await showLogoutConfirmationDialog(context);
               if (confirmed) {
                 await ref.read(userProvider.notifier).logout();
-                showTopBanner(l10n.logoutConfirmation);
+                showBanner(l10n.logoutConfirmation);
               }
               if (context.mounted) Navigator.pop(context);
             },

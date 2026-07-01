@@ -4,7 +4,7 @@ import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/models/member.dart';
 import 'package:serpa_maps/models/role.dart';
 import 'package:serpa_maps/providers/data/group_member_provider.dart';
-import 'package:serpa_maps/widgets/banner/top_banner.dart';
+import 'package:serpa_maps/widgets/banner/banner.dart';
 
 class RoleDropdown extends ConsumerWidget {
   const RoleDropdown({super.key, required this.member, required this.groupId});
@@ -34,9 +34,7 @@ class RoleDropdown extends ConsumerWidget {
         await ref
             .read(groupMemberProvider(groupId).notifier)
             .updateGroupMemberRole(memberId: member.userId, role: newRole);
-        showTopBanner(
-          l10n.updateGroupMemberRole(member.username, newRole.label),
-        );
+        showBanner(l10n.updateGroupMemberRole(member.username, newRole.label));
       },
       itemBuilder: (_) => [Role.admin, Role.editor, Role.member]
           .map(
