@@ -5,7 +5,7 @@ import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/models/asset.dart';
 import 'package:serpa_maps/providers/data/place_provider.dart';
 import 'package:serpa_maps/pages/place_assets_fullscreen.dart';
-import 'package:serpa_maps/widgets/banner/top_banner.dart';
+import 'package:serpa_maps/widgets/banner/banner.dart';
 import 'package:serpa_maps/widgets/place/place_image.dart';
 
 class PlaceAssetGallery extends ConsumerWidget {
@@ -84,7 +84,7 @@ class PlaceAssetGallery extends ConsumerWidget {
                           assetId: asset.assetId,
                         )
                         .catchError((_) {});
-                        showTopBanner(l10n.deleteAssetConfirmation);
+                    showBanner(l10n.deleteAssetConfirmation);
                   },
                 ),
               );

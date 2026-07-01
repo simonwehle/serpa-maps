@@ -11,7 +11,7 @@ import 'package:serpa_maps/providers/data/place_provider.dart';
 //import 'package:serpa_maps/models/asset.dart';
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/models/place.dart';
-import 'package:serpa_maps/widgets/banner/top_banner.dart';
+import 'package:serpa_maps/widgets/banner/banner.dart';
 //import 'package:serpa_maps/utils/extract_gps.dart';
 import 'package:serpa_maps/widgets/form/delete_button.dart';
 import 'package:serpa_maps/widgets/form/form_text_field.dart';
@@ -147,7 +147,7 @@ class PlaceForm extends ConsumerWidget {
                                 assetBytes: bytes,
                                 filename: filename,
                               );
-                          showTopBanner(l10n.addAssetConfirmation);
+                          showBanner(l10n.addAssetConfirmation);
                         }
                       }
 

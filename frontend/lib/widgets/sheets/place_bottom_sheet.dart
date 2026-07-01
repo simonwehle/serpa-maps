@@ -7,7 +7,7 @@ import 'package:serpa_maps/models/place.dart';
 import 'package:serpa_maps/providers/data/category_provider.dart';
 import 'package:serpa_maps/providers/data/item_by_id_providers.dart';
 import 'package:serpa_maps/providers/data/place_provider.dart';
-import 'package:serpa_maps/widgets/banner/top_banner.dart';
+import 'package:serpa_maps/widgets/banner/banner.dart';
 import 'package:serpa_maps/widgets/sheets/serpa_draggable_sheet.dart';
 import 'package:serpa_maps/widgets/place/place_display.dart';
 import 'package:serpa_maps/widgets/place/place_form_actions.dart';
@@ -97,9 +97,9 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
             groups: selectedGroups, // .map((g) => g.groupId).toList()
           );
       toggleEditing();
-      showTopBanner(l10n.updatePlaceConfirmation(nameController!.text));
+      showBanner(l10n.updatePlaceConfirmation(nameController!.text));
     } catch (e) {
-      showTopBanner('Update failed: $e');
+      showBanner('Update failed: $e');
     }
   }
 
@@ -166,7 +166,7 @@ class _PlaceBottomSheetState extends ConsumerState<PlaceBottomSheet> {
                         .read(placeProvider.notifier)
                         .deletePlace(id: place.id);
                     if (!context.mounted) return;
-                    showTopBanner(l10n.deletePlaceConfirmation(place.name));
+                    showBanner(l10n.deletePlaceConfirmation(place.name));
                   },
                 ),
         );

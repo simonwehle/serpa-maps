@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serpa_maps/l10n/app_localizations.dart';
 import 'package:serpa_maps/models/category.dart';
 import 'package:serpa_maps/providers/data/category_provider.dart';
-import 'package:serpa_maps/widgets/banner/top_banner.dart';
+import 'package:serpa_maps/widgets/banner/banner.dart';
 import 'package:serpa_maps/widgets/form/delete_button.dart';
 import 'package:serpa_maps/widgets/form/form_text_field.dart';
 import 'package:serpa_maps/widgets/form/serpa_divider.dart';
@@ -56,9 +56,9 @@ class _CategoryMenuSheetState extends ConsumerState<CategoryMenuSheet> {
             icon: stringFromIcon(_selectedIcon),
             color: colorToHex(_selectedColor),
           );
-      showTopBanner(l10n.updateCategoryConfirmation(_nameController.text));
+      showBanner(l10n.updateCategoryConfirmation(_nameController.text));
     } catch (e) {
-      showTopBanner('Update failed: $e');
+      showBanner('Update failed: $e');
     }
   }
 
@@ -72,16 +72,16 @@ class _CategoryMenuSheetState extends ConsumerState<CategoryMenuSheet> {
             icon: stringFromIcon(_selectedIcon),
             color: colorToHex(_selectedColor),
           );
-      showTopBanner(l10n.addCategoryConfirmation(_nameController.text));
+      showBanner(l10n.addCategoryConfirmation(_nameController.text));
     } catch (e) {
-      showTopBanner('Error during category creation: $e');
+      showBanner('Error during category creation: $e');
     }
   }
 
   Future<void> _deleteCategory(Category category) async {
     final l10n = AppLocalizations.of(context)!;
     await ref.read(categoryProvider.notifier).deleteCategory(id: category.id);
-    showTopBanner(l10n.deleteCategoryConfirmation(category.name));
+    showBanner(l10n.deleteCategoryConfirmation(category.name));
   }
 
   @override

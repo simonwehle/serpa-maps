@@ -137,6 +137,6 @@ void showSerpaDraggableSheet({
     backgroundColor: backgroundColor,
     barrierColor: barrierColor,
     isDismissible: isDismissible,
-    builder: (_) => child,
+    builder: (_) => Scaffold(backgroundColor: Colors.transparent, body: child),
   );
 }

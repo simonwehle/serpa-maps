@@ -47,6 +47,13 @@ void showSerpaStaticSheet({
     barrierColor: barrierColor,
     isDismissible: isDismissible,
     enableDrag: enableDrag,
-    builder: (_) => child,
+    builder: (ctx) => GestureDetector(
+      onTap: isDismissible ? () => Navigator.of(ctx).pop() : null,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        resizeToAvoidBottomInset: false,
+        body: Align(alignment: Alignment.bottomCenter, child: child),
+      ),
+    ),
   );
 }
